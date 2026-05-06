@@ -1,0 +1,227 @@
+Wrapper Classes : 🔰 Introduction to Wrapper Classes in Java
+
+In Java, Wrapper Classes are used to convert primitive data types into objects. This is required because Java is an object-oriented language, and many frameworks (like collections, generics, etc.) work only with objects—not primitives.
+
+📌 1. Why Wrapper Classes?
+
+Primitive types (like int, double, etc.) are not objects, so they:
+
+Cannot be used in Collections (like ArrayList)
+Cannot call methods
+Cannot be used in Generics
+
+👉 Wrapper classes solve this by providing object representations of primitives.
+
+📦 2. Primitive Types vs Wrapper Classes
+
+Primitive Type			Wrapper Class
+byte						Byte
+short						Short
+int						Integer
+long						Long
+float						Float
+double					Double
+char						Character
+boolean					Boolean
+
+⚙️ 3. Types of Wrapper Class Usage
+
+✅ 1. Boxing (Manual Conversion)
+
+Converting primitive → object manually.
+
+public class BoxingExample {
+    public static void main(String[] args) {
+        int a = 10;
+
+        // Manual Boxing
+        Integer obj = Integer.valueOf(a);
+
+        System.out.println("Primitive: " + a);
+        System.out.println("Wrapper Object: " + obj);
+    }
+}
+
+✅ 2. Unboxing (Manual Conversion)
+
+Converting object → primitive.
+
+public class UnboxingExample {
+    public static void main(String[] args) {
+        Integer obj = Integer.valueOf(20);
+
+        // Manual Unboxing
+        int value = obj.intValue();
+
+        System.out.println("Wrapper Object: " + obj);
+        System.out.println("Primitive: " + value);
+    }
+}
+
+✅ 3. Autoboxing (Automatic Conversion)
+
+Java automatically converts primitive → wrapper.
+
+public class AutoBoxingExample {
+    public static void main(String[] args) {
+        int a = 30;
+
+        // Autoboxing
+        Integer obj = a;
+
+        System.out.println("Primitive: " + a);
+        System.out.println("Wrapper Object: " + obj);
+    }
+}
+
+✅ 4. Auto-Unboxing
+
+Automatic conversion of wrapper → primitive.
+
+public class AutoUnboxingExample {
+    public static void main(String[] args) {
+        Integer obj = 40;
+
+        // Auto-unboxing
+        int value = obj;
+
+        System.out.println("Wrapper Object: " + obj);
+        System.out.println("Primitive: " + value);
+    }
+}
+
+🧠 4. Wrapper Classes with Collections (Important Use Case)
+
+Collections only work with objects, not primitives.
+
+import java.util.ArrayList;
+
+public class CollectionExample {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+
+        // Autoboxing happens here
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        for (Integer num : list) {
+            System.out.println(num);
+        }
+    }
+}
+
+🔍 5. Useful Methods in Wrapper Classes
+
+✅ Parsing String to Primitive
+
+public class ParsingExample {
+    public static void main(String[] args) {
+        String str = "100";
+
+        int num = Integer.parseInt(str);
+
+        System.out.println("String: " + str);
+        System.out.println("Converted int: " + num);
+    }
+}
+
+✅ Converting Primitive to String
+
+public class ToStringExample {
+    public static void main(String[] args) {
+        int num = 200;
+
+        String str = Integer.toString(num);
+
+        System.out.println("Primitive: " + num);
+        System.out.println("Converted String: " + str);
+    }
+}
+
+✅ Comparing Wrapper Objects
+
+public class CompareExample {
+    public static void main(String[] args) {
+        Integer a = 100;
+        Integer b = 100;
+
+        System.out.println(a.equals(b)); // true
+    }
+}
+
+⚠️ 6. Important Points
+
+🔸 1. Null Handling (Wrapper allows null)
+
+public class NullExample {
+    public static void main(String[] args) {
+        Integer num = null;
+
+        System.out.println(num); // No error
+
+        // int x = num; ❌ NullPointerException
+    }
+}
+
+🔸 2. Performance Impact
+
+Wrapper objects are slower than primitives due to:
+
+Object creation
+Memory overhead
+
+🔸 3. Immutability
+
+Wrapper classes are immutable.
+
+public class ImmutableExample {
+    public static void main(String[] args) {
+        Integer a = 10;
+        a = a + 5;
+
+        System.out.println(a); // 15 (new object created)
+    }
+}
+
+🧩 7. Real-Time Example (Form Input Processing)
+
+public class RealTimeExample {
+    public static void main(String[] args) {
+        String ageInput = "25";
+
+        // Convert input to integer
+        int age = Integer.parseInt(ageInput);
+
+        if (age >= 18) {
+            System.out.println("Eligible to vote");
+        } else {
+            System.out.println("Not eligible");
+        }
+    }
+}
+
+🚀 8. Summary
+
+Wrapper classes convert primitive → object
+Required for Collections, Generics, APIs
+
+Types:
+
+Boxing / Unboxing
+Autoboxing / Auto-unboxing
+
+Provide utility methods like:
+
+parseInt()
+toString()
+compareTo()
+
+Wrapper classes are:
+
+Immutable
+Slower than primitives
+Allow null
+
+
+

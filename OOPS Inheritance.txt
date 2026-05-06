@@ -1,0 +1,1491 @@
+OOPS / Inheritance : Classes and Objects : 🧩 1. What is a Class?
+
+A class is a blueprint or template used to create objects.
+
+👉 Think of it like:
+
+A Car blueprint → defines properties (color, speed) and behaviors (drive, brake) // methods
+
+🔹 Syntax
+
+class ClassName {
+    // variables (fields)
+    // methods (functions) // in OOPS language function are called the methods
+}
+
+🧱 2. What is an Object?
+
+An object is a real-world instance of a class.
+
+👉 Example:
+
+Class → Car
+Object → myCar, yourCar
+
+🛠️ 3. Basic Example (Simple Class & Object)
+
+class Car {
+    String color;
+    int speed;
+
+    void drive() {
+        System.out.println("Car is driving");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Car myCar = new Car();   // Object creation
+
+        myCar.color = "Red";
+        myCar.speed = 120;
+
+        System.out.println(myCar.color);
+        System.out.println(myCar.speed);
+
+        myCar.drive();
+    }
+}
+
+🧪 4. Real-World Example (Student)
+
+class Student {
+    String name;
+    int age;
+
+    void display() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        s1.name = "Amol";
+        s1.age = 25;
+
+        s1.display();
+    }
+}
+
+🧠 5. Types of Variables in Class
+
+1. Instance Variables (Object-level)
+class Employee {
+    String name; // instance variable
+}
+
+2. Static Variables (Class-level)
+
+class Company {
+    static String companyName = "TCS";
+}
+
+⚙️ 6. Constructor (Object Initialization)
+
+A constructor is used to initialize objects.
+
+🔹 Default Constructor
+
+class Bike {
+    Bike() {
+        System.out.println("Bike created");
+    }
+}
+
+🔹 Parameterized Constructor
+
+class Employee {
+    String name;
+    int id;
+
+    Employee(String n, int i) {
+        name = n;
+        id = i;
+    }
+
+    void display() {
+        System.out.println(name + " " + id);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Employee e1 = new Employee("Amol", 101);
+        e1.display();
+    }
+}
+
+🔁 7. Multiple Objects Example
+
+class Laptop {
+    String brand;
+    int price;
+
+    void show() {
+        System.out.println(brand + " costs " + price);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Laptop l1 = new Laptop();
+        l1.brand = "Dell";
+        l1.price = 50000;
+
+        Laptop l2 = new Laptop();
+        l2.brand = "HP";
+        l2.price = 60000;
+
+        l1.show();
+        l2.show();
+    }
+}
+
+🔒 8. Encapsulation (Using Private + Getter/Setter)
+
+class BankAccount {
+    private double balance;
+
+    public void setBalance(double b) {
+        balance = b;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount();
+        acc.setBalance(10000);
+
+        System.out.println(acc.getBalance());
+    }
+}
+
+🧩 9. Object as Method Parameter
+
+class Test {
+    int x;
+
+    void display(Test t) {
+        System.out.println(t.x);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Test t1 = new Test();
+        t1.x = 10;
+
+        t1.display(t1);
+    }
+}
+
+🔄 10. Anonymous Object
+
+Object without reference variable.
+
+class Demo {
+    void show() {
+        System.out.println("Hello");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Demo().show();  // anonymous object
+    }
+}
+
+
+Encapsulation / Abstraction : 🔒 1. Encapsulation in Java
+
+✅ What is Encapsulation?
+
+Encapsulation is wrapping data (variables) and code (methods) together into a single unit (class) and restricting direct access to some components.
+
+👉 Think: Data hiding + controlled access
+
+🎯 Why Encapsulation?
+
+Protects data from unauthorized access
+Improves maintainability
+Allows validation before updating values
+Makes code modular
+
+🧠 Real-Life Analogy
+
+A bank account:
+
+You cannot directly change balance
+You use methods like deposit() or withdraw()
+
+🧩 Basic Example
+
+class Employee {
+    private String name;
+    private double salary;
+
+    // Getter
+    public String getName() {
+        return name;
+    }
+
+    // Setter
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // Getter
+    public double getSalary() {
+        return salary;
+    }
+
+    // Setter with validation
+    public void setSalary(double salary) {
+        if (salary > 0) {
+            this.salary = salary;
+        } else {
+            System.out.println("Invalid salary!");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Employee emp = new Employee();
+
+        emp.setName("John");
+        emp.setSalary(50000);
+
+        System.out.println(emp.getName());
+        System.out.println(emp.getSalary());
+    }
+}
+
+🧩 Encapsulation with Validation Logic
+
+class BankAccount {
+    private double balance;
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+        } else {
+            System.out.println("Insufficient funds");
+        }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+
+🧩 Encapsulation with Immutable Class (Advanced)
+
+final class User {
+    private final String username;
+
+    public User(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() { // in this class we are not using the concepts of setter and getter methods that we used in previous example instead of that we made the class as immutable so that the variable can't be accessed directly.
+        return username;
+    }
+}
+
+👉 No setter → object is read-only
+
+🎭 2. Abstraction in Java
+
+✅ What is Abstraction?
+
+Abstraction means hiding implementation details and showing only essential features.
+
+👉 Focus on WHAT, not HOW
+
+🎯 Why Abstraction?
+
+Reduces complexity
+Improves code reusability
+Makes system scalable
+Allows flexible design
+
+🧠 Real-Life Analogy
+
+Driving a car:
+
+You press accelerator (WHAT)
+You don’t know engine internals (HOW)
+
+🧩 Types of Abstraction in Java
+
+1️⃣ Abstract Class (0–100% abstraction) // abstract class can also contain the concrete method
+2️⃣ Interface (100% abstraction) // you will have only the interface method not body
+
+🧩 Example 1: Abstract Class
+
+abstract class Vehicle {
+    abstract void start();  // abstract method
+
+    void fuelType() {
+        System.out.println("Fuel type varies");
+    }
+}
+
+class Car extends Vehicle {
+    void start() {
+        System.out.println("Car starts with key");
+    }
+}
+
+class Bike extends Vehicle {
+    void start() {
+        System.out.println("Bike starts with kick");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle v1 = new Car();
+        v1.start();
+
+        Vehicle v2 = new Bike();
+        v2.start();
+    }
+}
+
+🧩 Example 2: Interface (Full Abstraction)
+
+interface Payment {
+    void pay(double amount);
+}
+
+class CreditCardPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid using Credit Card: " + amount);
+    }
+}
+
+class UpiPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid using UPI: " + amount);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Payment p;
+
+        p = new CreditCardPayment();
+        p.pay(1000);
+
+        p = new UpiPayment();
+        p.pay(500);
+    }
+}
+
+🧩 Example 3: Real-World Abstraction (Notification System)
+
+interface Notification {
+    void send(String message);
+}
+
+class EmailNotification implements Notification {
+    public void send(String message) {
+        System.out.println("Sending Email: " + message);
+    }
+}
+
+class SMSNotification implements Notification {
+    public void send(String message) {
+        System.out.println("Sending SMS: " + message);
+    }
+}
+
+class NotificationService {
+    public void notifyUser(Notification notification, String message) {
+        notification.send(message);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        NotificationService service = new NotificationService();
+
+        service.notifyUser(new EmailNotification(), "Hello via Email");
+        service.notifyUser(new SMSNotification(), "Hello via SMS");
+    }
+}
+⚖️ Encapsulation vs Abstraction
+
+Feature	Encapsulation	Abstraction
+Focus	Data hiding	Hiding complexity
+Implementation	Private variables + getters/setters	Abstract class / interface
+Goal		Secure data	Simplify usage
+Level	Class level	Design level
+
+🔥 Combined Example (Encapsulation + Abstraction)
+
+interface Account {
+    void deposit(double amount);
+    void withdraw(double amount);
+}
+
+class SavingsAccount implements Account {
+    private double balance; // Encapsulation
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+        }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SavingsAccount acc = new SavingsAccount();
+
+        acc.deposit(1000);
+        acc.withdraw(300);
+
+        System.out.println(acc.getBalance());
+    }
+}
+
+
+Inheritance : 🔷 1. What is Inheritance?
+
+Inheritance means reusability of code.
+
+👉 A class can reuse methods and variables of another class using the keyword:
+
+extends
+
+🔷 2. Basic Syntax
+
+class Parent {
+    // properties and methods
+}
+
+class Child extends Parent {
+    // additional properties and methods also properties and methods of parent class
+}
+
+🔷 3. Simple Example (Single Inheritance)
+
+class Animal {
+    void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog is barking");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();   // inherited method
+        d.bark();  // own method
+    }
+}
+
+✅ Output:
+
+Animal is eating
+Dog is barking
+
+🔷 4. Types of Inheritance in Java
+
+Java supports the following types:
+
+✅ 1. Single Inheritance
+
+One class inherits another.
+
+class A {
+    void display() {
+        System.out.println("Class A");
+    }
+}
+
+class B extends A {
+    void show() {
+        System.out.println("Class B");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        B obj = new B();
+        obj.display();
+        obj.show();
+    }
+}
+
+✅ 2. Multilevel Inheritance
+
+A class inherits from another class, which itself inherits from another.
+
+class A {
+    void methodA() {
+        System.out.println("Class A");
+    }
+}
+
+class B extends A {
+    void methodB() {
+        System.out.println("Class B");
+    }
+}
+
+class C extends B {
+    void methodC() {
+        System.out.println("Class C");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.methodA();
+        obj.methodB();
+        obj.methodC();
+    }
+}
+
+✅ 3. Hierarchical Inheritance
+
+Multiple classes inherit from one parent class.
+
+class Animal {
+    void eat() {
+        System.out.println("Eating...");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Barking...");
+    }
+}
+
+class Cat extends Animal {
+    void meow() {
+        System.out.println("Meowing...");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();
+        d.bark();
+
+        Cat c = new Cat();
+        c.eat();
+        c.meow();
+    }
+}
+
+❌ 4. Multiple Inheritance (Not Supported via Classes)
+
+Java does NOT support multiple inheritance using classes to avoid ambiguity.
+
+// ❌ This is NOT allowed
+class A {
+    void show() {}
+}
+
+class B {
+    void show() {}
+}
+
+// ERROR: Cannot extend multiple classes
+class C extends A, B {
+}
+
+✅ 5. Multiple Inheritance using Interfaces
+
+Java supports multiple inheritance using interfaces.
+
+interface A {
+    void show();
+}
+
+interface B {
+    void display();
+}
+
+class C implements A, B {
+    public void show() {
+        System.out.println("Interface A method");
+    }
+
+    public void display() {
+        System.out.println("Interface B method");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.show();
+        obj.display();
+    }
+}
+🔷 5. Method Overriding (Important Concept)
+
+When a child class provides its own implementation of a parent method.
+
+class Animal {
+    void sound() {
+        System.out.println("Animal makes sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal a = new Dog();
+        a.sound();  // Runtime Polymorphism
+    }
+}
+
+🔷 6. super Keyword
+
+Used to refer to parent class.
+
+👉 Call parent method
+
+class Animal {
+    void eat() {
+        System.out.println("Animal eating");
+    }
+}
+
+class Dog extends Animal {
+    void eat() {
+        super.eat();  // calling parent method
+        System.out.println("Dog eating");
+    }
+}
+
+👉 Call parent constructor
+
+class Animal {
+    Animal() {
+        System.out.println("Animal Constructor");
+    }
+}
+
+class Dog extends Animal {
+    Dog() {
+        super();  // calls parent constructor
+        System.out.println("Dog Constructor");
+    }
+}
+
+🔷 7. final Keyword in Inheritance
+
+final class A {
+}
+
+// ❌ Cannot inherit final class
+
+class B extends A {
+}
+class A {
+    final void show() {}
+}
+
+class B extends A {
+    // ❌ Cannot override final method
+    void show() {}
+}
+
+🔷 8. Real-World Example
+
+class Employee {
+    String name;
+    double salary;
+
+    void work() {
+        System.out.println(name + " is working");
+    }
+}
+
+class Developer extends Employee {
+    void code() {
+        System.out.println(name + " is coding");
+    }
+}
+
+class Manager extends Employee {
+    void manage() {
+        System.out.println(name + " is managing team");
+    }
+}
+
+public class Company {
+    public static void main(String[] args) {
+        Developer dev = new Developer();
+        dev.name = "Amol";
+        dev.work();
+        dev.code();
+
+        Manager mgr = new Manager();
+        mgr.name = "Raj";
+        mgr.work();
+        mgr.manage();
+    }
+}
+
+🔷 9. Key Advantages
+
+✔ Code Reusability
+✔ Method Overriding (Runtime Polymorphism)
+✔ Improves Maintainability
+✔ Reduces Redundancy
+
+
+Overriding / Polymorphism :  🔹 1. What is Method Overriding in Java?
+
+Definition:
+
+Method overriding happens when a child class provides its own implementation of a method that already exists in the parent class.
+
+✅ Key Rules
+
+Same method name
+Same parameters (signature)
+Same or covariant return type
+Must be in inheritance (IS-A relationship)
+Access modifier cannot be more restrictive
+final, static, and private methods cannot be overridden
+
+🔹 Basic Example of Overriding
+
+class Animal {
+    void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.sound();  // Dog barks
+    }
+}
+
+👉 The Dog class overrides the sound() method.
+
+🔹 Runtime Example (Important for Interviews)
+
+class Animal {
+    void sound() {
+        System.out.println("Animal sound");
+    }
+}
+
+class Cat extends Animal {
+    void sound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Animal a = new Cat();  // Parent reference, child object
+        a.sound();             // Cat meows (Runtime decision)
+    }
+}
+
+👉 This is Runtime Polymorphism (explained below)
+
+🔹 2. What is Polymorphism?
+
+Definition:
+Polymorphism means "many forms" — a single action behaves differently depending on context.
+
+🔹 Types of Polymorphism in Java
+
+1️⃣ Compile-Time Polymorphism (Method Overloading) add  with different parameters
+
+class Calculator {
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Calculator c = new Calculator();
+        System.out.println(c.add(2, 3));      // 5
+        System.out.println(c.add(2, 3, 4));   // 9
+    }
+}
+
+👉 Decided at compile time
+
+2️⃣ Runtime Polymorphism (Method Overriding)
+
+class Payment {
+    void pay() {
+        System.out.println("Generic payment");
+    }
+}
+
+class CreditCard extends Payment {
+    void pay() {
+        System.out.println("Paid using Credit Card");
+    }
+}
+
+class UPI extends Payment {
+    void pay() {
+        System.out.println("Paid using UPI");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Payment p;
+
+        p = new CreditCard();
+        p.pay();
+
+        p = new UPI();
+        p.pay();
+    }
+}
+
+👉 Output depends on object type at runtime
+
+🔹 3. Real-World Scenario Example (Very Important)
+
+🛒 E-commerce Payment System
+
+class PaymentService {
+    void processPayment(double amount) {
+        System.out.println("Processing generic payment: " + amount);
+    }
+}
+
+class DebitCardPayment extends PaymentService {
+    void processPayment(double amount) {
+        System.out.println("Processing Debit Card payment: " + amount);
+    }
+}
+
+class NetBankingPayment extends PaymentService {
+    void processPayment(double amount) {
+        System.out.println("Processing Net Banking payment: " + amount);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        PaymentService payment;
+
+        payment = new DebitCardPayment();
+        payment.processPayment(1000);
+
+        payment = new NetBankingPayment();
+        payment.processPayment(2000);
+    }
+}
+
+👉 Same method → different behavior → Polymorphism
+
+🔹 4. Advanced Example (With Super Keyword)
+
+class Vehicle {
+    void start() {
+        System.out.println("Vehicle starts");
+    }
+}
+
+class Car extends Vehicle {
+    void start() {
+        super.start(); // calling parent method
+        System.out.println("Car starts with key");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Car c = new Car();
+        c.start();
+    }
+}
+
+🔹 5. Important Edge Cases
+
+❌ Cannot Override Static Method
+class A {
+    static void show() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    static void show() {
+        System.out.println("B");
+    }
+}
+
+👉 This is method hiding, NOT overriding
+
+❌ Cannot Override Final Method
+
+class A {
+    final void show() {}
+}
+
+class B extends A {
+    void show() {} // Compile-time error
+}
+
+❌ Private Methods
+
+class A {
+    private void show() {}
+}
+
+class B extends A {
+    void show() {} // Not overriding, new method
+}
+
+
+
+Garbage Collection : 🧠 1. What is Garbage Collection?
+
+Garbage Collection is the process of automatically removing unused objects from memory (Heap).
+
+👉 In Java:
+
+You don’t manually free memory (unlike C/C++)
+JVM (Java Virtual Machine) does it for you
+
+🏗️ 2. Memory Structure (Important Foundation)
+
+Java memory is mainly divided into:
+
+✅ Stack Memory
+
+Stores method calls, local variables
+Works in LIFO (Last In First Out)
+
+✅ Heap Memory
+Stores objects
+GC works here
+
+🔁 3. When is an Object Eligible for GC?
+
+An object becomes eligible for GC when it is no longer reachable.
+
+✔️ Reachability means:
+
+If no reference variable points to an object → eligible for GC
+
+🧪 4. Types of Garbage Collection Scenarios (with Code)
+
+🔹 Example 1: Nullifying Reference
+
+class Test {
+    public static void main(String[] args) {
+        String str = new String("Hello");
+
+        str = null; // Object becomes eligible for GC
+
+        System.gc(); // Request JVM to run GC (not guaranteed)
+    }
+}
+
+📌 Explanation:
+
+Initially, str points to "Hello"
+After str = null, no reference → GC eligible
+
+🔹 Example 2: Reassigning Reference
+
+class Test {
+    public static void main(String[] args) {
+        String str1 = new String("Hello");
+        String str2 = new String("World");
+
+        str1 = str2; // "Hello" object becomes unreachable
+
+        System.gc();
+    }
+}
+
+📌 Explanation:
+
+str1 was pointing to "Hello"
+Now it points to "World"
+"Hello" has no reference → GC eligible
+
+🔹 Example 3: Anonymous Object
+
+class Test {
+    public static void main(String[] args) {
+        new String("Anonymous Object");
+
+        System.gc();
+    }
+}
+
+📌 Explanation:
+
+No reference variable assigned
+Immediately eligible for GC
+
+🔹 Example 4: Object Inside Method
+
+class Test {
+    void createObject() {
+        String str = new String("Inside Method");
+    }
+
+    public static void main(String[] args) {
+        Test t = new Test();
+        t.createObject();
+
+        System.gc();
+    }
+}
+
+📌 Explanation:
+
+str is local
+Once method ends → object becomes unreachable
+
+🔹 Example 5: Island of Isolation
+
+👉 Objects reference each other but not from outside
+
+class Test {
+    Test t;
+
+    public static void main(String[] args) {
+        Test t1 = new Test();
+        Test t2 = new Test();
+
+        t1.t = t2;
+        t2.t = t1;
+
+        t1 = null;
+        t2 = null;
+
+        System.gc();
+    }
+}
+
+📌 Explanation:
+
+t1 ↔ t2 reference each other
+But no external reference → both eligible for GC
+
+⚙️ 5. Types of Garbage Collectors (Conceptual)
+
+Modern JVM uses different GC algorithms:
+
+1. Serial GC
+
+Single-threaded
+Small applications
+
+2. Parallel GC
+
+Multi-threaded
+Better performance
+
+3. G1 GC (Garbage First)
+
+Default in modern JVM
+Works on regions instead of full heap
+
+4. ZGC / Shenandoah
+
+Low latency GC
+Large-scale applications
+
+🔄 6. How GC Works Internally
+
+🔹 Step 1: Mark
+
+Identify reachable objects
+
+🔹 Step 2: Sweep
+
+Remove unreachable objects
+
+🔹 Step 3: Compact
+
+Rearrange memory to avoid fragmentation
+
+⚠️ 7. Important Points
+
+❌ You cannot force GC
+System.gc();
+
+👉 Only a request, JVM may ignore it
+
+⚠️ finalize() method (Deprecated)
+class Test {
+    protected void finalize() {
+        System.out.println("Object is garbage collected");
+    }
+}
+
+👉 Not recommended anymore (deprecated)
+
+🚀 8. Real-Time Example (Custom Object)
+
+class Employee {
+    int id;
+
+    Employee(int id) {
+        this.id = id;
+    }
+
+    protected void finalize() {
+        System.out.println("Employee " + id + " is garbage collected");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Employee e1 = new Employee(101);
+        Employee e2 = new Employee(102);
+
+        e1 = null;
+        e2 = null;
+
+        System.gc();
+
+        System.out.println("End of main");
+    }
+}
+
+
+String, StringBuffer , Optional class , StringJoiner class : 🔹 1. String in Java
+
+✅ What is String?
+
+A String is a sequence of characters used to store text.
+
+🔥 Key Characteristics
+
+Immutable (cannot be changed after creation)
+Stored in String Constant Pool (SCP) for memory optimization
+Thread-safe (because immutable)
+
+✅ Ways to Create String
+
+String s1 = "Hello";              // Stored in SCP
+String s2 = new String("Hello");  // Stored in Heap
+
+✅ Example: Immutability
+
+public class StringExample {
+    public static void main(String[] args) {
+        String str = "Hello";
+        str.concat(" World");
+
+        System.out.println(str); // Output: Hello
+    }
+}
+
+👉 Why?
+
+Because concat() creates a new object, original remains unchanged.
+
+✅ Example: Proper Way
+
+public class StringExample2 {
+    public static void main(String[] args) {
+        String str = "Hello";
+        str = str.concat(" World");
+
+        System.out.println(str); // Output: Hello World
+    }
+}
+
+✅ Common String Methods
+
+public class StringMethods {
+    public static void main(String[] args) {
+        String str = "Java Programming";
+
+        System.out.println(str.length());          // 16
+        System.out.println(str.toUpperCase());     // JAVA PROGRAMMING
+        System.out.println(str.substring(0, 4));   // Java
+        System.out.println(str.contains("Java"));  // true
+        System.out.println(str.replace("Java", "Python"));
+    }
+}
+
+🔹 2. StringBuffer in Java
+
+✅ What is StringBuffer?
+
+A mutable (modifiable) string.
+
+🔥 Key Characteristics
+
+Mutable
+Thread-safe (synchronized)
+Slower than StringBuilder (due to synchronization)
+
+✅ Example: Mutable Behavior
+
+public class StringBufferExample {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer("Hello");
+
+        sb.append(" World");
+        sb.insert(5, " Java");
+        sb.replace(0, 5, "Hi");
+
+        System.out.println(sb); // Output: Hi Java World
+    }
+}
+
+✅ Common Methods
+
+sb.append("Text");
+sb.insert(index, "Text");
+sb.delete(start, end);
+sb.reverse();
+sb.replace(start, end, "Text");
+
+✅ Example: Reverse String
+
+public class ReverseExample {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer("Java");
+        System.out.println(sb.reverse()); // avaJ
+    }
+}
+
+🔹 3. Optional Class (Java 8)
+
+✅ What is Optional?
+
+A container object used to avoid NullPointerException.
+
+👉 Represents:
+
+Value present
+Value absent
+
+✅ Why Optional?
+
+Instead of:
+
+String name = null;
+System.out.println(name.length()); // ❌ NullPointerException
+
+Use Optional:
+
+Optional<String> name = Optional.ofNullable(null);
+
+✅ Example 1: Basic Usage
+
+import java.util.Optional;
+
+public class OptionalExample {
+    public static void main(String[] args) {
+        Optional<String> name = Optional.of("Java");
+
+        System.out.println(name.get()); // Java
+    }
+}
+✅ Example 2: Handling Null
+
+import java.util.Optional;
+
+public class OptionalNullExample {
+    public static void main(String[] args) {
+        Optional<String> name = Optional.ofNullable(null);
+
+        System.out.println(name.orElse("Default Value"));
+    }
+}
+
+👉 Output: Default Value
+
+✅ Example 3: Safe Access
+
+import java.util.Optional;
+
+public class OptionalCheck {
+    public static void main(String[] args) {
+        Optional<String> name = Optional.ofNullable("Java");
+
+        if (name.isPresent()) {
+            System.out.println(name.get());
+        }
+    }
+}
+
+✅ Example 4: Functional Style
+
+import java.util.Optional;
+
+public class OptionalFunctional {
+    public static void main(String[] args) {
+        Optional<String> name = Optional.of("Java");
+
+        name.ifPresent(n -> System.out.println(n.toUpperCase()));
+    }
+}
+
+🔥 Important Methods
+
+Optional.of(value);          // No null allowed
+Optional.ofNullable(value);  // Allows null
+optional.get();              // Get value
+optional.orElse("default");  // Default if null
+optional.ifPresent();        // Execute if value exists
+optional.isPresent();        // Check existence
+
+🔹 4. StringJoiner (Java 8)
+
+✅ What is StringJoiner?
+
+Used to join multiple strings with delimiter, prefix, suffix.
+
+✅ Example 1: Basic Usage
+
+import java.util.StringJoiner;
+
+public class StringJoinerExample {
+    public static void main(String[] args) {
+        StringJoiner sj = new StringJoiner(",");
+
+        sj.add("Java");
+        sj.add("Python");
+        sj.add("C++");
+
+        System.out.println(sj); // Java,Python,C++
+    }
+}
+
+✅ Example 2: Prefix and Suffix
+
+import java.util.StringJoiner;
+
+public class StringJoinerPrefixSuffix {
+    public static void main(String[] args) {
+        StringJoiner sj = new StringJoiner(",", "[", "]");
+
+        sj.add("A");
+        sj.add("B");
+
+        System.out.println(sj); // [A,B]
+    }
+}
+
+✅ Example 3: Merge Two StringJoiners
+
+import java.util.StringJoiner;
+
+public class StringJoinerMerge {
+    public static void main(String[] args) {
+        StringJoiner sj1 = new StringJoiner(",");
+        sj1.add("Java").add("Python");
+
+        StringJoiner sj2 = new StringJoiner(",");
+        sj2.add("C++").add("Go");
+
+        sj1.merge(sj2);
+
+        System.out.println(sj1); // Java,Python,C++,Go
+    }
+}
+
+🔥 Comparison Summary
+
+Feature		String		StringBuffer	Optional		StringJoiner
+Mutability	Immutable	Mutable		Immutable	Mutable
+Thread-safe	Yes			Yes			Yes			No
+Purpose		Text storage	Modifiable text	Null safety	Joining strings
+Performance	Slow (many changes)	Faster	N/A			Efficient joining
+
+🔥 When to Use What?
+
+Use String → when value doesn’t change
+Use StringBuffer → when modifying string in multi-threaded apps
+Use Optional → to avoid null checks / NPE
+Use StringJoiner → for joining values (CSV, logs, APIs)
+
+🚀 Real-world Combined Example
+
+import java.util.*;
+
+public class RealWorldExample {
+    public static void main(String[] args) {
+
+        // Optional usage
+        Optional<String> name = Optional.ofNullable("Amol");
+
+        String finalName = name.orElse("Guest");
+
+        // StringBuffer usage
+        StringBuffer sb = new StringBuffer(finalName);
+        sb.append(" Learning Java");
+
+        // StringJoiner usage
+        StringJoiner skills = new StringJoiner(", ", "[", "]");
+        skills.add("Spring").add("Angular").add("SQL");
+
+        // Final output
+        System.out.println(sb.toString());
+        System.out.println("Skills: " + skills);
+    }
+}

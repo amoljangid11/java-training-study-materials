@@ -1,0 +1,1781 @@
+Abstraction /Packages / Exception Handling : 
+
+Abstract Class : An Abstract Class in Java is a class that cannot be instantiated directly and is meant to be extended by other classes. It acts as a blueprint and can contain both:
+
+Abstract methods (without implementation) // doesn't have any body { }
+Concrete methods (with implementation) // have the body { }
+
+🔷 1. Why Abstract Class?
+
+Use an abstract class when:
+
+You want to provide common base functionality
+You want to force subclasses to implement specific methods
+You want partial abstraction (0–100%)
+
+🔷 2. Syntax
+
+abstract class ClassName {
+    abstract void method1(); // abstract method (no body)
+
+    void method2() {         // concrete method
+        System.out.println("Concrete method");
+    }
+}
+
+🔷 3. Key Rules
+
+Cannot create object of abstract class
+Can have constructors
+Can have variables, static methods, final methods
+If a class has at least one abstract method → class must be abstract
+Subclass must implement all abstract methods
+
+🔷 4. Basic Example (Real-world: Animal)
+
+abstract class Animal {
+    abstract void makeSound();  // abstract method
+
+    void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+
+class Dog extends Animal {
+    void makeSound() {
+        System.out.println("Dog barks");
+    }
+}
+
+class Cat extends Animal {
+    void makeSound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal a1 = new Dog();
+        a1.makeSound();
+        a1.eat();
+
+        Animal a2 = new Cat();
+        a2.makeSound();
+    }
+}
+🔷 5. Abstract Class with Constructor
+
+👉 Even though you cannot instantiate it, constructor is used when subclass object is created.
+
+abstract class Vehicle {
+    Vehicle() {
+        System.out.println("Vehicle constructor called");
+    }
+
+    abstract void start();
+}
+
+class Car extends Vehicle {
+    void start() {
+        System.out.println("Car starts with key");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Car c = new Car();
+        c.start();
+    }
+}
+
+🔷 6. Abstract Class with Final & Static Methods
+
+abstract class Bank {
+    abstract void getInterestRate();
+
+    final void displayBankType() {
+        System.out.println("Public Sector Bank");
+    }
+
+    static void rules() {
+        System.out.println("Follow RBI rules");
+    }
+}
+
+class SBI extends Bank {
+    void getInterestRate() {
+        System.out.println("Interest Rate: 7%");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SBI obj = new SBI();
+        obj.getInterestRate();
+        obj.displayBankType();
+
+        Bank.rules();
+    }
+}
+
+🔷 7. Abstract Class with Partial Implementation
+
+abstract class Payment {
+    abstract void pay(double amount);
+
+    void generateReceipt() {
+        System.out.println("Receipt generated");
+    }
+}
+
+class CreditCardPayment extends Payment {
+    void pay(double amount) {
+        System.out.println("Paid using Credit Card: " + amount);
+    }
+}
+
+class UpiPayment extends Payment {
+    void pay(double amount) {
+        System.out.println("Paid using UPI: " + amount);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Payment p1 = new CreditCardPayment();
+        p1.pay(1000);
+        p1.generateReceipt();
+
+        Payment p2 = new UpiPayment();
+        p2.pay(500);
+    }
+}
+
+🔷 8. Abstract Class vs Interface
+
+Feature		Abstract 	Class			Interface
+Methods		Abstract + Concrete			Mostly abstract (Java 8+: default/static allowed)
+Multiple Inheritance		❌ No			✅ Yes
+Constructor	✅ Yes					❌ No
+Variables		Instance variables allowed	Only public static final
+Use Case		Base class with shared code	Full abstraction / contract
+
+🔷 9. When to Use Abstract Class
+
+Use it when:
+
+Classes share common behavior + state
+You want code reuse
+You want to define a template pattern
+
+🔷 10. Real-Time Example (Template Design Pattern)
+
+abstract class OrderProcess {
+
+    // Template method (fixed steps)
+    final void processOrder() {
+        selectItem();
+        makePayment();
+        deliver();
+    }
+
+    abstract void selectItem();
+    abstract void makePayment();
+
+    void deliver() {
+        System.out.println("Item delivered");
+    }
+}
+
+class OnlineOrder extends OrderProcess {
+    void selectItem() {
+        System.out.println("Item selected online");
+    }
+
+    void makePayment() {
+        System.out.println("Payment done online");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        OrderProcess order = new OnlineOrder();
+        order.processOrder();
+    }
+}
+
+
+Interface - static and default method : 🔷 1. What is an Interface in Java?
+
+An interface in Java is a blueprint of a class that contains:
+
+Abstract methods (by default)
+Constants (public static final)
+
+👉 It defines what to do, not how to do it (traditionally).
+
+interface Animal {
+    void sound();   // abstract method
+}
+
+🔷 2. Why Static & Default Methods Were Introduced?
+
+Before Java 8:
+
+Interfaces could only have abstract methods.
+Adding new methods would break existing implementations.
+
+👉 To solve this, Java 8 introduced:
+
+default methods → provide implementation
+static methods → utility methods inside interface
+
+🔷 3. Default Method in Interface
+
+✅ Definition
+
+A default method has a body and can be inherited by implementing classes.
+
+interface Vehicle {
+    default void start() {
+        System.out.println("Vehicle is starting...");
+    }
+}
+
+🔷 Example 1: Basic Default Method
+
+interface Vehicle {
+    default void start() {
+        System.out.println("Vehicle is starting...");
+    }
+}
+
+class Car implements Vehicle {
+    // No need to override
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.start();
+    }
+}
+
+✅ Output:
+
+Vehicle is starting...
+
+🔷 Example 2: Overriding Default Method
+
+interface Vehicle {
+    default void start() {
+        System.out.println("Vehicle is starting...");
+    }
+}
+
+class Bike implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Bike is starting with kick...");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Bike bike = new Bike();
+        bike.start();
+    }
+}
+
+✅ Output:
+
+Bike is starting with kick...
+
+🔷 Example 3: Multiple Interfaces Conflict (Diamond Problem)
+
+interface A {
+    default void show() {
+        System.out.println("A's show()");
+    }
+}
+
+interface B {
+    default void show() {
+        System.out.println("B's show()");
+    }
+}
+
+class Test implements A, B {
+    @Override
+    public void show() {
+        A.super.show(); // resolving conflict
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Test t = new Test();
+        t.show();
+    }
+}
+
+✅ Output:
+
+A's show()
+
+👉 Rule: You must override when multiple default methods conflict.
+
+🔷 4. Static Method in Interface
+
+✅ Definition
+
+Belongs to the interface, not to objects
+Cannot be overridden
+Called using interface name
+
+interface MathUtils {
+    static int add(int a, int b) {
+        return a + b;
+    }
+}
+
+🔷 Example 4: Basic Static Method
+
+interface MathUtils {
+    static int add(int a, int b) {
+        return a + b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        int result = MathUtils.add(10, 20);
+        System.out.println(result);
+    }
+}
+
+✅ Output:
+
+30
+
+🔷 Example 5: Static Method + Default Method Together
+
+interface Calculator {
+
+    // Static method
+    static int multiply(int a, int b) {
+        return a * b;
+    }
+
+    // Default method
+    default void display() {
+        System.out.println("Calculator Ready");
+    }
+}
+
+class User implements Calculator {
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        // Static method call
+        int result = Calculator.multiply(5, 4);
+        System.out.println("Multiply: " + result);
+
+        // Default method call
+        User u = new User();
+        u.display();
+    }
+}
+
+✅ Output:
+
+Multiply: 20
+Calculator Ready
+
+🔷 5. Real-World Example (Practical Use Case)
+
+Scenario: Payment System
+
+interface Payment {
+
+    // Default method
+    default void paymentStatus() {
+        System.out.println("Payment processed");
+    }
+
+    // Static utility method
+    static void validateAmount(double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid amount");
+        } else {
+            System.out.println("Valid amount");
+        }
+    }
+
+    void pay(double amount);
+}
+
+class CreditCardPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid using Credit Card: " + amount);
+    }
+}
+
+class UPIPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid using UPI: " + amount);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Payment.validateAmount(500);
+
+        Payment payment = new CreditCardPayment();
+        payment.pay(500);
+        payment.paymentStatus();
+
+        Payment payment2 = new UPIPayment();
+        payment2.pay(1000);
+        payment2.paymentStatus();
+    }
+}
+
+
+Final Keyword : 🔷 1. Final Variable (Constant)
+
+A final variable can be assigned only once.
+
+✅ Key Points
+
+Must be initialized once (either at declaration or in constructor)
+Cannot be reassigned after initialization
+
+Convention: use UPPER_CASE for constants
+
+🧩 Example 1: Final Primitive Variable
+
+public class FinalVariableExample {
+    public static void main(String[] args) {
+        final int MAX_VALUE = 100;
+
+        System.out.println("Max Value: " + MAX_VALUE);
+
+        // MAX_VALUE = 200; // ❌ Compile-time error
+    }
+}
+
+🧩 Example 2: Final Variable Initialized Later
+
+class Student {
+    final int rollNo;
+
+    Student(int rollNo) {
+        this.rollNo = rollNo; // ✅ initialized in constructor
+    }
+
+    void display() {
+        System.out.println("Roll No: " + rollNo);
+    }
+
+    public static void main(String[] args) {
+        Student s = new Student(101);
+        s.display();
+    }
+}
+
+🧩 Example 3: Final Reference Variable
+
+class Employee {
+    String name;
+
+    Employee(String name) {
+        this.name = name;
+    }
+}
+
+public class FinalReferenceExample {
+    public static void main(String[] args) {
+        final Employee emp = new Employee("John");
+
+        emp.name = "Mike"; // ✅ allowed (object state can change)
+        System.out.println(emp.name);
+
+        // emp = new Employee("David"); // ❌ not allowed (reference can't change)
+    }
+}
+
+👉 Important:
+
+final reference cannot change
+But object data can change
+
+🔷 2. Final Method
+
+A final method cannot be overridden in a subclass.
+
+🧩 Example
+
+class Parent {
+    final void show() {
+        System.out.println("This is a final method");
+    }
+}
+
+class Child extends Parent {
+    // void show() { } ❌ Compile-time error (cannot override final method)
+}
+
+public class FinalMethodExample {
+    public static void main(String[] args) {
+        Child obj = new Child();
+        obj.show();
+    }
+}
+
+👉 Use case:
+
+When you want to lock method behavior (e.g., security, business logic)
+
+🔷 3. Final Class
+
+A final class cannot be extended (inherited).
+
+🧩 Example
+final class Vehicle {
+    void run() {
+        System.out.println("Vehicle is running");
+    }
+}
+
+// class Car extends Vehicle { } ❌ Compile-time error
+
+public class FinalClassExample {
+    public static void main(String[] args) {
+        Vehicle v = new Vehicle();
+        v.run();
+    }
+}
+
+👉 Real-world example:
+
+String class in Java is final true or false
+Prevents modification and ensures immutability
+
+🔷 4. Final Parameter
+
+You can declare method parameters as final, meaning they cannot be modified inside the method.
+
+🧩 Example
+
+public class FinalParameterExample {
+
+    void display(final int value) {
+        System.out.println("Value: " + value);
+
+        // value = 50; ❌ not allowed
+    }
+
+    public static void main(String[] args) {
+        FinalParameterExample obj = new FinalParameterExample();
+        obj.display(10);
+    }
+}
+
+🔷 5. Static Final (Constant)
+
+Used to define global constants
+
+🧩 Example
+
+public class Constants {
+    static final double PI = 3.14159;
+
+    public static void main(String[] args) {
+        System.out.println("PI Value: " + PI);
+    }
+}
+
+👉 Common usage:
+
+Configuration values
+Fixed constants like PI, MAX_SIZE
+
+🔷 6. Blank Final Variable
+
+A final variable declared but not initialized immediately.
+
+🧩 Example
+class Company {
+    final String companyName; // Blank final variable
+
+    Company() {
+        companyName = "OpenAI"; // initialized in constructor
+    }
+
+    void display() {
+        System.out.println(companyName);
+    }
+
+    public static void main(String[] args) {
+        Company c = new Company();
+        c.display();
+    }
+}
+
+
+Introduction to Packages : In Java, a package is a namespace that organizes classes and interfaces into a hierarchical structure. Think of it like folders in your system that help manage files.
+
+👉 Without packages, large applications become messy and hard to maintain.
+
+🔹 Why Packages are Needed?
+
+Avoid class name conflicts (same class name in different projects)
+Provide access control (public, protected, default)
+Improve code reusability
+Organize large projects logically
+
+🔹 Types of Packages in Java
+
+1️⃣ Built-in Packages (Predefined)
+
+Java provides many ready-to-use packages like:
+
+java.lang (default imported)
+java.util
+java.io
+
+Example
+
+import java.util.ArrayList; // Collections all the collections classes are available in java.util packages
+
+public class BuiltInExample {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>(); // way to create the object of collection class
+        list.add("Java");
+        list.add("Spring");
+
+        System.out.println(list);
+    }
+}
+
+👉 ArrayList comes from java.util package.
+
+2️⃣ User-defined Packages
+
+You can create your own package using the package keyword.
+
+🔹 Creating a Package
+
+Step 1: Define Package
+
+package com.company.utils;
+
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+
+Step 2: Compile
+
+javac -d . Calculator.java
+
+👉 This creates folder structure:
+
+com/company/utils/Calculator.class
+
+Step 3: Use Package in Another Class
+
+import com.company.utils.Calculator;
+
+public class TestCalculator {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+        System.out.println(calc.add(10, 20));
+    }
+}
+
+🔹 Ways to Use Packages
+
+1️⃣ Using Fully Qualified Name
+
+public class Test {
+    public static void main(String[] args) {
+        com.company.utils.Calculator calc = new com.company.utils.Calculator();
+        System.out.println(calc.add(5, 5));
+    }
+}
+
+2️⃣ Using Import Statement
+
+import com.company.utils.Calculator;
+
+public class Test {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+    }
+}
+
+3️⃣ Import All Classes
+
+import com.company.utils.*;
+
+public class Test {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+    }
+}
+
+🔹 Access Control with Packages
+
+Modifier	Same Class	Same Package		Different Package
+private	✅			❌					❌
+default	✅			✅					❌
+protected	✅			✅					✅ (via inheritance)
+public	✅			✅					✅
+
+🔹 Example: Access Control
+
+Package 1
+
+package com.company.package1;
+
+public class Parent {
+    protected void show() {
+        System.out.println("Protected Method");
+    }
+}
+
+Package 2
+
+package com.company.package2;
+
+import com.company.package1.Parent;
+
+public class Child extends Parent {
+    public static void main(String[] args) {
+        Child obj = new Child();
+        obj.show();  // Accessible because of inheritance
+    }
+}
+
+🔹 Sub-Packages
+
+Java allows hierarchical packages.
+
+package com.company.project.module;
+
+public class ModuleClass {
+    public void display() {
+        System.out.println("Inside Sub Package");
+    }
+}
+
+🔹 Static Import (Advanced)
+
+Used to import static members.
+
+import static java.lang.Math.*;
+
+public class StaticImportExample {
+    public static void main(String[] args) {
+        System.out.println(sqrt(16));
+        System.out.println(pow(2, 3));
+    }
+}
+
+🔹 Real-World Project Structure
+
+com.company.project
+ ├── controller
+ ├── service
+ ├── repository
+ ├── model
+ ├── util
+
+🔹 Mini Real-World Example
+
+Package: com.app.service
+
+package com.app.service;
+
+public class UserService {
+    public String getUser() {
+        return "User Data";
+    }
+}
+
+Package: com.app.controller
+
+package com.app.controller;
+
+import com.app.service.UserService;
+
+public class UserController {
+    public static void main(String[] args) {
+        UserService service = new UserService();
+        System.out.println(service.getUser());
+    }
+}
+
+
+Introduction to Exception Handling : 🔷 1. What is Exception Handling?
+
+Exception Handling in Java is a mechanism to handle runtime errors so that the normal flow of the program is not disrupted.
+
+👉 In simple terms:
+
+An exception is an unexpected event that occurs during program execution.
+
+🔷 2. What is an Exception?
+
+An Exception is an object that represents an error or abnormal condition.
+
+Example:
+
+public class Test {
+    public static void main(String[] args) {
+        int a = 10;
+        int b = 0;
+
+        int result = a / b; // ArithmeticException
+        System.out.println(result);
+    }
+}
+
+👉 Output:
+
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+
+🔷 3. Why Exception Handling?
+
+Without exception handling:
+
+Program crashes ❌
+Remaining code does not execute ❌
+
+With exception handling:
+
+Program continues execution ✅
+Error can be handled gracefully ✅
+
+🔷 4. Exception Hierarchy
+
+All exceptions come under:
+
+Object
+  └── Throwable
+        ├── Error
+        └── Exception
+              ├── Checked Exception
+              └── Unchecked Exception (RuntimeException)
+
+🔷 5. Types of Exceptions
+
+✅ 1. Checked Exceptions (Compile-time)
+
+Handled at compile time.
+
+Examples:
+
+IOException
+
+SQLException
+
+Example:
+
+import java.io.*;
+
+public class CheckedExample {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("test.txt");
+            BufferedReader br = new BufferedReader(file);
+            System.out.println(br.readLine());
+        } catch (IOException e) {
+            System.out.println("File not found or error reading file");
+        }
+    }
+}
+
+✅ 2. Unchecked Exceptions (Runtime)
+
+Occur during runtime.
+
+Examples:
+
+ArithmeticException
+
+NullPointerException
+
+ArrayIndexOutOfBoundsException
+
+Example:
+
+public class UncheckedExample {
+    public static void main(String[] args) {
+        try {
+            int arr[] = new int[3];
+            arr[5] = 10; // Exception
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Index is out of bounds");
+        }
+    }
+}
+
+🔷 6. try-catch Block
+
+Used to handle exceptions.
+
+Syntax:
+try {
+    // risky code
+} catch (ExceptionType e) {
+    // handling code
+}
+
+Example:
+
+public class TryCatchExample {
+    public static void main(String[] args) {
+        try {
+            int num = 100 / 0;
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot divide by zero");
+        }
+    }
+}
+
+🔷 7. Multiple catch Blocks
+
+public class MultipleCatch {
+    public static void main(String[] args) {
+        try {
+            int arr[] = new int[2];
+            arr[3] = 10;
+
+            int result = 10 / 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array error");
+        } catch (ArithmeticException e) {
+            System.out.println("Arithmetic error");
+        }
+    }
+}
+
+🔷 8. finally Block
+
+Always executes (whether exception occurs or not).
+
+Example:
+public class FinallyExample {
+    public static void main(String[] args) {
+        try {
+            int data = 50 / 0;
+        } catch (ArithmeticException e) {
+            System.out.println("Exception handled");
+        } finally {
+            System.out.println("Finally block always executes");
+        }
+    }
+}
+
+🔷 9. throw Keyword
+
+Used to explicitly throw an exception.
+
+Example:
+
+public class ThrowExample {
+    public static void main(String[] args) {
+        int age = 15;
+
+        if (age < 18) {
+            throw new ArithmeticException("Not eligible to vote");
+        }
+
+        System.out.println("Eligible to vote"); new String("Hello");
+    }
+}
+
+🔷 10. throws Keyword
+
+Used to declare exceptions.
+
+Example:
+
+import java.io.*;
+
+public class ThrowsExample {
+    public static void readFile() throws IOException {
+        FileReader file = new FileReader("abc.txt");
+    }
+
+    public static void main(String[] args) {
+        try {
+            readFile();
+        } catch (IOException e) {
+            System.out.println("Handled IOException");
+        }
+    }
+}
+
+🔷 11. Custom Exception
+
+You can create your own exception.
+
+Example:
+
+class InvalidAgeException extends Exception {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+
+public class CustomExceptionExample {
+    public static void main(String[] args) {
+        try {
+            validateAge(16);
+        } catch (InvalidAgeException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    static void validateAge(int age) throws InvalidAgeException {
+        if (age < 18) {
+            throw new InvalidAgeException("Age must be 18 or above");
+        }
+    }
+}
+
+🔷 12. try-with-resources (Best Practice)
+
+Automatically closes resources.
+
+Example:
+import java.io.*;
+
+public class TryWithResources {
+    public static void main(String[] args) {
+        try (BufferedReader br = new BufferedReader(new FileReader("test.txt"))) {
+            System.out.println(br.readLine());
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+        }
+    }
+}
+
+🔷 13. Real-World Example
+
+public class BankingApp {
+    public static void main(String[] args) {
+        int balance = 5000;
+
+        try {
+            withdraw(balance, 6000);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    static void withdraw(int balance, int amount) throws Exception {
+        if (amount > balance) {
+            throw new Exception("Insufficient balance");
+        }
+        System.out.println("Withdrawal successful");
+    }
+}
+
+
+Exception Types : 🧩 1. What is an Exception?
+
+An exception is an object that represents an error or abnormal condition.
+
+Example (Without Handling)
+
+public class ExceptionDemo {
+    public static void main(String[] args) {
+        int a = 10;
+        int b = 0;
+        int result = a / b; // ArithmeticException
+        System.out.println(result);
+    }
+}
+
+👉 Output:
+
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+
+🧩 2. Exception Hierarchy (Very Important)
+
+All exceptions in Java are derived from:
+
+java.lang.Object
+   └── java.lang.Throwable
+         ├── Error
+         └── Exception
+               ├── Checked Exception
+               └── Unchecked Exception (RuntimeException)
+
+🧩 3. Types of Exceptions in Java
+
+✅ 1. Checked Exceptions (Compile-Time Exceptions)
+
+These are checked at compile time.
+You must handle them using try-catch or throws.
+
+🔹 Examples:
+
+IOException
+SQLException
+FileNotFoundException
+
+📌 Example: File Handling (Checked Exception)
+
+import java.io.FileReader;
+import java.io.IOException;
+
+public class CheckedExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("test.txt");
+            System.out.println("File opened successfully");
+        } catch (IOException e) {
+            System.out.println("Exception caught: " + e);
+        }
+    }
+}
+
+✅ 2. Unchecked Exceptions (Runtime Exceptions)
+
+These occur at runtime and are not checked at compile time.
+
+👉 Caused by programming mistakes.
+
+🔹 Examples:
+
+ArithmeticException
+NullPointerException
+ArrayIndexOutOfBoundsException
+
+📌 Example: NullPointerException
+
+public class UncheckedExceptionDemo {
+    public static void main(String[] args) {
+        String str = null;
+        System.out.println(str.length()); // NullPointerException
+    }
+}
+
+👉 Fix with handling:
+
+public class UncheckedHandled {
+    public static void main(String[] args) {
+        try {
+            String str = null;
+            System.out.println(str.length());
+        } catch (NullPointerException e) {
+            System.out.println("Null value detected!");
+        }
+    }
+}
+
+✅ 3. Errors (Serious Issues)
+
+These are not recoverable and occur due to system-level issues.
+
+🔹 Examples:
+
+OutOfMemoryError // Heap Memory memory leak
+StackOverflowError // Stack Memory
+
+📌 Example:
+
+public class ErrorDemo {
+    public static void recursiveMethod() {
+        recursiveMethod(); // causes StackOverflowError
+    }
+
+    public static void main(String[] args) {
+        recursiveMethod();
+    }
+}
+
+🧩 4. Keywords Used in Exception Handling
+
+🔹 1. try
+
+Wrap risky code.
+
+🔹 2. catch
+
+Handle exception.
+
+🔹 3. finally
+
+Always executes (cleanup code).
+
+🔹 4. throw
+
+Manually throw exception.
+
+🔹 5. throws
+
+Declare exception.
+
+🧩 5. Complete Example Using All Keywords
+
+public class CompleteExceptionExample {
+
+    // Method using throws
+    public static void checkAge(int age) throws Exception {
+        if (age < 18) {
+            throw new Exception("Age must be 18 or above");
+        } else {
+            System.out.println("Eligible to vote");
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            int num = 10 / 2;
+            System.out.println("Result: " + num);
+
+            checkAge(15); // will throw exception
+
+        } catch (ArithmeticException e) {
+            System.out.println("Arithmetic error occurred");
+        } catch (Exception e) {
+            System.out.println("General Exception: " + e.getMessage());
+        } finally {
+            System.out.println("Finally block always executes");
+        }
+    }
+}
+
+👉 Output:
+
+Result: 5
+General Exception: Age must be 18 or above
+Finally block always executes
+
+🧩 6. Multiple Catch Example
+
+public class MultipleCatchDemo {
+    public static void main(String[] args) {
+        try {
+            int[] arr = new int[3];
+            arr[5] = 10; // ArrayIndexOutOfBoundsException
+        } catch (ArithmeticException e) {
+            System.out.println("Arithmetic Exception");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array Index Out Of Bounds");
+        }
+    }
+}
+
+🧩 7. Custom Exception (Advanced)
+
+You can create your own exception.
+
+class InvalidAmountException extends Exception {
+    public InvalidAmountException(String message) {
+        super(message);
+    }
+}
+
+public class CustomExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            int amount = -100;
+
+            if (amount < 0) {
+                throw new InvalidAmountException("Amount cannot be negative");
+            }
+
+        } catch (InvalidAmountException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+
+Throws : In Java exception handling, throws is a keyword used in method signatures to declare that a method may throw one or more exceptions.
+
+It acts like a warning to the caller:
+
+“This method might throw an exception, so you must handle it.”
+
+🔹 Why do we use throws?
+
+To delegate exception handling to the calling method
+To avoid handling exceptions inside the method
+Required for checked exceptions (like IOException, SQLException)
+
+🔹 Syntax
+
+returnType methodName() throws ExceptionType1, ExceptionType2 {
+    // method body
+}
+
+🔹 Key Points
+
+Used with method declaration
+Can declare multiple exceptions
+Mostly used for checked exceptions
+Works with throw keyword (which actually throws the exception)
+
+🔹 Types of Examples (Step-by-Step)
+
+✅ 1. Basic Example (Single Exception)
+
+import java.io.*;
+
+class TestThrowsBasic {
+
+    void readFile() throws IOException {
+        FileReader file = new FileReader("test.txt");
+        BufferedReader br = new BufferedReader(file);
+        System.out.println(br.readLine());
+    }
+
+    public static void main(String[] args) {
+        TestThrowsBasic obj = new TestThrowsBasic();
+
+        try {
+            obj.readFile();
+        } catch (IOException e) {
+            System.out.println("Exception handled: " + e);
+        }
+    }
+}
+
+🔸 Explanation:
+
+readFile() declares throws IOException
+The caller (main method) handles the exception
+
+✅ 2. Multiple Exceptions
+
+import java.io.*;
+
+class TestMultipleThrows {
+
+    void process() throws IOException, ArithmeticException {
+        FileReader file = new FileReader("test.txt");
+        int result = 10 / 0; // ArithmeticException
+    }
+
+    public static void main(String[] args) {
+        TestMultipleThrows obj = new TestMultipleThrows();
+
+        try {
+            obj.process();
+        } catch (IOException | ArithmeticException e) {
+            System.out.println("Handled: " + e);
+        }
+    }
+}
+🔸 Explanation:
+
+Method declares multiple exceptions
+Caller handles them using multi-catch
+
+✅ 3. Throws with Method Chaining
+
+import java.io.*;
+
+class MethodChain {
+
+    void method1() throws IOException {
+        method2();
+    }
+
+    void method2() throws IOException {
+        method3();
+    }
+
+    void method3() throws IOException {
+        throw new IOException("File error occurred");
+    }
+
+    public static void main(String[] args) {
+        MethodChain obj = new MethodChain();
+
+        try {
+            obj.method1();
+        } catch (IOException e) {
+            System.out.println("Caught in main: " + e.getMessage());
+        }
+    }
+}
+🔸 Explanation:
+
+Exception propagates through method chain
+Finally handled in main
+
+✅ 4. Throws vs Throw
+
+class ThrowsVsThrow {
+
+    void checkAge(int age) throws Exception {
+        if (age < 18) {
+            throw new Exception("Not eligible to vote"); // actual throwing
+        } else {
+            System.out.println("Eligible to vote");
+        }
+    }
+
+    public static void main(String[] args) {
+        ThrowsVsThrow obj = new ThrowsVsThrow();
+
+        try {
+            obj.checkAge(16);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+🔸 Difference:
+
+Keyword	Purpose
+
+throws	Declares exception
+throw	Actually throws exception
+
+✅ 5. Checked vs Unchecked Exception with throws
+
+import java.io.*;
+
+class CheckedUnchecked {
+
+    // Checked Exception
+    void checkedExample() throws IOException {
+        throw new IOException("Checked Exception");
+    }
+
+    // Unchecked Exception
+    void uncheckedExample() throws ArithmeticException {
+        throw new ArithmeticException("Unchecked Exception");
+    }
+
+    public static void main(String[] args) {
+        CheckedUnchecked obj = new CheckedUnchecked();
+
+        try {
+            obj.checkedExample();
+            obj.uncheckedExample();
+        } catch (Exception e) {
+            System.out.println("Handled: " + e);
+        }
+    }
+}
+🔸 Explanation:
+
+Checked exception → must declare or handle
+Unchecked exception → optional to declare
+
+✅ 6. Custom Exception with throws
+
+class InvalidSalaryException extends Exception {
+    public InvalidSalaryException(String message) {
+        super(message);
+    }
+}
+
+class CustomExceptionExample {
+
+    void validateSalary(int salary) throws InvalidSalaryException {
+        if (salary < 10000) {
+            throw new InvalidSalaryException("Salary too low");
+        } else {
+            System.out.println("Valid Salary");
+        }
+    }
+
+    public static void main(String[] args) {
+        CustomExceptionExample obj = new CustomExceptionExample();
+
+        try {
+            obj.validateSalary(5000);
+        } catch (InvalidSalaryException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+✅ 7. Real-World Example (Database Simulation)
+
+class DatabaseConnection {
+
+    void connect() throws Exception {
+        boolean dbDown = true;
+
+        if (dbDown) {
+            throw new Exception("Database not available");
+        }
+        System.out.println("Connected to database");
+    }
+
+    public static void main(String[] args) {
+        DatabaseConnection db = new DatabaseConnection();
+
+        try {
+            db.connect();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
+
+🔹 When to Use throws?
+
+Use throws when:
+
+You want caller to handle exception
+You are writing library/API methods
+You want clean separation of logic and error handling
+
+🔹 Advantages
+
+Improves code readability
+Promotes exception propagation
+Keeps methods clean and reusable
+
+
+Throw clause, finally clause : 🔹 1. throw Clause in Java
+
+✅ What is throw?
+
+throw is a keyword used to explicitly throw an exception from a method or block of code.
+
+👉 You use it when you want to create and trigger an exception manually.
+
+🔹 Syntax
+
+throw new ExceptionType("Error Message");
+
+🔹 Example 1: Basic throw
+
+public class ThrowExample1 {
+    public static void main(String[] args) {
+        int age = 16;
+
+        if (age < 18) {
+            throw new ArithmeticException("Not eligible to vote");
+        } else {
+            System.out.println("Eligible to vote");
+        }
+    }
+}
+
+✅ Output:
+
+Exception in thread "main" java.lang.ArithmeticException: Not eligible to vote
+
+🔹 Example 2: throw with Custom Method
+
+public class ThrowExample2 {
+
+    static void checkNumber(int num) {
+        if (num < 0) {
+            throw new IllegalArgumentException("Number cannot be negative");
+        } else {
+            System.out.println("Valid number: " + num);
+        }
+    }
+
+    public static void main(String[] args) {
+        checkNumber(-5);
+    }
+}
+
+🔹 Example 3: Throwing Checked Exception
+
+import java.io.IOException;
+
+public class ThrowExample3 {
+
+    static void readFile() throws IOException {
+        throw new IOException("File not found");
+    }
+
+    public static void main(String[] args) {
+        try {
+            readFile();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+🔹 2. throws Clause in Java
+
+✅ What is throws?
+
+throws is used in method declaration to indicate that a method may throw exceptions.
+
+👉 It delegates exception handling responsibility to the caller.
+
+🔹 Syntax
+returnType methodName() throws ExceptionType {
+    // code
+}
+
+🔹 Example 1: Basic throws
+
+import java.io.IOException;
+
+public class ThrowsExample1 {
+
+    static void testMethod() throws IOException {
+        throw new IOException("IO Exception occurred");
+    }
+
+    public static void main(String[] args) {
+        try {
+            testMethod();
+        } catch (IOException e) {
+            System.out.println("Handled: " + e.getMessage());
+        }
+    }
+}
+
+🔹 Example 2: Multiple Exceptions
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class ThrowsExample2 {
+
+    static void process() throws IOException, SQLException {
+        throw new IOException("IO problem");
+    }
+
+    public static void main(String[] args) {
+        try {
+            process();
+        } catch (IOException | SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+🔹 Difference: throw vs throws
+
+Feature	throw				throws
+Usage	Inside method			Method declaration
+Purpose	Actually throws exception	Declares exception
+Number	One at a time	Multiple allowed
+Keyword type	Statement				Clause
+
+🔹 3. finally Clause in Java
+
+✅ What is finally?
+
+finally is a block that always executes, whether an exception occurs or not.
+
+👉 Used for:
+
+Closing resources
+Cleaning up code
+
+🔹 Syntax
+
+try {
+    // risky code
+} catch (Exception e) {
+    // handling
+} finally {
+    // always executes
+}
+
+🔹 Example 1: Basic finally
+
+public class FinallyExample1 {
+
+    public static void main(String[] args) {
+        try {
+            int result = 10 / 0;
+        } catch (ArithmeticException e) {
+            System.out.println("Exception caught");
+        } finally {
+            System.out.println("Finally block always executes");
+        }
+    }
+}
+
+✅ Output:
+
+Exception caught
+Finally block always executes
+
+🔹 Example 2: finally Without Catch
+
+public class FinallyExample2 {
+
+    public static void main(String[] args) {
+        try {
+            System.out.println("Try block");
+        } finally {
+            System.out.println("Finally block");
+        }
+    }
+}
+
+🔹 Example 3: Resource Cleanup
+
+import java.io.*;
+
+public class FinallyExample3 {
+
+    public static void main(String[] args) {
+        FileReader file = null;
+
+        try {
+            file = new FileReader("test.txt");
+            System.out.println("File opened");
+        } catch (IOException e) {
+            System.out.println("Error opening file");
+        } finally {
+            try {
+                if (file != null) {
+                    file.close();
+                    System.out.println("File closed");
+                }
+            } catch (IOException e) {
+                System.out.println("Error closing file");
+            }
+        }
+    }
+}
+🔹 Example 4: Finally Always Executes (Even with Return)
+
+public class FinallyExample4 {
+
+    public static int test() {
+        try {
+            return 10;
+        } finally {
+            System.out.println("Finally executed");
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(test());
+    }
+}
+
+✅ Output:
+Finally executed
+10
+
+
+
+
+
+

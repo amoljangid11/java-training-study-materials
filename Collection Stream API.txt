@@ -1,0 +1,1865 @@
+Collection / Stream API : Introduction to Collection, Generic : 
+
+🔷 1. Introduction to Collections in Java
+
+✅ What is a Collection? JCF
+
+A Collection in Java is a framework (set of classes and interfaces) used to store and manipulate groups of objects dynamically.
+
+Unlike arrays: int arr[] = new int[5];
+
+Collections are resizable
+Provide built-in methods (add, remove, sort, search)
+
+📦 Collection Framework Hierarchy
+
+Iterable
+   |
+Collection (Interface)
+   |
+   ├── List (Ordered, allows duplicates) // 1, 2, 3, 4, 5 1, 2, 3, 4, 5, 5, 4, 3
+   │     ├── ArrayList
+   │     ├── LinkedList
+   │     └── Vector
+   |
+   ├── Set (No duplicates) 1, 2, 3, 4, 5, 5, does not follow order 2, 5, 3, 1,
+   │     ├── HashSet
+   │     ├── LinkedHashSet
+   │     └── TreeSet
+   |
+   └── Queue (FIFO)                        Map (Key, Value) HashMap TreeMap LinkedHashMap
+         ├── PriorityQueue
+         └── LinkedList
+
+🔷 2. List Example (ArrayList)
+
+✅ Features:
+
+Ordered
+Allows duplicates
+Index-based access
+
+💻 Example Code:
+
+import java.util.*;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+
+        // Creating ArrayList
+        List<String> names = new ArrayList<>();
+
+        // Adding elements
+        names.add("Amol");
+        names.add("Rahul");
+        names.add("Amol"); // duplicate allowed
+
+        // Accessing elements
+        System.out.println("First Element: " + names.get(0));
+
+        // Iterating
+        for(String name : names){
+            System.out.println(name);
+        }
+
+        // Removing element
+        names.remove("Rahul");
+
+        System.out.println("After Removal: " + names);
+    }
+}
+
+🔷 3. Set Example (HashSet)
+
+✅ Features:
+
+No duplicates
+Unordered
+
+💻 Example Code:
+
+import java.util.*;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+
+        Set<Integer> numbers = new HashSet<>();
+
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(10); // duplicate ignored
+
+        System.out.println(numbers);
+    }
+}
+
+🔷 4. Map Example (HashMap)
+
+✅ Features:
+
+Key-Value pair
+Keys must be unique
+
+💻 Example Code:
+
+import java.util.*;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+
+        Map<Integer, String> map = new HashMap<>();
+
+        map.put(1, "Amol");
+        map.put(2, "Rahul");
+
+        System.out.println(map.get(1));
+
+        for(Map.Entry<Integer, String> entry : map.entrySet()){
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+    }
+}
+
+🔷 5. Introduction to Generics in Java
+
+✅ What is Generics?
+
+Generics allow you to write type-safe and reusable code.
+
+👉 Instead of using Object, you define a type parameter
+
+❌ Without Generics (Problem)
+
+import java.util.*;
+
+public class WithoutGenerics {
+    public static void main(String[] args) {
+
+        List list = new ArrayList();
+        list.add("Amol");
+        list.add(10); // allowed (problem)
+
+        String name = (String) list.get(0); // typecasting required
+    }
+}
+
+⚠️ Problems:
+
+No type safety
+Runtime errors possible
+Requires casting
+
+✅ With Generics (Solution)
+
+import java.util.*;
+
+public class WithGenerics {
+    public static void main(String[] args) {
+
+        List<String> list = new ArrayList<>();
+        list.add("Amol");
+
+        // list.add(10); ❌ Compile-time error
+
+        String name = list.get(0); // no casting needed
+        System.out.println(name);
+    }
+}
+
+🔷 6. Generic Class Example
+
+💻 Code:
+
+class Box<T> {
+
+    private T value;
+
+    public void setValue(T value){
+        this.value = value;
+    }
+
+    public T getValue(){
+        return value;
+    }
+}
+
+public class GenericClassExample {
+    public static void main(String[] args) {
+
+        Box<String> stringBox = new Box<>();
+        stringBox.setValue("Hello");
+
+        System.out.println(stringBox.getValue());
+
+        Box<Integer> intBox = new Box<>();
+        intBox.setValue(100);
+
+        System.out.println(intBox.getValue());
+    }
+}
+
+🔷 7. Generic Method Example
+
+💻 Code:
+
+public class GenericMethodExample {
+
+    public static <T> void printArray(T[] array){
+        for(T element : array){
+            System.out.println(element);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Integer[] intArray = {1, 2, 3};
+        String[] strArray = {"A", "B", "C"};
+
+        printArray(intArray);
+        printArray(strArray);
+    }
+}
+
+🔷 8. Bounded Generics
+
+✅ Restrict type (e.g., only Numbers)
+
+class Calculator<T extends Number> {
+
+    public double square(T num){
+        return num.doubleValue() * num.doubleValue();
+    }
+}
+
+public class BoundedGenericExample {
+    public static void main(String[] args) {
+
+        Calculator<Integer> calc = new Calculator<>();
+        System.out.println(calc.square(5));
+    }
+}
+
+🔷 9. Wildcards in Generics
+
+✅ Types:
+
+<?> → Unknown type
+<? extends T> → Upper bound
+<? super T> → Lower bound
+
+💻 Example:
+
+import java.util.*;
+
+public class WildcardExample {
+
+    public static void printList(List<?> list){
+        for(Object obj : list){
+            System.out.println(obj);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        List<Integer> list1 = Arrays.asList(1,2,3);
+        List<String> list2 = Arrays.asList("A","B");
+
+        printList(list1);
+        printList(list2);
+    }
+}
+
+🔷 10. Real-World Example (Employee Management)
+
+import java.util.*;
+
+class Employee {
+    int id;
+    String name;
+
+    Employee(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+}
+
+public class EmployeeExample {
+    public static void main(String[] args) {
+
+        List<Employee> employees = new ArrayList<>();
+
+        employees.add(new Employee(1, "Amol"));
+        employees.add(new Employee(2, "Rahul"));
+
+        for(Employee emp : employees){
+            System.out.println(emp.id + " " + emp.name);
+        }
+    }
+}
+
+
+
+List : In Java, a List is one of the most commonly used data structures from the Java Collections Framework. It represents an ordered collection of elements where:
+
+Elements are stored in sequence (index-based)
+Duplicates are allowed
+You can access elements using an index (0-based)
+
+🧩 1. What is List in Java?
+
+List is an interface in the package:
+
+java.util.List
+
+It is implemented by different classes like:
+
+ArrayList
+LinkedList
+Vector
+Stack
+
+🧩 2. Basic Syntax
+
+import java.util.List;
+import java.util.ArrayList;
+
+List<String> list = new ArrayList<>();
+
+🧩 3. Common Methods of List
+
+Method	Description
+add()	Add element
+get()		Get element by index
+set()		Update element
+remove()	Delete element
+size()	Number of elements
+contains() Check existence
+
+🧩 4. Example 1: Simple ArrayList (Beginner)
+
+import java.util.*;
+
+public class ListExample1 {
+    public static void main(String[] args) {
+
+        List<String> names = new ArrayList<>();
+
+        // Adding elements
+        names.add("Amol");
+        names.add("Rahul");
+        names.add("Sneha");
+
+        // Display list
+        System.out.println("List: " + names);
+
+        // Access element
+        System.out.println("First Element: " + names.get(0));
+
+        // Update element
+        names.set(1, "Amit");
+
+        // Remove element
+        names.remove("Sneha");
+
+        // Size
+        System.out.println("Size: " + names.size());
+
+        System.out.println("Updated List: " + names);
+    }
+}
+
+✅ Output:
+
+List: [Amol, Rahul, Sneha]
+First Element: Amol
+Size: 2
+Updated List: [Amol, Amit]
+
+🧩 5. Example 2: List with Loop
+
+import java.util.*;
+
+public class ListExample2 {
+    public static void main(String[] args) {
+
+        List<Integer> numbers = new ArrayList<>();
+
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(30);
+
+        // Using for loop
+        for(int i = 0; i < numbers.size(); i++) {
+            System.out.println(numbers.get(i));
+        }
+
+        // Using enhanced for loop
+        for(int num : numbers) {
+            System.out.println("Value: " + num);
+        }
+    }
+}
+
+🧩 6. Example 3: LinkedList
+
+import java.util.*;
+
+public class LinkedListExample {
+    public static void main(String[] args) {
+
+        List<String> list = new LinkedList<>();
+
+        list.add("A");
+        list.add("B");
+        list.add("C");
+
+        list.add(1, "X"); // Insert at index
+
+        System.out.println(list);
+    }
+}
+
+✅ Output:
+
+[A, X, B, C]
+
+🧩 7. Example 4: List with Custom Object
+
+import java.util.*;
+
+class Student {
+    int id;
+    String name;
+
+    Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+public class ListExample4 {
+    public static void main(String[] args) {
+
+        List<Student> students = new ArrayList<>();
+
+        students.add(new Student(1, "Amol"));
+        students.add(new Student(2, "Rahul"));
+
+        for(Student s : students) {
+            System.out.println(s.id + " - " + s.name);
+        }
+    }
+}
+
+🧩 8. Example 5: Sorting List
+
+import java.util.*;
+
+public class ListSortingExample {
+    public static void main(String[] args) {
+
+        List<Integer> list = new ArrayList<>();
+
+        list.add(50);
+        list.add(10);
+        list.add(30);
+
+        Collections.sort(list);
+
+        System.out.println("Sorted: " + list);
+    }
+}
+
+🧩 9. Example 6: List to Array
+
+import java.util.*;
+
+public class ListToArrayExample {
+    public static void main(String[] args) {
+
+        List<String> list = new ArrayList<>();
+
+        list.add("Java");
+        list.add("Python");
+
+        String[] array = list.toArray(new String[0]);
+
+        for(String s : array) {
+            System.out.println(s);
+        }
+    }
+}
+
+🧩 10. Types of List Implementations
+
+🔹 1. ArrayList
+
+Dynamic array
+Fast read
+Slow insert/delete (middle)
+
+🔹 2. LinkedList
+
+Doubly linked list
+Fast insert/delete
+Slow access
+
+🔹 3. Vector
+
+Thread-safe
+Slower than ArrayList
+
+🔹 4. Stack
+
+LIFO (Last In First Out)
+
+🧩 11. ArrayList vs LinkedList
+
+Feature			ArrayList			LinkedList
+Data Structure		Dynamic Array	Linked List
+Access			Fast				Slow
+Insert/Delete		Slow			Fast
+Memory			Less				More
+
+🧩 12. Real-Time Example (Student Marks)
+
+import java.util.*;
+
+public class RealTimeExample {
+    public static void main(String[] args) {
+
+        List<Integer> marks = new ArrayList<>();
+
+        marks.add(85);
+        marks.add(90);
+        marks.add(78);
+
+        int total = 0;
+
+        for(int m : marks) {
+            total += m;
+        }
+
+        double avg = (double) total / marks.size();
+
+        System.out.println("Average Marks: " + avg);
+    }
+}
+
+
+Set :  A Set in Java is a collection that does not allow duplicate elements and typically does not maintain insertion order (depending on implementation). It is part of the Java Collections Framework under java.util.
+
+🔹 1. What is a Set?
+
+Stores unique elements only
+No duplicates allowed
+Can store null (depends on implementation)
+Unordered (except some implementations)
+
+👉 Example:
+
+Input:  [10, 20, 10, 30]
+Output: [10, 20, 30]
+
+🔹 2. Set Hierarchy
+
+Collection (Interface)
+   └── Set (Interface)
+         ├── HashSet
+         ├── LinkedHashSet
+         └── TreeSet
+
+🔹 3. Types of Set Implementations
+
+✅ 3.1 HashSet
+
+Uses Hashing
+No order guarantee
+Allows one null
+Fast performance (O(1) average)
+
+💻 Example: HashSet
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+
+        Set<Integer> set = new HashSet<>();
+
+        set.add(10);
+        set.add(20);
+        set.add(30);
+        set.add(10); // Duplicate
+
+        System.out.println("HashSet Elements: " + set);
+    }
+}
+
+🟢 Output (unordered)
+
+HashSet Elements: [20, 10, 30]
+
+✅ 3.2 LinkedHashSet
+
+Maintains insertion order
+Uses hash table + linked list
+
+💻 Example: LinkedHashSet
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+public class LinkedHashSetExample {
+    public static void main(String[] args) {
+
+        Set<String> set = new LinkedHashSet<>();
+
+        set.add("A");
+        set.add("B");
+        set.add("C");
+        set.add("A"); // Duplicate
+
+        System.out.println("LinkedHashSet Elements: " + set);
+    }
+}
+
+🟢 Output (ordered)
+
+LinkedHashSet Elements: [A, B, C]
+
+✅ 3.3 TreeSet
+
+Stores elements in sorted order
+Uses Red-Black Tree
+Does not allow null
+Slower than HashSet (O(log n)) O(1)
+
+💻 Example: TreeSet
+
+import java.util.TreeSet;
+import java.util.Set;
+
+public class TreeSetExample {
+    public static void main(String[] args) {
+
+        Set<Integer> set = new TreeSet<>();
+
+        set.add(50);
+        set.add(10);
+        set.add(30);
+        set.add(20);
+
+        System.out.println("TreeSet Elements: " + set);
+    }
+}
+
+🟢 Output (sorted)
+
+TreeSet Elements: [10, 20, 30, 50]
+
+🔹 4. Common Methods in Set
+
+Method	Description
+add()	Add element
+remove()	Remove element
+contains()	Check existence
+size()	Number of elements
+isEmpty()	 Check empty
+clear()	Remove all elements
+
+🔹 5. Iterating a Set
+
+💻 Example
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class IterateSet {
+    public static void main(String[] args) {
+
+        Set<String> set = new HashSet<>();
+        set.add("Java");
+        set.add("Python");
+        set.add("C++");
+
+        // Using for-each
+        for (String lang : set) {
+            System.out.println(lang);
+        }
+    }
+}
+
+🔹 6. Real-Time Examples
+
+✅ Example 1: Remove Duplicates from List
+
+import java.util.*;
+
+public class RemoveDuplicates {
+    public static void main(String[] args) {
+
+        List<Integer> list = Arrays.asList(1,2,2,3,4,4,5);
+
+        Set<Integer> set = new HashSet<>(list);
+
+        System.out.println("Unique Elements: " + set);
+    }
+}
+
+✅ Example 2: Check Unique Emails
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class UniqueEmails {
+    public static void main(String[] args) {
+
+        Set<String> emails = new HashSet<>();
+
+        emails.add("a@gmail.com");
+        emails.add("b@gmail.com");
+        emails.add("a@gmail.com"); // duplicate
+
+        if(emails.size() < 3) {
+            System.out.println("Duplicate emails found");
+        }
+    }
+}
+
+✅ Example 3: Sorted Unique Names
+
+import java.util.TreeSet;
+
+public class SortedNames {
+    public static void main(String[] args) {
+
+        TreeSet<String> names = new TreeSet<>();
+
+        names.add("Zara");
+        names.add("Aman");
+        names.add("Raj");
+
+        System.out.println(names);
+    }
+}
+
+🔹 7. Custom Object in Set (Important Interview)
+
+👉 To avoid duplicates in custom objects:
+
+Override equals()
+Override hashCode()
+
+💻 Example
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+class Student {
+    int id;
+    String name;
+
+    Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Student)) return false;
+        Student s = (Student) o;
+        return id == s.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+public class CustomSetExample {
+    public static void main(String[] args) {
+
+        Set<Student> students = new HashSet<>();
+
+        students.add(new Student(1, "A"));
+        students.add(new Student(1, "B")); // duplicate based on id
+
+        System.out.println("Size: " + students.size());
+    }
+}
+
+🟢 Output
+
+Size: 1
+
+🔹 8. Key Differences
+
+Feature	HashSet	LinkedHashSet	TreeSet
+Order	No	Yes	Sorted
+Performance	Fast	Medium	Slow
+Null	Yes	Yes	No
+Structure	Hash Table	Hash + Linked List	Tree
+
+🔹 9. When to Use What?
+
+Use HashSet → Fast operations, no order needed
+Use LinkedHashSet → Maintain insertion order
+Use TreeSet → Sorted data required
+
+
+
+Map : 🔹 1. What is a Map?
+
+A Map stores unique keys and values
+Each key maps to exactly one value
+No duplicate keys allowed (but values can be duplicated)
+
+👉 Real-world example:
+
+Student ID → Student Name
+Email → User Details
+
+🔹 2. Map Hierarchy
+
+Map (Interface)
+ ├── HashMap
+ ├── LinkedHashMap
+ ├── TreeMap
+ ├── Hashtable (Legacy)
+
+🔹 3. Basic Operations in Map
+
+Operation			Method
+
+Add				put(key, value)
+Get				get(key)
+Remove			remove(key)
+Check key		containsKey(key)
+Iterate			entrySet(), keySet()
+
+🔹 4. Example 1: Basic HashMap
+
+import java.util.*;
+
+public class MapExample1 {
+    public static void main(String[] args) {
+
+        // Creating Map
+        Map<Integer, String> map = new HashMap<>();
+
+        // Adding elements
+        map.put(1, "Amol");
+        map.put(2, "Rahul");
+        map.put(3, "Priya");
+
+        // Fetching value
+        System.out.println("Key 2: " + map.get(2));
+
+        // Iterating
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+    }
+}
+
+
+✅ Output:
+
+Key 2: Rahul
+1 -> Amol
+2 -> Rahul
+3 -> Priya
+
+🔹 5. Example 2: Handling Duplicate Keys
+
+import java.util.*;
+
+public class MapExample2 {
+    public static void main(String[] args) {
+
+        Map<Integer, String> map = new HashMap<>();
+
+        map.put(1, "A");
+        map.put(1, "B"); // Duplicate key
+
+        System.out.println(map);
+    }
+}
+
+✅ Output:
+
+{1=B}
+
+👉 Latest value replaces old value
+
+🔹 6. Example 3: LinkedHashMap (Maintains Order)
+
+import java.util.*;
+
+public class LinkedHashMapExample {
+    public static void main(String[] args) {
+
+        Map<Integer, String> map = new LinkedHashMap<>();
+
+        map.put(3, "C");
+        map.put(1, "A");
+        map.put(2, "B");
+
+        System.out.println(map);
+    }
+}
+
+✅ Output:
+
+{3=C, 1=A, 2=B}
+
+👉 Maintains insertion order
+
+🔹 7. Example 4: TreeMap (Sorted Map)
+
+import java.util.*;
+
+public class TreeMapExample {
+    public static void main(String[] args) {
+
+        Map<Integer, String> map = new TreeMap<>();
+
+        map.put(3, "C");
+        map.put(1, "A");
+        map.put(2, "B");
+
+        System.out.println(map);
+    }
+}
+
+✅ Output:
+
+{1=A, 2=B, 3=C}
+
+👉 Automatically sorted by keys
+
+🔹 8. Example 5: Iteration Ways
+
+1️⃣ Using entrySet()
+
+for (Map.Entry<Integer, String> entry : map.entrySet()) {
+    System.out.println(entry);
+}
+
+2️⃣ Using keySet()
+
+for (Integer key : map.keySet()) {
+    System.out.println(key + " -> " + map.get(key));
+}
+
+3️⃣ Using forEach (Java 8+)
+
+map.forEach((k, v) -> System.out.println(k + " : " + v));
+
+🔹 9. Example 6: Real-Time Scenario (Student Marks)
+
+import java.util.*;
+
+public class StudentMarks {
+    public static void main(String[] args) {
+
+        Map<String, Integer> marks = new HashMap<>();
+
+        marks.put("Amol", 85);
+        marks.put("Rahul", 90);
+        marks.put("Priya", 95);
+
+        // Find topper
+        int max = 0;
+        String topper = "";
+
+        for (Map.Entry<String, Integer> entry : marks.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                topper = entry.getKey();
+            }
+        }
+
+        System.out.println("Topper: " + topper + " Marks: " + max);
+    }
+}
+
+🔹 10. Example 7: Map with Custom Object
+
+import java.util.*;
+
+class Student {
+    int id;
+    String name;
+
+    Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+public class MapCustomObject {
+    public static void main(String[] args) {
+
+        Map<Integer, Student> map = new HashMap<>();
+
+        map.put(1, new Student(1, "Amol"));
+        map.put(2, new Student(2, "Rahul"));
+
+        for (Map.Entry<Integer, Student> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue().name);
+        }
+    }
+}
+
+🔹 11. Difference Between Map Types
+
+Feature	HashMap	LinkedHashMap	TreeMap
+Order	No	Insertion	Sorted
+Performance	Fast	Slightly slower	Slower
+Null Key	Yes	Yes	No
+
+
+Stream API : 🔷 1. What is Stream API?
+
+A Stream is a sequence of elements supporting operations like:
+
+Filtering
+Mapping
+Sorting
+Aggregation (count, sum, etc.)
+
+👉 Key point:
+
+A stream does not store data, it processes data from a source.
+
+🔷 2. Stream Pipeline
+
+A Stream works in 3 steps:
+
+Collection → Stream → Intermediate Operations → Terminal Operation
+
+Example:
+
+list.stream()
+    .filter(x -> x > 10)
+    .map(x -> x * 2)
+    .forEach(System.out::println);
+
+🔷 3. Types of Operations
+
+🔹 1. Intermediate Operations (Lazy)
+
+filter()
+map()
+sorted()
+distinct()
+
+🔹 2. Terminal Operations (Eager)
+
+forEach()
+collect()
+count()
+reduce()
+
+🔷 4. Basic Example (Without Stream vs With Stream)
+
+❌ Traditional Way
+
+import java.util.*;
+
+public class WithoutStream {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(10, 20, 5, 15, 30);
+        
+        List<Integer> result = new ArrayList<>();
+        for (Integer num : list) {
+            if (num > 10) {
+                result.add(num);
+            }
+        }
+
+        for (Integer num : result) {
+            System.out.println(num);
+        }
+    }
+}
+
+✅ Using Stream API
+
+import java.util.*;
+
+public class WithStream {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(10, 20, 5, 15, 30);
+
+        list.stream()
+            .filter(num -> num > 10)
+            .forEach(System.out::println);
+    }
+}
+
+🔷 5. Different Types of Examples
+
+🧩 Example 1: Filter Data
+
+import java.util.*;
+
+public class FilterExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Amol", "John", "Amit", "David");
+
+        names.stream()
+             .filter(name -> name.startsWith("A"))
+             .forEach(System.out::println);
+    }
+}
+
+🧩 Example 2: Map (Transformation)
+
+import java.util.*;
+
+public class MapExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+
+        numbers.stream()
+               .map(num -> num * num)
+               .forEach(System.out::println);
+    }
+}
+
+🧩 Example 3: Sorting
+
+import java.util.*;
+
+public class SortExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(5, 2, 8, 1);
+
+        list.stream()
+            .sorted()
+            .forEach(System.out::println);
+    }
+}
+
+🧩 Example 4: Collect to List
+
+import java.util.*;
+import java.util.stream.*;
+
+public class CollectExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(10, 20, 5, 15);
+
+        List<Integer> result = list.stream()
+                                  .filter(x -> x > 10)
+                                  .collect(Collectors.toList());
+
+        System.out.println(result);
+    }
+}
+
+🧩 Example 5: Count Elements
+
+import java.util.*;
+
+public class CountExample {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("A", "B", "C", "A");
+
+        long count = list.stream()
+                         .filter(x -> x.equals("A"))
+                         .count();
+
+        System.out.println(count); // 2
+    }
+}
+
+🧩 Example 6: Reduce (Sum) // reduce method always return single value TO
+
+import java.util.*;
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(1, 2, 3, 4);
+
+        int sum = list.stream()
+                      .reduce(0, (a, b) -> a + b); // accumulator
+
+        System.out.println(sum); // 10
+    }
+}
+
+🧩 Example 7: Distinct Elements // TO
+
+import java.util.*;
+
+public class DistinctExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(1, 2, 2, 3, 3, 4);
+
+        list.stream()
+            .distinct()
+            .forEach(System.out::println);
+    }
+}
+
+🧩 Example 8: Limit & Skip
+
+import java.util.*;
+
+public class LimitSkipExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+
+        list.stream()
+            .skip(2)
+            .limit(2)
+            .forEach(System.out::println);
+    }
+}
+
+🧩 Example 9: Working with Objects
+
+import java.util.*;
+import java.util.stream.*;
+
+class Employee {
+    int id;
+    String name;
+    double salary;
+
+    Employee(int id, String name, double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+}
+
+public class EmployeeExample {
+    public static void main(String[] args) {
+        List<Employee> list = Arrays.asList(
+            new Employee(1, "Amol", 50000),
+            new Employee(2, "John", 30000),
+            new Employee(3, "Amit", 70000)
+        );
+
+        List<String> highSalaryNames = list.stream()
+            .filter(emp -> emp.salary > 40000)
+            .map(emp -> emp.name)
+            .collect(Collectors.toList());
+
+        System.out.println(highSalaryNames);
+    }
+}
+
+🧩 Example 10: Grouping (Advanced)
+
+import java.util.*;
+import java.util.stream.*;
+
+class Employee {
+    String name;
+    String department;
+
+    Employee(String name, String department) {
+        this.name = name;
+        this.department = department;
+    }
+}
+
+public class GroupByExample {
+    public static void main(String[] args) {
+        List<Employee> list = Arrays.asList(
+            new Employee("Amol", "IT"),
+            new Employee("John", "HR"),
+            new Employee("Amit", "IT")
+        );
+
+        Map<String, List<Employee>> grouped = list.stream()
+            .collect(Collectors.groupingBy(emp -> emp.department));
+
+        System.out.println(grouped);
+    }
+}
+
+
+Functional Interface : 🔹 1. What is a Functional Interface? // Java 8+
+
+A Functional Interface is an interface that contains exactly one abstract method.
+
+👉 It can have:
+
+Multiple default methods
+Multiple static methods
+But only ONE abstract method
+
+✅ Example (Basic Functional Interface)
+
+@FunctionalInterface
+
+interface Greeting {
+    void sayHello();
+}
+
+✔ @FunctionalInterface is optional but recommended
+✔ If you add more than one abstract method → compile-time error
+
+🔹 2. Why Functional Interfaces?
+
+They are mainly used with:
+
+Lambda Expressions
+Method References
+Stream API
+
+They help write clean, concise, and readable code
+
+🔹 3. Traditional vs Functional Approach
+
+❌ Without Functional Interface (Anonymous Class) // you can create the object of interface for Anonymous class
+
+interface Greeting {
+    void sayHello();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Greeting g = new Greeting() {
+            public void sayHello() {
+                System.out.println("Hello World");
+            }
+        };
+        g.sayHello();
+    }
+}
+
+✅ With Functional Interface (Lambda)
+
+interface Greeting {
+    void sayHello();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Greeting g = () -> System.out.println("Hello World");
+        g.sayHello();
+    }
+}
+
+🔹 4. Types of Functional Interfaces (Based on Use Case)
+
+✅ 1. No Parameter, No Return
+
+@FunctionalInterface
+
+interface MyInterface {
+    void display();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyInterface obj = () -> System.out.println("No Input No Output");
+        obj.display();
+    }
+}
+
+✅ 2. With Parameter, No Return
+
+@FunctionalInterface
+
+interface PrintMessage {
+    void print(String message);
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PrintMessage pm = (msg) -> System.out.println(msg);
+        pm.print("Hello Java");
+    }
+}
+✅ 3. With Parameter and Return Type
+
+@FunctionalInterface
+
+interface Add {
+    int sum(int a, int b);
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Add add = (a, b) -> a + b;
+        System.out.println("Sum: " + add.sum(10, 20));
+    }
+}
+
+✅ 4. Multiple Statements in Lambda
+
+@FunctionalInterface
+
+interface Calculator {
+    int operate(int a, int b);
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = (a, b) -> {
+            int result = a * b; // 20
+            return result;
+        };
+
+        System.out.println(calc.operate(5, 4));
+    }
+}
+
+🔹 5. Functional Interface with Default & Static Methods
+
+@FunctionalInterface
+
+interface Vehicle {
+
+    void run(); // only abstract method
+
+    default void fuelType() {
+        System.out.println("Petrol or Diesel");
+    }
+
+    static void company() {
+        System.out.println("TATA Motors");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle v = () -> System.out.println("Vehicle is running");
+
+        v.run();
+        v.fuelType();
+        Vehicle.company();
+    }
+}
+
+🔹 6. Built-in Functional Interfaces (Very Important)
+
+Java provides many ready-made functional interfaces in:
+
+👉 java.util.function package // Java 8+
+
+✅ 1. Predicate (T → boolean)
+
+import java.util.function.Predicate;
+
+public class Main {
+    public static void main(String[] args) {
+        Predicate<Integer> isEven = num -> num % 2 == 0;
+
+        System.out.println(isEven.test(10)); // true
+        System.out.println(isEven.test(7));  // false
+    }
+}
+
+✅ 2. Function (T → R)
+
+import java.util.function.Function;
+
+public class Main {
+    public static void main(String[] args) {
+        Function<Integer, Integer> square = x -> x * x;
+
+        System.out.println(square.apply(5)); // 25
+    }
+}
+
+✅ 3. Consumer (T → void)
+
+import java.util.function.Consumer;
+
+public class Main {
+    public static void main(String[] args) {
+        Consumer<String> print = msg -> System.out.println(msg);
+
+        print.accept("Hello Consumer");
+    }
+}
+
+✅ 4. Supplier (No Input → T)
+
+import java.util.function.Supplier;
+
+public class Main {
+    public static void main(String[] args) {
+        Supplier<Double> randomValue = () -> Math.random();
+
+        System.out.println(randomValue.get());
+    }
+}
+
+🔹 7. Real-Time Example (Filtering Data)
+
+import java.util.*;
+import java.util.function.Predicate;
+
+public class Main {
+    public static void main(String[] args) {
+
+        List<Integer> list = Arrays.asList(10, 15, 20, 25, 30);
+
+        Predicate<Integer> isEven = num -> num % 2 == 0;
+
+        for (Integer num : list) {
+            if (isEven.test(num)) {
+                System.out.println(num);
+            }
+        }
+    }
+}
+
+
+Lambda Expression : 🔷 1. What is a Lambda Expression?
+
+A Lambda Expression is an anonymous function (no name) that can be passed as an argument or stored in a variable.
+
+👉 It is mainly used with Functional Interfaces (interfaces with only one abstract method).
+
+📌 Basic Syntax
+(parameters) -> expression
+
+or
+
+(parameters) -> { statements }
+🔷 2. Functional Interface
+
+A functional interface has exactly one abstract method.
+
+Example
+@FunctionalInterface
+interface MyFunctionalInterface {
+    void sayHello();
+}
+🔷 3. Traditional vs Lambda
+❌ Without Lambda (Anonymous Class)
+MyFunctionalInterface obj = new MyFunctionalInterface() {
+    public void sayHello() {
+        System.out.println("Hello World");
+    }
+};
+obj.sayHello();
+✅ With Lambda
+MyFunctionalInterface obj = () -> System.out.println("Hello World");
+obj.sayHello();
+🔷 4. Types of Lambda Expressions (With Examples)
+✅ Type 1: No Parameter Lambda
+interface Greeting {
+    void sayHello();
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Greeting g = () -> System.out.println("Hello Lambda");
+        g.sayHello();
+    }
+}
+✅ Type 2: Single Parameter Lambda
+interface Square {
+    int calculate(int x);
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Square s = (x) -> x * x;
+        System.out.println("Square: " + s.calculate(5));
+    }
+}
+
+👉 You can remove parentheses if only one parameter:
+
+Square s = x -> x * x;
+✅ Type 3: Multiple Parameters
+interface Add {
+    int sum(int a, int b);
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Add add = (a, b) -> a + b;
+        System.out.println("Sum: " + add.sum(10, 20));
+    }
+}
+✅ Type 4: Lambda with Block Body
+interface Calculator {
+    int operate(int a, int b);
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Calculator calc = (a, b) -> {
+            System.out.println("Calculating...");
+            return a * b;
+        };
+        System.out.println(calc.operate(5, 4));
+    }
+}
+✅ Type 5: Lambda with Return Keyword
+interface Division {
+    double divide(double a, double b);
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Division d = (a, b) -> {
+            return a / b;
+        };
+        System.out.println(d.divide(10, 2));
+    }
+}
+🔷 5. Built-in Functional Interfaces (java.util.function)
+✅ Predicate (boolean result)
+import java.util.function.Predicate;
+
+public class Test {
+    public static void main(String[] args) {
+        Predicate<Integer> isEven = x -> x % 2 == 0;
+        System.out.println(isEven.test(10)); // true
+    }
+}
+✅ Function (input → output)
+import java.util.function.Function;
+
+public class Test {
+    public static void main(String[] args) {
+        Function<Integer, Integer> square = x -> x * x;
+        System.out.println(square.apply(6));
+    }
+}
+✅ Consumer (takes input, no return)
+import java.util.function.Consumer;
+
+public class Test {
+    public static void main(String[] args) {
+        Consumer<String> print = s -> System.out.println(s);
+        print.accept("Hello Consumer");
+    }
+}
+✅ Supplier (no input, returns value)
+import java.util.function.Supplier;
+
+public class Test {
+    public static void main(String[] args) {
+        Supplier<Double> random = () -> Math.random();
+        System.out.println(random.get());
+    }
+}
+🔷 6. Lambda with Collections
+✅ Using forEach
+import java.util.*;
+
+public class Test {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("Java", "Python", "C++");
+
+        list.forEach(item -> System.out.println(item));
+    }
+}
+✅ Using Stream API
+import java.util.*;
+
+public class Test {
+    public static void main(String[] args) {
+        List<Integer> nums = Arrays.asList(1,2,3,4,5,6);
+
+        nums.stream()
+            .filter(n -> n % 2 == 0)
+            .forEach(n -> System.out.println(n));
+    }
+}
+
+
+Method Reference : 🔹 1. What is Method Reference?
+
+A method reference is used to refer to a method without executing it. It is mainly used with functional interfaces (interfaces with a single abstract method).
+
+👉 Syntax:
+
+ClassName::methodName
+🔹 2. Why Use Method Reference?
+Reduces boilerplate code
+Improves readability
+Works well with Streams and functional programming
+🔹 3. Types of Method References
+
+There are 4 types:
+
+Static Method Reference
+Instance Method Reference (of a particular object)
+Instance Method Reference (of an arbitrary object)
+Constructor Reference
+🔹 4. Type 1: Static Method Reference
+✅ Example: Without Method Reference
+import java.util.*;
+
+public class StaticMethodExample {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("A", "B", "C");
+
+        list.forEach(x -> printValue(x));
+    }
+
+    public static void printValue(String s) {
+        System.out.println(s);
+    }
+}
+✅ Using Method Reference
+import java.util.*;
+
+public class StaticMethodExample {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("A", "B", "C");
+
+        list.forEach(StaticMethodExample::printValue);
+    }
+
+    public static void printValue(String s) {
+        System.out.println(s);
+    }
+}
+🔹 5. Type 2: Instance Method Reference (Particular Object)
+✅ Example
+import java.util.*;
+
+public class InstanceMethodExample {
+
+    public void print(String s) {
+        System.out.println(s);
+    }
+
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("Java", "Spring", "React");
+
+        InstanceMethodExample obj = new InstanceMethodExample();
+
+        // Lambda
+        list.forEach(x -> obj.print(x));
+
+        // Method Reference
+        list.forEach(obj::print);
+    }
+}
+🔹 6. Type 3: Instance Method Reference (Arbitrary Object)
+
+Used when method is applied on each object in a collection.
+
+✅ Example
+import java.util.*;
+
+public class ArbitraryObjectExample {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("java", "spring", "boot");
+
+        // Lambda
+        list.stream().map(s -> s.toUpperCase())
+                     .forEach(s -> System.out.println(s));
+
+        // Method Reference
+        list.stream()
+            .map(String::toUpperCase)
+            .forEach(System.out::println);
+    }
+}
+🔹 7. Type 4: Constructor Reference
+
+Used to create objects.
+
+✅ Example
+Step 1: Functional Interface
+interface StudentFactory {
+    Student create(String name);
+}
+Step 2: Class
+class Student {
+    String name;
+
+    Student(String name) {
+        this.name = name;
+    }
+
+    public void display() {
+        System.out.println("Name: " + name);
+    }
+}
+Step 3: Main Class
+public class ConstructorReferenceExample {
+    public static void main(String[] args) {
+
+        // Lambda
+        StudentFactory factory1 = name -> new Student(name);
+
+        // Method Reference
+        StudentFactory factory2 = Student::new;
+
+        Student s1 = factory2.create("Amol");
+        s1.display();
+    }
+}
+🔹 8. Built-in Functional Interfaces Example
+Using Consumer
+import java.util.*;
+
+public class ConsumerExample {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(10, 20, 30);
+
+        // Lambda
+        list.forEach(x -> System.out.println(x));
+
+        // Method Reference
+        list.forEach(System.out::println);
+    }
+}
+🔹 9. Real-Time Example (Sorting)
+import java.util.*;
+
+class Employee {
+    int id;
+    String name;
+
+    Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+public class SortingExample {
+    public static void main(String[] args) {
+
+        List<Employee> list = Arrays.asList(
+            new Employee(1, "John"),
+            new Employee(2, "Alice"),
+            new Employee(3, "Bob")
+        );
+
+        // Lambda
+        list.sort((e1, e2) -> e1.getName().compareTo(e2.getName()));
+
+        // Method Reference
+        list.sort(Comparator.comparing(Employee::getName));
+
+        list.forEach(e -> System.out.println(e.name));
+    }
+}
+
+
+
+
+
+
+ 

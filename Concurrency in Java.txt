@@ -1,0 +1,1108 @@
+Multithreading Basics : 🚀 1. What is Multithreading?
+
+Multithreading = executing multiple threads (lightweight processes) concurrently within a single program.
+
+👉 Real-world example:
+
+Watching a video 🎥 while downloading a file 📥
+In Java:
+One thread → UI
+One thread → background task (API call, DB)
+🧠 2. Process vs Thread
+Concept	Description
+Process	Independent program (e.g., Chrome, VS Code)
+Thread	Small unit of a process
+
+👉 Java runs inside one process but can have multiple threads
+
+⚙️ 3. Ways to Create Threads in Java
+
+Java provides 3 main ways:
+
+✅ 3.1 Extending Thread class
+✔️ Example 1: Basic Thread
+class MyThread extends Thread {
+
+    @Override
+    public void run() {
+        System.out.println("Thread is running...");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        t1.start(); // start new thread
+    }
+}
+
+👉 Output:
+
+Thread is running...
+
+⚠️ Important:
+
+start() → creates new thread
+run() → normal method (don’t call directly)
+✅ 3.2 Implementing Runnable (Best Practice 👍)
+✔️ Example 2
+class MyRunnable implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println("Runnable thread is running...");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new MyRunnable());
+        t1.start();
+    }
+}
+
+👉 Why better?
+
+Java supports multiple inheritance via interfaces
+More flexible
+✅ 3.3 Using Lambda (Modern Java)
+✔️ Example 3
+public class Main {
+    public static void main(String[] args) {
+
+        Thread t1 = new Thread(() -> {
+            System.out.println("Lambda thread running...");
+        });
+
+        t1.start();
+    }
+}
+🔁 4. Multiple Threads Example
+✔️ Example 4: Parallel Execution
+class Task1 extends Thread {
+    public void run() {
+        for(int i = 1; i <= 5; i++) {
+            System.out.println("Task1: " + i);
+        }
+    }
+}
+
+class Task2 extends Thread {
+    public void run() {
+        for(int i = 1; i <= 5; i++) {
+            System.out.println("Task2: " + i);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Task1 t1 = new Task1();
+        Task2 t2 = new Task2();
+
+        t1.start();
+        t2.start();
+    }
+}
+
+👉 Output (order NOT guaranteed):
+
+Task1: 1
+Task2: 1
+Task1: 2
+Task2: 2
+...
+⏱️ 5. Thread Lifecycle
+NEW → RUNNABLE → RUNNING → WAITING → TERMINATED
+🧰 6. Thread Methods
+✔️ sleep()
+class SleepExample extends Thread {
+    public void run() {
+        for(int i = 1; i <= 3; i++) {
+            try {
+                Thread.sleep(1000); // 1 second
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(i);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new SleepExample().start();
+    }
+}
+✔️ join() (Wait for thread)
+class MyThread extends Thread {
+    public void run() {
+        for(int i = 1; i <= 3; i++) {
+            System.out.println("Child Thread: " + i);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+
+        MyThread t1 = new MyThread();
+        t1.start();
+
+        t1.join(); // main waits
+
+        System.out.println("Main Thread Done");
+    }
+}
+⚠️ 7. Synchronization (Critical Topic)
+Problem: Race Condition
+❌ Example (Incorrect Output)
+class Counter {
+    int count = 0;
+
+    public void increment() {
+        count++; // NOT thread-safe
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+
+        Counter c = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for(int i = 0; i < 1000; i++) c.increment();
+        });
+
+        Thread t2 = new Thread(() -> {
+            for(int i = 0; i < 1000; i++) c.increment();
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Count: " + c.count);
+    }
+}
+
+👉 Expected: 2000
+👉 Actual: unpredictable ❌
+
+✅ Fix using synchronized
+class Counter {
+    int count = 0;
+
+    public synchronized void increment() {
+        count++;
+    }
+}
+
+✔️ Now output = 2000
+
+🔒 8. Synchronized Block
+class Counter {
+    int count = 0;
+
+    public void increment() {
+        synchronized(this) {
+            count++;
+        }
+    }
+}
+🔄 9. Inter-Thread Communication (wait/notify)
+class Shared {
+    synchronized void print() {
+        System.out.println("Waiting...");
+        try {
+            wait();
+        } catch (InterruptedException e) {}
+
+        System.out.println("Resumed!");
+    }
+
+    synchronized void notifyThread() {
+        notify();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Shared obj = new Shared();
+
+        Thread t1 = new Thread(() -> obj.print());
+        Thread t2 = new Thread(() -> {
+            try { Thread.sleep(2000); } catch(Exception e){}
+            obj.notifyThread();
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+🧵 10. Thread Pool (Executor Framework)
+
+Best for real-world apps (Spring Boot, APIs)
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    public static void main(String[] args) {
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        for(int i = 1; i <= 5; i++) {
+            int task = i;
+            executor.submit(() -> {
+                System.out.println("Task " + task + " by " + Thread.currentThread().getName());
+            });
+        }
+
+        executor.shutdown();
+    }
+}
+🎯 11. Key Concepts Summary
+Concept	Meaning
+Thread	Lightweight process
+start()	Starts new thread
+run()	Contains logic
+sleep()	Pause thread
+join()	Wait for thread
+synchronized	Avoid race condition
+ExecutorService	Thread pool
+⚡ 12. When to Use Multithreading?
+
+✔️ Use when:
+
+Parallel processing needed
+API calls
+File processing
+Background jobs
+
+❌ Avoid when:
+
+Simple sequential logic
+Heavy synchronization required
+
+
+Thread Synchronization : 🔹 1. What is Thread Synchronization?
+
+When multiple threads access shared data at the same time, they can interfere with each other.
+
+❌ Problem (Race Condition)
+
+Two threads updating the same variable:
+
+count++;
+
+This is not atomic. Internally it does:
+
+Read value
+Increment
+Write back
+
+Two threads can overwrite each other’s updates → wrong result.
+
+🔹 2. Why Synchronization is Needed?
+
+To ensure:
+
+Only one thread executes critical section at a time
+Data consistency
+Avoid race conditions
+🔹 3. Key Concept: Critical Section
+
+A critical section is a part of code where shared resources are accessed.
+
+👉 This must be protected.
+
+🔹 4. Types of Thread Synchronization in Java
+
+Java provides multiple ways:
+
+Synchronized Method
+Synchronized Block
+Static Synchronization
+Inter-thread Communication (wait/notify)
+Lock Interface (ReentrantLock)
+🔹 5. Example 1: Without Synchronization (Problem)
+class Counter {
+    int count = 0;
+
+    void increment() {
+        count++; // Not thread-safe
+    }
+}
+
+public class Test {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Final Count: " + counter.count);
+    }
+}
+❌ Output (unexpected):
+Final Count: 1783 (or any random value)
+🔹 6. Example 2: Synchronized Method
+class Counter {
+    int count = 0;
+
+    synchronized void increment() {
+        count++;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Final Count: " + counter.count);
+    }
+}
+✅ Output:
+Final Count: 2000
+✔️ Explanation:
+synchronized locks the object (this)
+Only one thread can enter method at a time
+🔹 7. Example 3: Synchronized Block
+
+Used when only part of method needs synchronization.
+
+class Counter {
+    int count = 0;
+
+    void increment() {
+        synchronized (this) {
+            count++;
+        }
+    }
+}
+✔️ Why use block instead of method?
+Better performance
+Smaller critical section
+🔹 8. Example 4: Static Synchronization
+
+Locks the class object, not instance.
+
+class Counter {
+    static int count = 0;
+
+    static synchronized void increment() {
+        count++;
+    }
+}
+✔️ Lock used:
+Counter.class
+🔹 9. Example 5: Synchronized Block with Class Lock
+class Counter {
+    static int count = 0;
+
+    void increment() {
+        synchronized (Counter.class) {
+            count++;
+        }
+    }
+}
+🔹 10. Example 6: Inter-thread Communication (wait/notify)
+
+Used when threads need to coordinate.
+
+🧠 Scenario: Producer-Consumer
+✔️ Complete Code
+class SharedBuffer {
+    private int data;
+    private boolean hasData = false;
+
+    public synchronized void produce(int value) throws InterruptedException {
+        while (hasData) {
+            wait(); // wait until consumed
+        }
+
+        data = value;
+        System.out.println("Produced: " + value);
+
+        hasData = true;
+        notify(); // notify consumer
+    }
+
+    public synchronized void consume() throws InterruptedException {
+        while (!hasData) {
+            wait(); // wait until produced
+        }
+
+        System.out.println("Consumed: " + data);
+
+        hasData = false;
+        notify(); // notify producer
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        SharedBuffer buffer = new SharedBuffer();
+
+        Thread producer = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                try {
+                    buffer.produce(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Thread consumer = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                try {
+                    buffer.consume();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        producer.start();
+        consumer.start();
+    }
+}
+🔥 Key Concepts:
+wait() → releases lock, waits
+notify() → wakes up waiting thread
+Must be inside synchronized block/method
+🔹 11. Example 7: ReentrantLock (Advanced)
+
+More flexible than synchronized.
+
+import java.util.concurrent.locks.ReentrantLock;
+
+class Counter {
+    int count = 0;
+    ReentrantLock lock = new ReentrantLock();
+
+    void increment() {
+        lock.lock();
+        try {
+            count++;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+✔️ Advantages:
+Try lock (tryLock())
+Fairness policy
+Interruptible locks
+🔹 12. Comparison
+Feature	synchronized	ReentrantLock
+Simplicity	Easy	Moderate
+Flexibility	Less	More
+Performance	Good	Better in complex cases
+Try lock	❌	✅
+🔹 13. Common Problems in Synchronization
+❌ Deadlock
+
+Two threads waiting for each other forever
+
+❌ Starvation
+
+Thread never gets CPU
+
+❌ Livelock
+
+Threads keep changing state but no progress
+
+🔹 14. Best Practices
+
+✔ Keep critical section small
+✔ Avoid nested locks
+✔ Use higher-level APIs (Executor, Concurrent Collections)
+✔ Prefer ReentrantLock for complex scenarios
+
+🔹 15. Real-World Use Cases
+Banking transactions
+Ticket booking systems
+Inventory management
+Logging systems
+Multithreaded servers
+
+
+Java's Concurrency Utilities (java.util.concurrent) : 🧠 1. Why java.util.concurrent?
+
+Problems with traditional threading:
+
+Hard to manage thread lifecycle
+Race conditions & deadlocks
+Poor scalability
+
+Solution:
+➡️ Use Executors, Locks, Concurrent Collections, Synchronizers
+
+⚙️ 2. Executor Framework (Thread Management)
+✅ Concept
+
+Instead of creating threads manually:
+
+new Thread(() -> {}).start(); // ❌ Not scalable
+
+Use:
+
+ExecutorService executor = Executors.newFixedThreadPool(3);
+🧪 Example 1: Fixed Thread Pool
+import java.util.concurrent.*;
+
+public class ExecutorExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        for (int i = 1; i <= 5; i++) {
+            int taskId = i;
+
+            executor.submit(() -> {
+                System.out.println("Executing Task " + taskId +
+                        " by " + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        executor.shutdown();
+    }
+}
+🔹 Output
+Executing Task 1 by pool-1-thread-1
+Executing Task 2 by pool-1-thread-2
+Executing Task 3 by pool-1-thread-3
+...
+🧪 Example 2: Callable + Future (Return Values)
+import java.util.concurrent.*;
+
+public class FutureExample {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Callable<Integer> task = () -> {
+            Thread.sleep(1000);
+            return 10 + 20;
+        };
+
+        Future<Integer> future = executor.submit(task);
+
+        System.out.println("Waiting for result...");
+        System.out.println("Result: " + future.get());
+
+        executor.shutdown();
+    }
+}
+🔒 3. Locks (Advanced Synchronization)
+✅ ReentrantLock vs synchronized
+Feature	synchronized	ReentrantLock
+Flexibility	Low	High
+Try lock	❌	✅
+Fairness	❌	✅
+🧪 Example 3: ReentrantLock
+import java.util.concurrent.locks.*;
+
+class Counter {
+    private int count = 0;
+    private Lock lock = new ReentrantLock();
+
+    public void increment() {
+        lock.lock();
+        try {
+            count++;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class LockExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Runnable task = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        };
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Final Count: " + counter.getCount());
+    }
+}
+📦 4. Concurrent Collections
+✅ Thread-safe alternatives
+Normal	Concurrent
+HashMap	ConcurrentHashMap
+ArrayList	CopyOnWriteArrayList
+Queue	ConcurrentLinkedQueue
+🧪 Example 4: ConcurrentHashMap
+import java.util.concurrent.*;
+
+public class ConcurrentMapExample {
+    public static void main(String[] args) {
+        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+        Runnable task = () -> {
+            for (int i = 0; i < 5; i++) {
+                map.put(Thread.currentThread().getName() + "-" + i, i);
+            }
+        };
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {}
+
+        System.out.println(map);
+    }
+}
+⏳ 5. Synchronizers
+
+These help coordinate multiple threads.
+
+🧪 Example 5: CountDownLatch
+✅ Use case: Wait for tasks to finish
+import java.util.concurrent.*;
+
+public class CountDownLatchExample {
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(3);
+
+        Runnable worker = () -> {
+            System.out.println(Thread.currentThread().getName() + " working...");
+            latch.countDown();
+        };
+
+        new Thread(worker).start();
+        new Thread(worker).start();
+        new Thread(worker).start();
+
+        latch.await(); // wait until count = 0
+        System.out.println("All tasks completed!");
+    }
+}
+🧪 Example 6: CyclicBarrier
+✅ Use case: All threads wait for each other
+import java.util.concurrent.*;
+
+public class CyclicBarrierExample {
+    public static void main(String[] args) {
+        CyclicBarrier barrier = new CyclicBarrier(3, () ->
+                System.out.println("All threads reached barrier!")
+        );
+
+        Runnable task = () -> {
+            try {
+                System.out.println(Thread.currentThread().getName() + " waiting...");
+                barrier.await();
+                System.out.println(Thread.currentThread().getName() + " proceeding...");
+            } catch (Exception e) {}
+        };
+
+        new Thread(task).start();
+        new Thread(task).start();
+        new Thread(task).start();
+    }
+}
+🔁 6. BlockingQueue (Producer-Consumer)
+🧪 Example 7: Producer-Consumer
+import java.util.concurrent.*;
+
+public class BlockingQueueExample {
+    public static void main(String[] args) {
+        BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(5);
+
+        // Producer
+        Runnable producer = () -> {
+            try {
+                for (int i = 1; i <= 10; i++) {
+                    queue.put(i);
+                    System.out.println("Produced: " + i);
+                }
+            } catch (InterruptedException e) {}
+        };
+
+        // Consumer
+        Runnable consumer = () -> {
+            try {
+                for (int i = 1; i <= 10; i++) {
+                    int value = queue.take();
+                    System.out.println("Consumed: " + value);
+                }
+            } catch (InterruptedException e) {}
+        };
+
+        new Thread(producer).start();
+        new Thread(consumer).start();
+    }
+}
+🧮 7. Atomic Variables (Lock-Free Thread Safety)
+🧪 Example 8: AtomicInteger
+import java.util.concurrent.atomic.*;
+
+public class AtomicExample {
+    public static void main(String[] args) throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+
+        Runnable task = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.incrementAndGet();
+            }
+        };
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Final Count: " + counter.get());
+    }
+}
+🚀 8. ScheduledExecutorService
+🧪 Example 9: Run periodically
+import java.util.concurrent.*;
+
+public class ScheduledExample {
+    public static void main(String[] args) {
+        ScheduledExecutorService scheduler =
+                Executors.newScheduledThreadPool(1);
+
+        scheduler.scheduleAtFixedRate(() -> {
+            System.out.println("Running task at: " + System.currentTimeMillis());
+        }, 0, 2, TimeUnit.SECONDS);
+    }
+}
+
+
+Thread Safety and Best Practices : 🔹 1. What is Thread Safety?
+
+A class or block of code is thread-safe if it behaves correctly when accessed by multiple threads simultaneously.
+
+👉 In simple terms:
+
+Multiple threads can use it without causing incorrect results or data corruption.
+
+🔹 2. Why Thread Safety is Needed?
+
+Because of problems like:
+
+❌ Race Condition
+
+Two threads modify shared data at the same time.
+
+❌ Visibility Issue
+
+One thread updates a variable, but another thread doesn’t see the updated value.
+
+❌ Atomicity Issue
+
+An operation that looks single-step is actually multiple steps.
+
+🔹 3. Example of Non-Thread Safe Code
+class Counter {
+    int count = 0;
+
+    public void increment() {
+        count++;  // Not atomic
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Counter counter = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) counter.increment();
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) counter.increment();
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Final Count: " + counter.count);
+    }
+}
+❗ Expected Output:
+2000
+❗ Actual Output:
+Random value (e.g., 1783, 1920, etc.)
+
+👉 Because count++ is:
+
+Read
+Increment
+Write
+
+Multiple threads interfere → race condition
+
+🔹 4. Making Code Thread-Safe
+✅ 4.1 Using synchronized
+class Counter {
+    int count = 0;
+
+    public synchronized void increment() {
+        count++;
+    }
+}
+OR
+public void increment() {
+    synchronized (this) {
+        count++;
+    }
+}
+
+✔ Ensures:
+
+Only one thread executes at a time
+Fixes race condition
+✅ 4.2 Using volatile (Visibility Fix)
+class FlagExample {
+    volatile boolean running = true;
+
+    public void stop() {
+        running = false;
+    }
+}
+
+👉 Ensures:
+
+Changes are visible across threads
+Does NOT ensure atomicity
+✅ 4.3 Using Atomic Classes
+import java.util.concurrent.atomic.AtomicInteger;
+
+class Counter {
+    AtomicInteger count = new AtomicInteger(0);
+
+    public void increment() {
+        count.incrementAndGet();
+    }
+}
+
+✔ Benefits:
+
+Lock-free
+Faster than synchronized
+Thread-safe atomic operations
+✅ 4.4 Using ReentrantLock
+import java.util.concurrent.locks.ReentrantLock;
+
+class Counter {
+    private int count = 0;
+    private ReentrantLock lock = new ReentrantLock();
+
+    public void increment() {
+        lock.lock();
+        try {
+            count++;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+✔ More flexible than synchronized:
+
+Try lock
+Timeout
+Fairness policy
+🔹 5. Thread-Safe Collections
+❌ Not Thread Safe:
+ArrayList
+HashMap
+✅ Thread Safe Options:
+5.1 Using Collections.synchronizedList
+import java.util.*;
+
+List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+5.2 Using Concurrent Collections
+import java.util.concurrent.*;
+
+ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+✔ Highly scalable
+✔ Better performance than synchronized collections
+
+🔹 6. Immutable Objects (Best Strategy)
+
+👉 The safest thread-safe object is immutable
+
+Example:
+final class User {
+    private final String name;
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+✔ No setters
+✔ No modification
+✔ Automatically thread-safe
+
+🔹 7. Thread Confinement
+
+👉 Restrict variable access to one thread
+
+public void process() {
+    int localVar = 0; // Thread-safe (local variable)
+}
+
+✔ Local variables are always thread-safe
+
+🔹 8. Best Practices for Thread Safety
+✅ 1. Minimize Shared Mutable State
+
+Avoid sharing variables between threads.
+
+✅ 2. Prefer Immutable Objects
+
+Use final fields and no setters.
+
+✅ 3. Use High-Level Concurrency APIs
+
+Instead of manual threads:
+
+import java.util.concurrent.*;
+
+ExecutorService executor = Executors.newFixedThreadPool(2);
+
+executor.submit(() -> {
+    System.out.println("Task executed");
+});
+
+executor.shutdown();
+✅ 4. Use Atomic Classes Instead of Synchronization (when possible)
+✅ 5. Always Unlock in finally
+lock.lock();
+try {
+    // critical section
+} finally {
+    lock.unlock();
+}
+✅ 6. Avoid Deadlocks
+
+❌ Bad:
+
+synchronized (obj1) {
+    synchronized (obj2) {
+    }
+}
+
+✔ Always acquire locks in consistent order
+
+✅ 7. Use ThreadLocal for Per-Thread Data
+ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 0);
+
+threadLocal.set(10);
+System.out.println(threadLocal.get());
+🔹 9. Real-World Example (Thread-Safe Bank System)
+class BankAccount {
+    private int balance = 1000;
+
+    public synchronized void withdraw(int amount) {
+        if (balance >= amount) {
+            System.out.println(Thread.currentThread().getName() + " withdrawing " + amount);
+            balance -= amount;
+        } else {
+            System.out.println("Insufficient balance");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount();
+
+        Runnable task = () -> account.withdraw(700);
+
+        Thread t1 = new Thread(task, "User1");
+        Thread t2 = new Thread(task, "User2");
+
+        t1.start();
+        t2.start();
+    }
+}
+
+✔ Ensures no overdraft
+✔ Safe concurrent access
+
+
+
