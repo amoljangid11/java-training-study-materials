@@ -618,6 +618,7 @@ Executing Task 2 by pool-1-thread-2
 Executing Task 3 by pool-1-thread-3
 ...
 🧪 Example 2: Callable + Future (Return Values)
+
 import java.util.concurrent.*;
 
 public class FutureExample {
@@ -637,13 +638,18 @@ public class FutureExample {
         executor.shutdown();
     }
 }
+
 🔒 3. Locks (Advanced Synchronization)
+
 ✅ ReentrantLock vs synchronized
+
 Feature	synchronized	ReentrantLock
 Flexibility	Low	High
 Try lock	❌	✅
 Fairness	❌	✅
+
 🧪 Example 3: ReentrantLock
+
 import java.util.concurrent.locks.*;
 
 class Counter {
@@ -686,13 +692,18 @@ public class LockExample {
         System.out.println("Final Count: " + counter.getCount());
     }
 }
+
 📦 4. Concurrent Collections
+
 ✅ Thread-safe alternatives
-Normal	Concurrent
-HashMap	ConcurrentHashMap
-ArrayList	CopyOnWriteArrayList
-Queue	ConcurrentLinkedQueue
+
+Normal		Concurrent
+HashMap		ConcurrentHashMap
+ArrayList		CopyOnWriteArrayList
+Queue		ConcurrentLinkedQueue
+
 🧪 Example 4: ConcurrentHashMap
+
 import java.util.concurrent.*;
 
 public class ConcurrentMapExample {
@@ -719,12 +730,15 @@ public class ConcurrentMapExample {
         System.out.println(map);
     }
 }
+
 ⏳ 5. Synchronizers
 
 These help coordinate multiple threads.
 
-🧪 Example 5: CountDownLatch
+🧪 Example 5: CountDownLatch // wait for another tthread to finish
+
 ✅ Use case: Wait for tasks to finish
+
 import java.util.concurrent.*;
 
 public class CountDownLatchExample {
@@ -744,101 +758,7 @@ public class CountDownLatchExample {
         System.out.println("All tasks completed!");
     }
 }
-🧪 Example 6: CyclicBarrier
-✅ Use case: All threads wait for each other
-import java.util.concurrent.*;
 
-public class CyclicBarrierExample {
-    public static void main(String[] args) {
-        CyclicBarrier barrier = new CyclicBarrier(3, () ->
-                System.out.println("All threads reached barrier!")
-        );
-
-        Runnable task = () -> {
-            try {
-                System.out.println(Thread.currentThread().getName() + " waiting...");
-                barrier.await();
-                System.out.println(Thread.currentThread().getName() + " proceeding...");
-            } catch (Exception e) {}
-        };
-
-        new Thread(task).start();
-        new Thread(task).start();
-        new Thread(task).start();
-    }
-}
-🔁 6. BlockingQueue (Producer-Consumer)
-🧪 Example 7: Producer-Consumer
-import java.util.concurrent.*;
-
-public class BlockingQueueExample {
-    public static void main(String[] args) {
-        BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(5);
-
-        // Producer
-        Runnable producer = () -> {
-            try {
-                for (int i = 1; i <= 10; i++) {
-                    queue.put(i);
-                    System.out.println("Produced: " + i);
-                }
-            } catch (InterruptedException e) {}
-        };
-
-        // Consumer
-        Runnable consumer = () -> {
-            try {
-                for (int i = 1; i <= 10; i++) {
-                    int value = queue.take();
-                    System.out.println("Consumed: " + value);
-                }
-            } catch (InterruptedException e) {}
-        };
-
-        new Thread(producer).start();
-        new Thread(consumer).start();
-    }
-}
-🧮 7. Atomic Variables (Lock-Free Thread Safety)
-🧪 Example 8: AtomicInteger
-import java.util.concurrent.atomic.*;
-
-public class AtomicExample {
-    public static void main(String[] args) throws InterruptedException {
-        AtomicInteger counter = new AtomicInteger(0);
-
-        Runnable task = () -> {
-            for (int i = 0; i < 1000; i++) {
-                counter.incrementAndGet();
-            }
-        };
-
-        Thread t1 = new Thread(task);
-        Thread t2 = new Thread(task);
-
-        t1.start();
-        t2.start();
-
-        t1.join();
-        t2.join();
-
-        System.out.println("Final Count: " + counter.get());
-    }
-}
-🚀 8. ScheduledExecutorService
-🧪 Example 9: Run periodically
-import java.util.concurrent.*;
-
-public class ScheduledExample {
-    public static void main(String[] args) {
-        ScheduledExecutorService scheduler =
-                Executors.newScheduledThreadPool(1);
-
-        scheduler.scheduleAtFixedRate(() -> {
-            System.out.println("Running task at: " + System.currentTimeMillis());
-        }, 0, 2, TimeUnit.SECONDS);
-    }
-}
 
 
 Thread Safety and Best Practices : 🔹 1. What is Thread Safety?
@@ -866,11 +786,12 @@ One thread updates a variable, but another thread doesn’t see the updated valu
 An operation that looks single-step is actually multiple steps.
 
 🔹 3. Example of Non-Thread Safe Code
+
 class Counter {
     int count = 0;
 
     public void increment() {
-        count++;  // Not atomic
+        count++;  // Not atomic  
     }
 }
 
@@ -909,7 +830,9 @@ Write
 Multiple threads interfere → race condition
 
 🔹 4. Making Code Thread-Safe
+
 ✅ 4.1 Using synchronized
+
 class Counter {
     int count = 0;
 
@@ -917,7 +840,9 @@ class Counter {
         count++;
     }
 }
+
 OR
+
 public void increment() {
     synchronized (this) {
         count++;
@@ -928,20 +853,48 @@ public void increment() {
 
 Only one thread executes at a time
 Fixes race condition
-✅ 4.2 Using volatile (Visibility Fix)
-class FlagExample {
-    volatile boolean running = true;
 
-    public void stop() {
-        running = false;
-    }
+✅ 4.2 Using volatile (Visibility Fix)
+
+class SharedData {
+    volatile boolean running = true;
 }
 
+public class Main {
+
+    public static void main(String[] args) {
+        SharedData data = new SharedData();
+
+        Thread worker = new Thread(() -> {
+            System.out.println("worker thread started");
+
+            while(data.running){
+                // Simulating work
+            }
+
+            System.out.println("worked thread stopped");
+        });
+
+        worker.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch(InterruptedException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Main thread updating running to false");
+
+        data.running = false;
+    }
+}
 👉 Ensures:
 
 Changes are visible across threads
 Does NOT ensure atomicity
+
 ✅ 4.3 Using Atomic Classes
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 class Counter {
@@ -957,7 +910,9 @@ class Counter {
 Lock-free
 Faster than synchronized
 Thread-safe atomic operations
+
 ✅ 4.4 Using ReentrantLock
+
 import java.util.concurrent.locks.ReentrantLock;
 
 class Counter {
@@ -979,16 +934,24 @@ class Counter {
 Try lock
 Timeout
 Fairness policy
+
 🔹 5. Thread-Safe Collections
+
 ❌ Not Thread Safe:
+
 ArrayList
 HashMap
+
 ✅ Thread Safe Options:
+
 5.1 Using Collections.synchronizedList
+
 import java.util.*;
 
 List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+
 5.2 Using Concurrent Collections
+
 import java.util.concurrent.*;
 
 ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
@@ -1001,6 +964,7 @@ ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 👉 The safest thread-safe object is immutable
 
 Example:
+
 final class User {
     private final String name;
 
@@ -1017,17 +981,10 @@ final class User {
 ✔ No modification
 ✔ Automatically thread-safe
 
-🔹 7. Thread Confinement
 
-👉 Restrict variable access to one thread
 
-public void process() {
-    int localVar = 0; // Thread-safe (local variable)
-}
+🔹 7. Best Practices for Thread Safety
 
-✔ Local variables are always thread-safe
-
-🔹 8. Best Practices for Thread Safety
 ✅ 1. Minimize Shared Mutable State
 
 Avoid sharing variables between threads.
@@ -1049,14 +1006,18 @@ executor.submit(() -> {
 });
 
 executor.shutdown();
+
 ✅ 4. Use Atomic Classes Instead of Synchronization (when possible)
+
 ✅ 5. Always Unlock in finally
+
 lock.lock();
 try {
     // critical section
 } finally {
     lock.unlock();
 }
+
 ✅ 6. Avoid Deadlocks
 
 ❌ Bad:
@@ -1068,12 +1029,9 @@ synchronized (obj1) {
 
 ✔ Always acquire locks in consistent order
 
-✅ 7. Use ThreadLocal for Per-Thread Data
-ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 0);
 
-threadLocal.set(10);
-System.out.println(threadLocal.get());
-🔹 9. Real-World Example (Thread-Safe Bank System)
+🔹 7.  Real-World Example (Thread-Safe Bank System)
+
 class BankAccount {
     private int balance = 1000;
 

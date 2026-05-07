@@ -1,0 +1,648 @@
+Design Patterns : 1. What are Design Patterns?
+
+Design Patterns are reusable solutions to commonly occurring software design problems.
+
+They are:
+
+Proven solutions
+Best practices
+Templates for solving design issues
+Not complete code, but structures and approaches
+
+Design patterns help developers:
+
+Write maintainable code
+Reduce code duplication
+Improve flexibility
+Improve scalability
+Follow clean architecture
+
+2. Types of Design Patterns
+
+Design patterns are mainly divided into:
+
+Category			Purpose
+Creational Patterns	Object creation mechanisms
+Structural Patterns	Class and object composition
+Behavioral Patterns	Communication between objects
+
+3. Creational Design Patterns
+
+These patterns deal with object creation.
+
+A. Singleton Pattern
+
+Purpose
+
+Ensures only one object of a class exists.
+
+Real-world Example
+
+Logger
+Database connection
+Configuration manager
+
+Singleton Example
+
+class Singleton {
+
+    // Static instance
+    private static Singleton instance;
+
+    // Private constructor
+    private Singleton() {
+        System.out.println("Object Created");
+    }
+
+    // Public method to get instance
+    public static Singleton getInstance() {
+
+        if(instance == null) {
+            instance = new Singleton();
+        }
+
+        return instance;
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Singleton s1 = Singleton.getInstance();
+        Singleton s2 = Singleton.getInstance();
+
+        System.out.println(s1 == s2);
+    }
+}
+
+Output
+
+Object Created
+true
+
+Advantages
+
+Saves memory
+Controlled access
+Global access point
+
+Disadvantages
+
+Difficult in unit testing
+
+Thread safety issues if not handled
+
+B. Factory Pattern
+
+Purpose
+
+Creates objects without exposing creation logic.
+
+Example
+
+interface Animal {
+    void sound();
+}
+
+class Dog implements Animal {
+    public void sound() {
+        System.out.println("Bark");
+    }
+}
+
+class Cat implements Animal {
+    public void sound() {
+        System.out.println("Meow");
+    }
+}
+
+class AnimalFactory {
+
+    public Animal getAnimal(String type) {
+
+        if(type.equals("DOG")) {
+            return new Dog();
+        }
+
+        if(type.equals("CAT")) {
+            return new Cat();
+        }
+
+        return null;
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        AnimalFactory factory = new AnimalFactory();
+
+        Animal a1 = factory.getAnimal("DOG");
+        a1.sound();
+
+        Animal a2 = factory.getAnimal("CAT");
+        a2.sound();
+    }
+}
+
+Advantages
+
+Loose coupling
+Easy extension
+Centralized object creation
+
+C. Builder Pattern
+
+Purpose
+
+Constructs complex objects step-by-step.
+
+Example
+class Employee {
+
+    private int id;
+    private String name;
+    private String city;
+
+    private Employee(EmployeeBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.city = builder.city;
+    }
+
+    public static class EmployeeBuilder {
+
+        private int id;
+        private String name;
+        private String city;
+
+        public EmployeeBuilder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public EmployeeBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public EmployeeBuilder setCity(String city) {
+            this.city = city;
+            return this;
+        }
+
+        public Employee build() {
+            return new Employee(this);
+        }
+    }
+
+    public void display() {
+        System.out.println(id + " " + name + " " + city);
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Employee emp = new Employee.EmployeeBuilder()
+                .setId(1)
+                .setName("Amol")
+                .setCity("Pune")
+                .build();
+
+        emp.display();
+    }
+}
+
+4. Structural Design Patterns
+
+These patterns deal with object composition.
+
+A. Adapter Pattern
+
+Purpose
+
+Allows incompatible interfaces to work together.
+
+Real-world Example
+Mobile charger adapter
+Payment gateway integrations
+Example
+interface AndroidCharger {
+    void chargeAndroid();
+}
+
+class AndroidPhone implements AndroidCharger {
+
+    public void chargeAndroid() {
+        System.out.println("Charging Android Phone");
+    }
+}
+
+class Iphone {
+
+    public void chargeIphone() {
+        System.out.println("Charging iPhone");
+    }
+}
+
+class IphoneAdapter implements AndroidCharger {
+
+    private Iphone iphone;
+
+    public IphoneAdapter(Iphone iphone) {
+        this.iphone = iphone;
+    }
+
+    public void chargeAndroid() {
+        iphone.chargeIphone();
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        AndroidCharger charger = new IphoneAdapter(new Iphone());
+
+        charger.chargeAndroid();
+    }
+}
+
+B. Decorator Pattern
+
+Purpose
+
+Adds new functionality dynamically.
+
+Example
+interface Coffee {
+    String getDescription();
+    int getCost();
+}
+
+class SimpleCoffee implements Coffee {
+
+    public String getDescription() {
+        return "Simple Coffee";
+    }
+
+    public int getCost() {
+        return 100;
+    }
+}
+
+class MilkDecorator implements Coffee {
+
+    private Coffee coffee;
+
+    public MilkDecorator(Coffee coffee) {
+        this.coffee = coffee;
+    }
+
+    public String getDescription() {
+        return coffee.getDescription() + " + Milk";
+    }
+
+    public int getCost() {
+        return coffee.getCost() + 20;
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Coffee coffee = new MilkDecorator(new SimpleCoffee());
+
+        System.out.println(coffee.getDescription());
+        System.out.println(coffee.getCost());
+    }
+}
+
+5. Behavioral Design Patterns
+
+These patterns focus on communication between objects.
+
+A. Observer Pattern
+
+Purpose
+
+One object notifies multiple dependent objects. // in real-time data 
+
+Real-world Example
+
+YouTube subscriptions
+Stock market updates
+Event listeners
+
+Example
+
+import java.util.ArrayList;
+import java.util.List;
+
+interface Observer {
+    void update(String message);
+}
+
+class Subscriber implements Observer {
+
+    private String name;
+
+    public Subscriber(String name) {
+        this.name = name;
+    }
+
+    public void update(String message) {
+        System.out.println(name + " received: " + message);
+    }
+}
+
+class YouTubeChannel {
+
+    private List<Observer> observers = new ArrayList<>();
+
+    public void subscribe(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifySubscribers(String video) {
+
+        for(Observer observer : observers) {
+            observer.update(video);
+        }
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        YouTubeChannel channel = new YouTubeChannel();
+
+        channel.subscribe(new Subscriber("Amol"));
+        channel.subscribe(new Subscriber("Rahul"));
+
+        channel.notifySubscribers("New Java Video Uploaded");
+    }
+}
+
+
+
+Applying Design Patterns in Java : 1. What are Design Patterns?
+
+Design Patterns are reusable solutions to common software design problems.
+They provide a standard way to structure code for:
+
+Reusability
+Maintainability
+Scalability
+Flexibility
+Loose coupling
+
+Design patterns are not ready-made code but best practices used in real-world applications.
+
+2. Why Apply Design Patterns in Java?
+
+Applying design patterns helps developers:
+
+Benefit			Explanation
+Code Reusability	Reuse existing solutions
+Easy Maintenance	Cleaner architecture
+Scalability		Easy to extend features
+Loose Coupling	Components work independently
+Better Testing		Easier unit testing
+Team Collaboration		Standardized structure
+
+3. Categories of Design Patterns
+
+Design patterns are mainly divided into 3 categories:
+
+Category		Purpose
+Creational	Object creation mechanisms
+Structural	Class/object composition
+Behavioral	Communication between objects
+
+4. Creational Design Patterns
+
+These patterns deal with object creation.
+
+4.1 Singleton Pattern
+
+Purpose
+
+Ensures only one object is created.
+
+Real-world Example
+
+Logger
+Database Connection
+Configuration Manager
+
+Without Singleton
+
+class Logger {
+    public Logger() {
+        System.out.println("Logger Created");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Logger l1 = new Logger();
+        Logger l2 = new Logger();
+    }
+}
+
+Problem:
+
+Multiple unnecessary objects created.
+
+Applying Singleton Pattern
+
+class Logger {
+
+    private static Logger instance;
+
+    private Logger() {
+        System.out.println("Logger Created");
+    }
+
+    public static Logger getInstance() {
+        if(instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Logger l1 = Logger.getInstance();
+        Logger l2 = Logger.getInstance();
+
+        System.out.println(l1 == l2);
+    }
+}
+
+Output:
+
+true
+
+Advantages
+
+Saves memory
+Global access point
+Controlled object creation
+
+4.2 Factory Pattern
+
+Purpose
+
+Creates objects without exposing creation logic.
+
+Example Scenario
+
+Different notification types:
+
+Email
+SMS
+Push Notification
+
+Applying Factory Pattern
+
+interface Notification {
+    void send();
+}
+
+class EmailNotification implements Notification {
+    public void send() {
+        System.out.println("Sending Email");
+    }
+}
+
+class SMSNotification implements Notification {
+    public void send() {
+        System.out.println("Sending SMS");
+    }
+}
+
+class NotificationFactory {
+
+    public static Notification createNotification(String type) {
+
+        if(type.equals("EMAIL")) {
+            return new EmailNotification();
+        }
+        else if(type.equals("SMS")) {
+            return new SMSNotification();
+        }
+
+        return null;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Notification n =
+            NotificationFactory.createNotification("EMAIL");
+
+        n.send();
+    }
+}
+
+Advantages
+
+Loose coupling
+Centralized object creation
+Easy extension
+
+6. Behavioral Design Patterns
+
+These patterns define communication between objects.
+
+6.1 Observer Pattern
+
+Purpose
+
+One object notifies multiple objects automatically.
+
+Real-world Example
+
+YouTube subscribers notification.
+
+Applying Observer Pattern
+import java.util.*;
+
+interface Observer {
+    void update(String message);
+}
+
+class Subscriber implements Observer {
+
+    private String name;
+
+    public Subscriber(String name) {
+        this.name = name;
+    }
+
+    public void update(String message) {
+        System.out.println(name + " received: " + message);
+    }
+}
+
+class Channel {
+
+    private List<Observer> subscribers = new ArrayList<>();
+
+    public void subscribe(Observer observer) {
+        subscribers.add(observer);
+    }
+
+    public void notifySubscribers(String video) {
+
+        for(Observer observer : subscribers) {
+            observer.update(video);
+        }
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Channel channel = new Channel();
+
+        channel.subscribe(new Subscriber("Amol"));
+        channel.subscribe(new Subscriber("Rahul"));
+
+        channel.notifySubscribers("New Java Video Uploaded");
+    }
+}
+
+7. Applying Design Patterns in Real Projects
+
+Project Area				Common Pattern
+
+Spring Framework			Singleton, Factory
+Hibernate					Factory, Proxy
+Microservices				Circuit Breaker
+Logging Frameworks		Singleton
+UI Applications			MVC
+Payment Gateway			Strategy
+Notification System			Observer
+
+8. Design Patterns Used in Spring Framework
+
+Spring Feature			Design Pattern
+ApplicationContext		Factory Pattern
+Bean Scope Singleton	Singleton Pattern
+AOP				Proxy Pattern
+RestTemplate		Template Pattern
+Event Handling	Observer Pattern
+

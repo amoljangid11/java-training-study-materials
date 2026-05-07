@@ -1,0 +1,1099 @@
+Junit/Code Coverage : Introduction to Junit : What is JUnit?
+
+JUnit is a popular unit testing framework for Java applications.
+It is used to test individual units or components of a program automatically.
+
+A unit usually means:
+
+A method
+A class
+A small functionality of the application
+
+JUnit helps developers:
+
+Find bugs early
+Improve code quality
+Automate testing
+Support Test-Driven Development (TDD) // first we write the test case after that we write the code
+
+Why Use JUnit?
+
+Without JUnit:
+
+Developers manually test the application
+Testing becomes repetitive
+Bugs are missed easily
+
+With JUnit:
+
+Tests run automatically
+Faster debugging
+Safer code refactoring
+Easy integration with Maven, Gradle, Jenkins, CI/CD
+
+Features of JUnit
+
+1. Automated Testing
+
+Run tests automatically without manual checking. // true
+
+2. Assertions
+
+Verify expected and actual outputs.
+
+3. Test Suites
+
+Group multiple test cases together.
+
+4. Annotations
+
+Control test execution using annotations like: JF code testing
+
+@Test  used to write the test cases
+@BeforeEach  // how was the code before execution of test cases
+@AfterEach  // after test cases execution
+
+5. Integration Support
+
+Works with:
+
+Maven
+Gradle
+Spring Boot
+Jenkins
+IDEs like IntelliJ and Eclipse
+
+JUnit Versions
+
+Version	Description
+JUnit 3	Old version
+JUnit 4	Annotation-based
+JUnit 5	Latest and most powerful
+
+JUnit 5 is recommended today.
+
+Architecture of JUnit 5
+
+JUnit 5 consists of:
+
+Component	Purpose
+JUnit Platform	Launches testing frameworks
+JUnit Jupiter	New programming model
+JUnit Vintage	Supports old JUnit tests
+
+
+
+Junit with Eclipse : 1. What is JUnit?
+
+JUnit is a popular Java testing framework used to:
+
+Test Java applications automatically
+Verify expected output
+Detect bugs early
+Support Test Driven Development (TDD)
+
+JUnit helps developers write:
+
+Unit Tests
+Automated Tests
+Regression Tests
+
+2. Why Use JUnit?
+
+Advantages
+Automates testing
+Reduces manual testing effort
+Improves code quality
+Helps in debugging
+Supports CI/CD pipelines
+Easy integration with Eclipse, Maven, Gradle
+
+3. Types of Testing
+
+Testing Type	Description
+Unit Testing	Tests individual methods/classes
+Integration Testing	Tests combined modules
+System Testing	Tests complete system  E2E testing
+Regression Testing	Ensures old functionality still works
+
+JUnit mainly supports:
+
+✅ Unit Testing
+4. JUnit Versions
+Version	Description
+JUnit 4	Older widely used version
+JUnit 5	Latest modern version
+
+We will use:
+
+✅ JUnit 5
+
+5. Software Required
+
+Install:
+
+Software	Purpose
+Java JDK 17+	Java Development
+Eclipse IDE	Development Environment
+JUnit 5	Testing Framework
+
+6. Install Eclipse
+
+Download Eclipse from:
+
+Eclipse IDE Download
+
+Choose:
+
+Eclipse IDE for Java Developers
+
+Install and open Eclipse.
+
+7. Create Java Project in Eclipse
+Step 1
+
+Open Eclipse
+
+Step 2
+
+Click:
+
+File → New → Java Project
+
+Step 3
+
+Project Name:
+
+JUnitDemo
+
+Step 4
+
+Click:
+
+Finish
+
+Project created successfully.
+
+8. Create Package
+
+Inside src
+
+Right click:
+
+New → Package
+
+Package Name:
+
+com.demo
+
+9. Create Java Class
+
+Right click package:
+
+New → Class
+
+Class Name:
+
+Calculator
+
+10. Write Business Logic
+
+Calculator.java
+package com.demo;
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public int divide(int a, int b) {
+
+        if(b == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+
+        return a / b;
+    }
+}
+
+11. Add JUnit Library in Eclipse
+
+Step 1
+
+Right click project
+
+Build Path → Add Libraries
+
+Step 2
+
+Choose:
+
+JUnit
+
+Step 3
+
+Select:
+
+JUnit 5
+
+Step 4
+
+Click:
+
+Finish
+
+JUnit added successfully.
+
+12. Create Test Class
+
+Right click package:
+
+New → JUnit Test Case
+
+Class Name:
+
+CalculatorTest
+
+Select:
+
+New JUnit Jupiter Test
+
+Click:
+
+Finish
+
+13. Basic Structure of JUnit Test
+
+CalculatorTest.java
+package com.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    @Test
+    void testAdd() {
+
+    }
+}
+
+14. Important JUnit Annotations
+
+Annotation	Purpose
+
+@Test	Marks test method
+@BeforeEach	Runs before every test
+@AfterEach	Runs after every test
+@BeforeAll	Runs once before all tests
+@AfterAll	Runs once after all tests
+@Disabled	Skip test
+
+15. First JUnit Test Example
+
+CalculatorTest.java
+
+package com.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    @Test
+    void testAdd() {
+
+        Calculator calc = new Calculator();
+
+        int actual = calc.add(10, 20);
+
+        int expected = 30;
+
+        assertEquals(expected, actual);
+    }
+}
+
+16. Understanding assertEquals()
+
+assertEquals(expected, actual);
+
+If values match:
+
+✅ Test Passes
+
+If values do not match:
+
+❌ Test Fails
+
+17. Run JUnit Test in Eclipse
+
+Step 1
+
+Right click CalculatorTest.java
+
+Step 2
+
+Click:
+
+Run As → JUnit Test
+
+18. Output
+
+If test passes:
+
+✅ Green Bar
+
+If test fails:
+
+❌ Red Bar
+
+19. Complete JUnit Example
+
+CalculatorTest.java
+package com.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    Calculator calc = new Calculator();
+
+    @Test
+    void testAdd() {
+
+        assertEquals(30, calc.add(10, 20));
+    }
+
+    @Test
+    void testSubtract() {
+
+        assertEquals(5, calc.subtract(10, 5));
+    }
+
+    @Test
+    void testMultiply() {
+
+        assertEquals(50, calc.multiply(10, 5));
+    }
+
+    @Test
+    void testDivide() {
+
+        assertEquals(2, calc.divide(10, 5));
+    }
+}
+
+20. Test Result
+
+Method	Result
+testAdd()	Pass
+testSubtract()	Pass
+testMultiply()	Pass
+testDivide()	Pass
+
+
+Assert methods and annotations : 1. What is JUnit?
+
+JUnit is a Java testing framework used to:
+
+Test Java applications automatically
+Verify expected vs actual results
+Reduce bugs
+Support Test Driven Development (TDD)
+
+JUnit helps developers:
+
+Write repeatable tests
+Validate business logic
+Detect issues early
+
+2. Types of JUnit
+
+Version	Description
+JUnit 4	Older but still widely used
+JUnit 5	Latest modern version
+
+In this tutorial, we will use JUnit 5.
+
+3. Software Required
+
+Install:
+
+Software	Purpose
+Java JDK 17+	Java Development
+Eclipse IDE	Coding
+Maven (optional)	Dependency management
+
+4. Install Eclipse
+
+Download Eclipse from:
+
+Eclipse IDE Download
+
+Install:
+
+Eclipse IDE for Java Developers
+
+5. Create Java Project in Eclipse
+
+Step 1: Open Eclipse
+
+Step 2: Create Project
+
+Go to:
+
+File → New → Java Project
+
+Project Name:
+
+JUnitDemo
+
+Click:
+
+Finish
+
+6. Add JUnit 5 Library in Eclipse
+
+Step 1
+
+Right-click project
+
+Build Path → Add Libraries
+
+Step 2
+
+Select:
+
+JUnit
+
+Click:
+
+Next
+
+Step 3
+
+Choose:
+
+JUnit 5
+
+Click:
+
+Finish
+
+Now JUnit library is added.
+
+7. Create Source Package
+
+Create package:
+
+com.demo
+
+8. Create Calculator Class
+
+Create:
+
+Calculator.java
+
+Calculator.java
+
+package com.demo;
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public int divide(int a, int b) {
+        return a / b;
+    }
+
+    public boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+
+    public String getMessage() {
+        return "Welcome to JUnit";
+    }
+}
+
+9. Create JUnit Test Class
+
+Create:
+
+CalculatorTest.java
+
+10. Important JUnit Annotations
+
+Annotation	Purpose
+
+@Test		Marks test method
+@BeforeEach	Runs before every test
+@AfterEach	Runs after every test
+@BeforeAll	Runs once before all tests
+@AfterAll	Runs once after all tests
+@Disabled	Skip test
+@DisplayName	Custom test name
+
+11. Complete JUnit Example
+
+CalculatorTest.java
+
+package com.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    Calculator calculator;
+
+    // Runs once before all tests
+
+    @BeforeAll
+    static void beforeAllTests() {
+        System.out.println("=== Starting Test Execution ===");
+    }
+
+    // Runs before each test
+    @BeforeEach
+    void setup() {
+        calculator = new Calculator();
+        System.out.println("Setup completed");
+    }
+
+    // Test method
+    @Test
+    @DisplayName("Addition Test")
+    void testAdd() {
+
+        int expected = 30;
+        int actual = calculator.add(10, 20);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Subtraction Test")
+    void testSubtract() {
+
+        int result = calculator.subtract(50, 20);
+
+        assertEquals(30, result);
+    }
+
+    @Test
+    @DisplayName("Multiplication Test")
+    void testMultiply() {
+
+        int result = calculator.multiply(5, 4);
+
+        assertEquals(20, result);
+    }
+
+    @Test
+    @DisplayName("Division Test")
+    void testDivide() {
+
+        int result = calculator.divide(20, 5);
+
+        assertEquals(4, result);
+    }
+
+    @Test
+    @DisplayName("Even Number Test")
+    void testEven() {
+
+        boolean result = calculator.isEven(10);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("Message Test")
+    void testMessage() {
+
+        String msg = calculator.getMessage();
+
+        assertNotNull(msg);
+
+        assertEquals("Welcome to JUnit", msg);
+    }
+
+    @Test
+    @DisplayName("Assert False Example")
+    void testFalseCondition() {
+
+        boolean result = calculator.isEven(9);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("Assert Null Example")
+    void testNull() {
+
+        String value = null;
+
+        assertNull(value);
+    }
+
+    @Test
+    @DisplayName("Assert Throws Example")
+    void testException() {
+
+        assertThrows(ArithmeticException.class, () -> {
+            calculator.divide(10, 0);
+        });
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("Disabled Test Example")
+    void disabledTest() {
+
+        fail("This test is disabled");
+    }
+
+    // Runs after each test
+    @AfterEach
+    void tearDown() {
+        System.out.println("Test completed");
+    }
+
+    // Runs once after all tests
+    @AfterAll
+    static void afterAllTests() {
+        System.out.println("=== Test Execution Completed ===");
+    }
+}
+
+12. Understanding Assert Methods
+
+assertEquals()
+
+Checks expected and actual values are equal.
+
+assertEquals(10, result);
+
+Example:
+
+assertEquals(30, calculator.add(10, 20));
+assertNotEquals()
+
+Checks values are NOT equal.
+
+assertNotEquals(100, result);
+
+assertTrue()
+
+Checks condition is true.
+
+assertTrue(result);
+
+Example:
+
+assertTrue(calculator.isEven(10));
+
+assertFalse()
+
+Checks condition is false.
+
+assertFalse(result);
+
+assertNull()
+
+Checks object is null.
+
+assertNull(value);
+
+assertNotNull()
+
+Checks object is NOT null.
+
+assertNotNull(value);
+
+assertThrows()
+
+Checks exception occurs.
+
+assertThrows(ArithmeticException.class, () -> {
+    calculator.divide(10, 0);
+});
+
+fail()
+
+Forcefully fails test.
+
+fail("Test failed");
+
+13. Running JUnit Test in Eclipse
+
+Step 1
+
+Right-click:
+
+CalculatorTest.java
+Step 2
+
+Select:
+
+Run As → JUnit Test
+
+14. JUnit Output
+
+Console Output
+
+=== Starting Test Execution ===
+Setup completed
+Test completed
+Setup completed
+Test completed
+
+=== Test Execution Completed ===
+
+15. Green Bar vs Red Bar
+Color	Meaning
+Green	All tests passed
+Red	Some tests failed
+
+16. Example of Failed Test
+
+assertEquals(100, calculator.add(10, 20));
+
+Output:
+
+Expected :100
+Actual   :30
+
+
+Test Suite : Instead of executing test classes one by one, a test suite helps you:
+
+Run all tests together
+Organize large projects
+Automate regression testing
+Execute unit tests in CI/CD pipelines
+
+1️⃣ What is a Test Suite?
+
+A Test Suite is a collection of multiple test classes.
+
+Example:
+
+LoginTest
+PaymentTest
+UserServiceTest
+
+All these can be executed together using:
+
+AllTestsSuite
+
+2️⃣ Prerequisites
+
+You need:
+
+Java JDK 8+
+Eclipse IDE
+JUnit 5 library
+
+3️⃣ Install Eclipse
+
+Download Eclipse from:
+
+Eclipse IDE Downloads
+
+Install:
+
+Eclipse IDE for Java Developers
+
+4️⃣ Create Java Project in Eclipse
+
+Step 1: Open Eclipse
+
+Step 2: Create Project
+
+File → New → Java Project
+
+Project Name:
+
+JUnitTestSuiteDemo
+
+Click:
+
+Finish
+
+5️⃣ Add JUnit Library
+
+Step 1
+
+Right click project
+
+Build Path → Add Libraries
+
+Step 2
+
+Select:
+
+JUnit
+
+Step 3
+
+Choose:
+
+JUnit 5
+
+Click:
+
+Finish
+
+6️⃣ Project Structure
+
+JUnitTestSuiteDemo
+│
+├── src
+│    ├── com.demo
+│    │     ├── Calculator.java
+│    │
+│    ├── com.demo.test
+│    │     ├── CalculatorAdditionTest.java
+│    │     ├── CalculatorSubtractionTest.java
+│    │     ├── AllTestSuite.java
+
+7️⃣ Create Main Java Class
+
+Calculator.java
+
+package com.demo;
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+}
+
+8️⃣ Create First Test Class
+
+CalculatorAdditionTest.java
+
+package com.demo.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import com.demo.Calculator;
+
+public class CalculatorAdditionTest {
+
+    @Test
+    public void testAddition() {
+
+        Calculator calc = new Calculator();
+
+        int result = calc.add(10, 20);
+
+        assertEquals(30, result);
+    }
+
+    @Test
+    public void testAddition2() {
+
+        Calculator calc = new Calculator();
+
+        int result = calc.add(100, 200);
+
+        assertEquals(300, result);
+    }
+}
+
+9️⃣ Create Second Test Class
+
+CalculatorSubtractionTest.java
+package com.demo.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import com.demo.Calculator;
+
+public class CalculatorSubtractionTest {
+
+    @Test
+    public void testSubtraction() {
+
+        Calculator calc = new Calculator();
+
+        int result = calc.subtract(50, 20);
+
+        assertEquals(30, result);
+    }
+
+    @Test
+    public void testSubtraction2() {
+
+        Calculator calc = new Calculator();
+
+        int result = calc.subtract(100, 40);
+
+        assertEquals(60, result);
+    }
+}
+
+🔟 Create Test Suite Class
+
+AllTestSuite.java
+
+package com.demo.test;
+
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+@Suite
+@SelectClasses({
+    CalculatorAdditionTest.class,
+    CalculatorSubtractionTest.class
+})
+public class AllTestSuite {
+
+}
+
+1️⃣1️⃣ Explanation of Annotations
+
+@Suite
+
+Marks class as test suite.
+
+@Suite
+@SelectClasses
+
+Defines which test classes should run.
+
+@SelectClasses({
+    CalculatorAdditionTest.class,
+    CalculatorSubtractionTest.class
+})
+
+1️⃣2️⃣ Run the Test Suite in Eclipse
+Step 1
+
+Right click:
+
+AllTestSuite.java
+
+Step 2
+
+Select:
+
+Run As → JUnit Test
+
+1️⃣3️⃣ Expected Output
+
+If all tests pass:
+
+✔ testAddition()
+✔ testAddition2()
+✔ testSubtraction()
+✔ testSubtraction2()
+
+Green bar appears in Eclipse.
+
+1️⃣4️⃣ Example of Failed Test
+
+Modify:
+
+assertEquals(50, result);
+
+instead of:
+
+assertEquals(30, result);
+
+Output:
+
+expected: <50>
+but was: <30>
+
+Red bar appears in Eclipse.
+
+1️⃣5️⃣ JUnit Lifecycle with Test Suite
+
+JUnit lifecycle annotations:
+
+Annotation	Purpose
+@BeforeAll	Runs once before all tests
+@AfterAll 	Runs once after all tests
+@BeforeEach	Runs before every test
+@AfterEach	Runs after every test
+@Test	Marks test method
+
+1️⃣6️⃣ Lifecycle Example
+
+package com.demo.test;
+
+import org.junit.jupiter.api.*;
+
+public class DemoLifecycleTest {
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("Before All Tests");
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        System.out.println("Before Each Test");
+    }
+
+    @Test
+    void test1() {
+        System.out.println("Test 1");
+    }
+
+    @Test
+    void test2() {
+        System.out.println("Test 2");
+    }
+
+    @AfterEach
+    void afterEach() {
+        System.out.println("After Each Test");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.out.println("After All Tests");
+    }
+}
