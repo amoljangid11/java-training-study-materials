@@ -1,0 +1,1209 @@
+Introduction to RDBMS: 1. What is a Database?
+
+A database is an organized collection of data stored electronically so that it can be easily accessed, managed, and updated.
+
+Real-Life Examples
+
+Banking systems
+College management systems
+Hospital systems
+E-commerce websites
+Railway reservation systems
+
+Example
+
+A school stores:
+
+Student details
+Teacher details
+Marks
+Attendance
+
+All this information is stored inside a database. Structred Data, UD, SSD
+
+2. What is RDBMS?
+
+RDBMS = Relational Database Management System 
+
+An RDBMS is software used to create, manage, and manipulate relational databases.
+
+It stores data in the form of tables.
+
+3. Why is it called “Relational”?
+
+Because tables are related to each other using relationships.
+
+Example:
+
+One student can enroll in many courses
+One department can have many employees
+
+These relationships are managed using keys. Foreign Key
+
+4. Popular RDBMS Software
+
+RDBMS	Description
+MySQL		Open-source database
+Oracle Database	Enterprise-level database          
+PostgreSQL		Advanced open-source RDBMS
+Microsoft SQL Server	Microsoft database system
+SQLite			Lightweight embedded database        
+MariaDB			MySQL fork
+
+5. Features of RDBMS
+
+a) Table-Based Storage
+
+Data is stored in rows and columns.
+
+b) Relationships
+
+Tables can be connected.
+
+c) Data Integrity
+
+Ensures data accuracy and consistency.
+
+d) Security
+
+Provides authentication and authorization.
+
+e) Multi-User Support
+
+Many users can access simultaneously.
+
+f) Backup & Recovery
+
+Protects against data loss.
+
+g) ACID Properties
+
+Ensures reliable transactions.
+
+6. Basic Terminologies in RDBMS
+
+6.1 Table
+
+A table stores data in rows and columns.
+
+Example: STUDENT Table
+
+Student_ID	Name	Age
+101	Amit	20
+102	Neha	21
+
+6.2 Row (Record/Tuple)
+
+A single entry in a table.
+
+Example:
+
+101 | Amit | 20
+
+6.3 Column (Field/Attribute)
+
+Represents a property.
+
+Example:
+
+Student_ID
+Name
+Age
+
+6.4 Schema
+
+Structure/design of database.
+
+Example:
+
+CREATE TABLE STUDENT(
+    Student_ID INT,
+    Name VARCHAR(50),
+    Age INT
+);
+
+6.5 Primary Key
+
+Uniquely identifies each row.
+
+Rules
+
+Cannot be NULL
+Must be unique
+
+Example:
+
+Student_ID
+
+6.6 Foreign Key
+
+Used to establish relationships between tables.
+
+Example
+
+STUDENT Table
+Student_ID	Name
+101		Amit
+
+COURSE Table
+
+Course_ID	Student_ID	Course_Name
+1	101					Java
+
+Here:
+
+Student_ID in COURSE table = Foreign Key
+
+6.7 Candidate Key
+
+Possible columns that can become primary keys.
+
+Example:
+
+Email
+Aadhaar_Number
+
+6.8 Super Key
+
+Combination of columns that uniquely identify rows.
+
+Example:
+
+(Student_ID, Name)
+
+6.9 Composite Key
+
+Primary key made from multiple columns.
+
+Example:
+
+(Student_ID, Course_ID)
+
+7. Types of Relationships in RDBMS
+
+a) One-to-One (1:1)
+
+One person → One passport
+
+b) One-to-Many (1:M)
+
+One department → Many employees
+
+c) Many-to-Many (M:M)
+
+Many students → Many courses
+
+This requires a junction table.
+
+8. Database Normalization
+
+Normalization reduces:
+
+Data redundancy
+Duplicate data
+Inconsistency
+
+1NF (First Normal Form)
+
+No repeating groups
+Atomic values only
+
+2NF
+
+Remove partial dependency
+
+3NF
+
+Remove transitive dependency
+
+9. SQL in RDBMS
+
+SQL = Structured Query Language
+
+Used to:
+
+Create databases
+Insert data
+Update data
+Delete data
+Fetch data
+
+10. Types of SQL Commands
+
+a) DDL (Data Definition Language)
+
+Used to define structure. Schema
+
+Commands:
+
+CREATE
+ALTER
+DROP
+TRUNCATE
+
+Example:
+
+CREATE TABLE EMPLOYEE(
+   ID INT,
+   NAME VARCHAR(50)
+);
+
+b) DML (Data Manipulation Language)
+
+Used to manipulate data.
+
+Commands:
+
+INSERT
+UPDATE
+DELETE
+
+Example:
+
+INSERT INTO EMPLOYEE VALUES(1, 'Rahul');
+
+c) DQL (Data Query Language)
+
+Used to retrieve data.
+
+Command:
+
+SELECT
+
+Example:
+
+SELECT * FROM EMPLOYEE;
+
+d) DCL (Data Control Language) ACID
+
+Used for permissions.
+
+Commands:
+
+GRANT
+REVOKE
+
+e) TCL (Transaction Control Language)
+
+Used for transaction management.
+
+Commands:
+
+COMMIT
+ROLLBACK
+SAVEPOINT
+
+11. What is a Transaction?
+
+A transaction is a logical unit of work.
+
+Example:
+
+Bank money transfer:
+
+Debit from Account A
+Credit to Account B
+
+Both operations must succeed together.
+
+12. ACID Properties
+
+ACID ensures reliable transactions.
+
+A → Atomicity
+
+Either complete fully or not at all.
+
+C → Consistency
+
+Database remains valid.
+
+I → Isolation
+
+Transactions do not interfere.
+
+D → Durability
+
+Committed data remains permanent.
+
+13. Example Database Design
+
+Scenario: College Management System
+
+STUDENT Table
+
+Student_ID	Name	Dept_ID
+
+DEPARTMENT Table
+
+Dept_ID	Dept_Name
+
+COURSE Table
+
+Course_ID	Course_Name
+
+ENROLLMENT Table
+
+Student_ID	Course_ID
+
+14. Advantages of RDBMS
+
+Reduces redundancy
+Ensures consistency
+Supports relationships
+Easy querying using SQL
+High security
+Backup and recovery
+Data integrity
+
+15. Disadvantages of RDBMS
+
+Complex for huge unstructured data doesn't store in table format NoSQL MongoDB, Cassandra, DynamoDB (AWS)
+Expensive licensing (Oracle)
+Requires schema design schemaless
+Scaling can be difficult
+
+
+
+
+Oracle Introduction : What is Oracle?
+
+Oracle Database is a powerful Relational Database Management System (RDBMS) developed by Oracle Corporation
+.
+It is used to store, manage, retrieve, and secure large amounts of structured data efficiently.
+
+Oracle Database is widely used in:
+
+Banking Systems
+ERP Applications
+E-commerce Platforms
+Government Systems
+Healthcare Applications
+Enterprise Business Solutions
+
+Why Oracle is Popular
+
+Oracle is popular because it provides:
+
+High Performance
+Strong Security
+Scalability
+Reliability
+Multi-user Support
+Backup & Recovery
+Distributed Database Support database at every location
+Cloud Integration
+
+History of Oracle
+
+Oracle was founded in 1977
+
+Founders:
+
+Larry Ellison
+Bob Miner
+Ed Oates
+
+Oracle released the first commercial SQL database.
+
+What is a Database?
+
+A database is an organized collection of data.
+
+Example:
+
+Student_ID	Name	Course
+101	Amit	Java
+102	Neha	Python
+
+Oracle stores this data in tables.
+
+Types of Databases
+
+1. Relational Database (RDBMS)
+
+Data is stored in tables with rows and columns.
+
+Oracle is mainly an RDBMS.
+
+Example:
+
+MySQL
+PostgreSQL
+Oracle
+SQL Server
+
+2. Non-Relational Database (NoSQL)
+
+Stores unstructured or semi-structured data.
+
+Examples:
+
+MongoDB
+Cassandra
+
+Features of Oracle Database
+
+1. Multi-user Environment
+
+Multiple users can access data simultaneously.
+
+2. High Security
+
+Oracle provides:
+
+Authentication
+Authorization
+Data Encryption
+
+3. Backup and Recovery
+
+Oracle can recover data after system failure.
+
+4. Data Integrity
+
+Ensures accurate and consistent data.
+
+5. Scalability
+
+Supports very large enterprise applications.
+
+6. PL/SQL Support
+
+Oracle supports:
+
+SQL
+PL/SQL programming language
+
+Oracle Architecture Overview
+
+Oracle architecture consists of:
+
+1. Physical Components
+
+Actual files stored on disk.
+
+Examples:
+
+Data Files
+Control Files
+Redo Log Files
+
+2. Logical Components
+
+Logical storage structure.
+
+Examples:
+
+Tablespaces
+Segments
+Extents
+Blocks
+
+3. Memory Structure
+
+Known as SGA (System Global Area).
+
+Contains:
+
+Database Buffer Cache
+Shared Pool
+Redo Log Buffer
+
+4. Background Processes
+
+Oracle uses many processes internally.
+
+Examples:
+
+PMON
+SMON
+DBWR
+LGWR
+
+Oracle Database Editions
+
+1. Enterprise Edition
+
+Advanced enterprise features.
+
+2. Standard Edition
+
+Medium-scale applications.
+
+3. Express Edition (XE)
+
+Free lightweight version for learning.
+
+Oracle Tools
+
+1. SQL*Plus
+
+Command-line tool.
+
+2. Oracle SQL Developer
+
+GUI tool for writing SQL queries.
+
+Oracle SQL Developer
+
+3. Oracle Enterprise Manager
+
+Database administration and monitoring tool.
+
+What is SQL?
+
+SQL stands for Structured Query Language.
+
+Used for:
+
+Creating tables
+Inserting data
+Updating data
+Deleting data
+Retrieving data
+
+Example:
+
+SELECT * FROM employees;
+
+What is PL/SQL?
+
+PL/SQL stands for Procedural Language extension to SQL.
+
+Used for:
+
+Procedures
+Functions
+Triggers
+Packages
+
+Example:
+
+BEGIN
+   DBMS_OUTPUT.PUT_LINE('Hello Oracle');
+END;
+/
+
+Oracle vs MySQL
+
+Feature	Oracle				MySQL
+Type	Enterprise RDBMS		Open-source RDBMS
+Scalability	Very High	Medium
+Security	Advanced	Basic
+Cost		Expensive	Mostly Free
+Best For	Large Enterprises	Small/Medium Apps
+
+Advantages of Oracle
+
+Highly Secure
+Excellent Performance
+Supports Huge Databases
+Advanced Backup Features
+Strong Transaction Management
+Reliable for Enterprise Systems
+
+Disadvantages of Oracle :
+
+Expensive Licensing
+Complex Administration
+Requires High Hardware Resources
+
+Real-World Applications Using Oracle
+
+Industries using Oracle:
+
+Banking
+Airlines
+Telecom
+Retail
+Insurance
+Government
+
+Popular enterprise applications:
+
+SAP
+ERP Systems
+CRM Platforms
+
+Basic Oracle Terminology
+
+Term	Meaning
+
+Table	Stores data
+Row		Single record
+Column	Attribute/Field
+Schema	Collection of database objects
+Instance	Memory + Processes
+Database	Physical files
+
+Oracle 	Database Lifecycle
+Install Oracle
+Create Database
+Create Users
+Create Tables
+Insert Data
+
+Write SQL Queries
+Backup & Recovery
+Performance Tuning   running query taking long time to execute optimize the performance of query
+
+
+
+Select Statement : The SELECT statement is used to retrieve data from one or more tables in a MySQL database.
+
+It is one of the most important SQL commands.
+
+Basic Syntax
+
+SELECT column1, column2, ...
+FROM table_name;
+
+OR
+
+SELECT * FROM table_name;
+
+SELECT → specifies columns to retrieve
+FROM → specifies table name
+* → selects all columns
+
+Step-by-Step Complete Example
+
+1. Create Database
+
+CREATE DATABASE company_db;
+
+2. Use Database
+
+USE company_db;
+
+3. Create Employee Table
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    emp_name VARCHAR(100),
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    city VARCHAR(50),
+    joining_date DATE
+);
+
+4. Insert Sample Data
+
+INSERT INTO employees(emp_name, department, salary, city, joining_date)
+VALUES
+('Rahul', 'IT', 65000, 'Mumbai', '2022-01-10'),
+('Amit', 'HR', 45000, 'Pune', '2021-03-15'),
+('Sneha', 'Finance', 70000, 'Delhi', '2020-07-20'),
+('Priya', 'IT', 80000, 'Mumbai', '2019-05-12'),
+('Karan', 'Marketing', 50000, 'Bangalore', '2023-02-18');
+
+5. View All Records
+
+SELECT * FROM employees;
+
+Output
+
+emp_id	emp_name	department	salary	city	joining_date
+1	Rahul	IT	65000	Mumbai	2022-01-10
+2	Amit	HR	45000	Pune	2021-03-15
+3	Sneha	Finance	70000	Delhi	2020-07-20
+4	Priya	IT	80000	Mumbai	2019-05-12
+5	Karan	Marketing	50000	Bangalore	2023-02-18
+
+Selecting Specific Columns
+
+SELECT emp_name, salary
+
+FROM employees;
+
+Output
+
+emp_name	salary
+Rahul	65000
+Amit	45000
+Sneha	70000
+Priya	80000
+Karan	50000
+
+WHERE Clause
+
+Used to filter records.
+
+Syntax
+
+SELECT column_name
+FROM table_name
+WHERE condition;
+
+Example 1: Employees from IT Department
+
+SELECT *
+FROM employees
+WHERE department = 'IT';
+
+Output
+
+emp_id	emp_name	department	salary
+1	Rahul	IT	65000
+4	Priya	IT	80000
+
+Example 2: Salary Greater Than 60000
+
+SELECT emp_name, salary
+FROM employees
+WHERE salary > 60000;
+
+AND Operator
+
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND city = 'Mumbai';
+
+OR Operator
+
+SELECT *
+FROM employees
+WHERE city = 'Delhi'
+OR city = 'Pune';
+
+DISTINCT Keyword
+
+Removes duplicate values.
+
+SELECT DISTINCT department
+FROM employees;
+
+Output
+
+department
+IT
+HR
+Finance
+Marketing
+
+ORDER BY Clause
+
+Used to sort data.
+
+Ascending Order
+
+SELECT *
+FROM employees
+ORDER BY salary ASC;
+
+Descending Order
+
+SELECT *
+FROM employees
+ORDER BY salary DESC;
+
+LIMIT Clause
+
+Used to limit number of records.
+
+SELECT *
+FROM employees
+LIMIT 3;
+
+Output
+
+Shows first 3 rows.
+
+LIKE Operator
+
+Used for pattern matching.
+
+Names Starting with 'R'
+
+SELECT *
+FROM employees
+WHERE emp_name LIKE 'R%';
+
+Names Ending with 'a'
+
+SELECT *
+FROM employees
+WHERE emp_name LIKE '%a';
+
+Names Containing 'i'
+
+SELECT *
+FROM employees
+WHERE emp_name LIKE '%i%';
+
+BETWEEN Operator
+
+SELECT *
+FROM employees
+WHERE salary BETWEEN 50000 AND 70000;
+
+IN Operator
+
+SELECT *
+FROM employees
+WHERE city IN ('Mumbai', 'Pune');
+
+IS NULL Operator
+
+Suppose some employees have NULL city.
+
+SELECT *
+FROM employees
+WHERE city IS NULL;
+
+Column Aliases
+
+Temporary column names.
+
+SELECT emp_name AS EmployeeName,
+       salary AS EmployeeSalary
+FROM employees;
+
+Aggregate Functions :
+
+COUNT()
+
+SELECT COUNT(*) AS total_employees
+FROM employees;
+
+SUM()
+
+SELECT SUM(salary) AS total_salary
+FROM employees;
+
+AVG()
+
+SELECT AVG(salary) AS average_salary
+FROM employees;
+
+MAX()
+
+SELECT MAX(salary) AS highest_salary
+FROM employees;
+
+MIN()
+
+SELECT MIN(salary) AS lowest_salary
+FROM employees;
+
+GROUP BY Clause
+
+Groups rows with same values.
+
+SELECT department,
+       AVG(salary) AS average_salary
+FROM employees
+GROUP BY department;
+
+Output
+
+department	average_salary
+IT	72500
+HR	45000
+Finance	70000
+Marketing	50000
+
+HAVING Clause
+
+Filters grouped data.
+
+SELECT department,
+       COUNT(*) AS total_employees
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 1;
+
+Combining WHERE + GROUP BY + HAVING + ORDER BY
+
+SELECT department,
+       AVG(salary) AS avg_salary
+FROM employees
+WHERE salary > 40000
+GROUP BY department
+HAVING AVG(salary) > 50000
+ORDER BY avg_salary DESC;
+
+SELECT with Date Functions
+
+SELECT emp_name,
+       YEAR(joining_date) AS joining_year
+FROM employees;
+SELECT with String Functions
+UPPER()
+SELECT UPPER(emp_name)
+FROM employees;
+LOWER()
+SELECT LOWER(emp_name)
+FROM employees;
+CONCAT()
+SELECT CONCAT(emp_name, ' works in ', department) AS details
+FROM employees;
+SELECT with Mathematical Expressions
+SELECT emp_name,
+       salary,
+       salary + 5000 AS bonus_salary
+FROM employees;
+SELECT Using Multiple Conditions
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND salary > 60000
+AND city = 'Mumbai';
+SELECT with Subquery
+SELECT emp_name, salary
+FROM employees
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employees
+);
+SELECT with JOIN Example
+Create Department Table
+CREATE TABLE departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50)
+);
+Insert Data
+INSERT INTO departments
+VALUES
+(1, 'IT'),
+(2, 'HR'),
+(3, 'Finance'),
+(4, 'Marketing');
+INNER JOIN Example
+SELECT e.emp_name,
+       e.salary,
+       d.dept_name
+FROM employees e
+INNER JOIN departments d
+ON e.department = d.dept_name;
+Important Clauses Order
+
+SQL internally processes query in this order:
+
+FROM
+WHERE
+GROUP BY
+HAVING
+SELECT
+ORDER BY
+LIMIT
+
+
+Restricting and Sorting Data : 1. What is Restricting Data?
+
+Restricting data means filtering rows using conditions.
+
+MySQL uses the WHERE clause to restrict records.
+
+2. Sample Database Setup
+Create Database
+CREATE DATABASE company_db;
+Use Database
+USE company_db;
+3. Create Employee Table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    emp_name VARCHAR(100),
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    age INT,
+    city VARCHAR(50)
+);
+4. Insert Sample Data
+INSERT INTO employees (emp_name, department, salary, age, city)
+VALUES
+('Rahul', 'IT', 75000, 28, 'Mumbai'),
+('Sneha', 'HR', 55000, 32, 'Pune'),
+('Amit', 'Finance', 65000, 30, 'Delhi'),
+('Priya', 'IT', 85000, 27, 'Bangalore'),
+('Karan', 'HR', 50000, 35, 'Mumbai'),
+('Neha', 'IT', 95000, 29, 'Hyderabad'),
+('Vikas', 'Finance', 70000, 31, 'Pune'),
+('Anjali', 'Marketing', 60000, 26, 'Delhi');
+5. View All Records
+SELECT * FROM employees;
+Restricting Data Using WHERE Clause
+6. Filter Specific Department
+Get only IT employees
+SELECT *
+FROM employees
+WHERE department = 'IT';
+Output
+emp_name	department	salary
+Rahul	IT	75000
+Priya	IT	85000
+Neha	IT	95000
+7. Filter Salary Greater Than
+Employees earning more than 70000
+SELECT *
+FROM employees
+WHERE salary > 70000;
+8. Filter Using AND Operator
+IT employees with salary above 80000
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND salary > 80000;
+9. Filter Using OR Operator
+Employees from Mumbai or Pune
+SELECT *
+FROM employees
+WHERE city = 'Mumbai'
+OR city = 'Pune';
+10. Filter Using NOT Operator
+Employees not from IT department
+SELECT *
+FROM employees
+WHERE NOT department = 'IT';
+11. Using BETWEEN
+Employees with salary between 60000 and 80000
+SELECT *
+FROM employees
+WHERE salary BETWEEN 60000 AND 80000;
+12. Using IN Operator
+Employees from Mumbai, Delhi, and Pune
+SELECT *
+FROM employees
+WHERE city IN ('Mumbai', 'Delhi', 'Pune');
+13. Using LIKE Operator
+
+Used for pattern matching.
+
+Employees whose name starts with 'P'
+SELECT *
+FROM employees
+WHERE emp_name LIKE 'P%';
+Employees whose name ends with 'a'
+SELECT *
+FROM employees
+WHERE emp_name LIKE '%a';
+Employees whose name contains 'h'
+SELECT *
+FROM employees
+WHERE emp_name LIKE '%h%';
+14. Using IS NULL
+
+First insert NULL value.
+
+INSERT INTO employees (emp_name, department, salary, age, city)
+VALUES ('Rohit', NULL, 45000, 24, 'Chennai');
+Find employees with NULL department
+SELECT *
+FROM employees
+WHERE department IS NULL;
+15. Using LIMIT
+Display first 3 employees
+SELECT *
+FROM employees
+LIMIT 3;
+Sorting Data in MySQL
+16. What is Sorting?
+
+Sorting means arranging records in ascending or descending order.
+
+MySQL uses:
+
+ORDER BY
+17. Sort by Salary Ascending
+SELECT *
+FROM employees
+ORDER BY salary ASC;
+18. Sort by Salary Descending
+SELECT *
+FROM employees
+ORDER BY salary DESC;
+19. Sort by Name Alphabetically
+SELECT *
+FROM employees
+ORDER BY emp_name;
+
+Default order is ascending.
+
+20. Sort by Multiple Columns
+Sort by department then salary descending
+SELECT *
+FROM employees
+ORDER BY department ASC, salary DESC;
+21. Restrict + Sort Together
+IT employees sorted by highest salary
+SELECT *
+FROM employees
+WHERE department = 'IT'
+ORDER BY salary DESC;
+22. Top Highest Paid Employee
+SELECT *
+FROM employees
+ORDER BY salary DESC
+LIMIT 1;
+23. Second Highest Salary
+SELECT *
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+24. Youngest Employee
+SELECT *
+FROM employees
+ORDER BY age ASC
+LIMIT 1;
+25. Employees Sorted by City and Name
+SELECT *
+FROM employees
+ORDER BY city ASC, emp_name ASC;
+26. Complex Example
+Employees from IT or Finance department
+Salary above 65000
+Sorted by salary descending
+SELECT emp_name, department, salary
+FROM employees
+WHERE department IN ('IT', 'Finance')
+AND salary > 65000
+ORDER BY salary DESC;
+27. Using Alias with Sorting
+SELECT emp_name,
+       salary AS monthly_salary
+FROM employees
+ORDER BY monthly_salary DESC;
+28. Case Sensitivity Example
+SELECT *
+FROM employees
+WHERE emp_name LIKE 'r%';
+
+Depending on collation settings, this may match Rahul.
+
+29. Real-Time Scenario Examples
+Example 1: HR Dashboard
+Find top 5 highest paid employees
+SELECT *
+FROM employees
+ORDER BY salary DESC
+LIMIT 5;
+Example 2: Banking Application
+Find customers with balance greater than 100000
+SELECT *
+FROM customers
+WHERE balance > 100000;
+Example 3: E-Commerce Website
+Products sorted by price low to high
+SELECT *
+FROM products
+ORDER BY price ASC;
+30. Important Operators Summary
+Operator	Purpose
+=	Equal
+>	Greater than
+<	Less than
+>=	Greater than equal
+<=	Less than equal
+<> or !=	Not equal
+BETWEEN	Range checking
+IN	Multiple values
+LIKE	Pattern matching
+IS NULL	NULL checking
+AND	Multiple conditions
+OR	Any condition
+NOT	Reverse condition
+
+
