@@ -925,33 +925,46 @@ GROUP BY department
 HAVING AVG(salary) > 50000
 ORDER BY avg_salary DESC;
 
-SELECT with Date Functions
+SELECT with Date Functions : 
 
 SELECT emp_name,
        YEAR(joining_date) AS joining_year
 FROM employees;
-SELECT with String Functions
+
+SELECT with String Functions :
+
 UPPER()
+
 SELECT UPPER(emp_name)
 FROM employees;
+
 LOWER()
+
 SELECT LOWER(emp_name)
 FROM employees;
+
 CONCAT()
+
 SELECT CONCAT(emp_name, ' works in ', department) AS details
 FROM employees;
-SELECT with Mathematical Expressions
+
+SELECT with Mathematical Expressions : 
+
 SELECT emp_name,
        salary,
        salary + 5000 AS bonus_salary
 FROM employees;
+
 SELECT Using Multiple Conditions
+
 SELECT *
 FROM employees
 WHERE department = 'IT'
 AND salary > 60000
 AND city = 'Mumbai';
-SELECT with Subquery
+
+SELECT with Subquery :
+
 SELECT emp_name, salary
 FROM employees
 WHERE salary >
@@ -959,36 +972,71 @@ WHERE salary >
     SELECT AVG(salary)
     FROM employees
 );
-SELECT with JOIN Example
+
+SELECT with JOIN Example : 
+
 Create Department Table
+
 CREATE TABLE departments (
     dept_id INT PRIMARY KEY,
     dept_name VARCHAR(50)
 );
-Insert Data
+
+Insert Data :
+
 INSERT INTO departments
 VALUES
 (1, 'IT'),
 (2, 'HR'),
 (3, 'Finance'),
 (4, 'Marketing');
-INNER JOIN Example
+
+INNER JOIN Example : 
+
 SELECT e.emp_name,
        e.salary,
        d.dept_name
 FROM employees e
 INNER JOIN departments d
 ON e.department = d.dept_name;
-Important Clauses Order
+
+LEFT JOIN Example :
+
+select e.emp_id, e.emp_name, d.dept_name from employees e left join departments d on e.department = d.dept_name;
+
+RIGHT JOIN Example :
+
+select e.emp_id, e.emp_name, d.dept_name from employees e right join departments d on e.department = d.dept_name;
+
+FULL OUTER JOIN : 
+
+
+select e.emp_id, e.emp_name, d.dept_name from employees e left join departments d on e.department = d.dept_name union select e.emp_id, e.emp_name, d.dept_name from employees e right join departments d on e.department = d.dept_name;
+
+CROSS JOIN :
+
+select e.emp_name, d.dept_name from employees e cross join departments d;
+
+SELF JOIN : 
+
+select e.emp_name, m.salary from employees e left join employees m on e.emp_id = m.emp_id;
+
+Important Clauses Order :
 
 SQL internally processes query in this order:
 
 FROM
+
 WHERE
+
 GROUP BY
+
 HAVING
+
 SELECT
+
 ORDER BY
+
 LIMIT
 
 
@@ -999,11 +1047,17 @@ Restricting data means filtering rows using conditions.
 MySQL uses the WHERE clause to restrict records.
 
 2. Sample Database Setup
+
 Create Database
+
 CREATE DATABASE company_db;
+
 Use Database
+
 USE company_db;
+
 3. Create Employee Table
+
 CREATE TABLE employees (
     emp_id INT PRIMARY KEY AUTO_INCREMENT,
     emp_name VARCHAR(100),
@@ -1012,7 +1066,9 @@ CREATE TABLE employees (
     age INT,
     city VARCHAR(50)
 );
+
 4. Insert Sample Data
+
 INSERT INTO employees (emp_name, department, salary, age, city)
 VALUES
 ('Rahul', 'IT', 75000, 28, 'Mumbai'),
@@ -1023,83 +1079,123 @@ VALUES
 ('Neha', 'IT', 95000, 29, 'Hyderabad'),
 ('Vikas', 'Finance', 70000, 31, 'Pune'),
 ('Anjali', 'Marketing', 60000, 26, 'Delhi');
+
 5. View All Records
+
 SELECT * FROM employees;
+
 Restricting Data Using WHERE Clause
+
 6. Filter Specific Department
+
 Get only IT employees
+
 SELECT *
 FROM employees
 WHERE department = 'IT';
+
 Output
+
 emp_name	department	salary
 Rahul	IT	75000
 Priya	IT	85000
 Neha	IT	95000
+
 7. Filter Salary Greater Than
+
 Employees earning more than 70000
+
 SELECT *
 FROM employees
 WHERE salary > 70000;
+
 8. Filter Using AND Operator
+
 IT employees with salary above 80000
+
 SELECT *
 FROM employees
 WHERE department = 'IT'
 AND salary > 80000;
+
 9. Filter Using OR Operator
+
 Employees from Mumbai or Pune
+
 SELECT *
 FROM employees
 WHERE city = 'Mumbai'
 OR city = 'Pune';
+
 10. Filter Using NOT Operator
+
 Employees not from IT department
+
 SELECT *
 FROM employees
 WHERE NOT department = 'IT';
+
 11. Using BETWEEN
+
 Employees with salary between 60000 and 80000
+
 SELECT *
 FROM employees
 WHERE salary BETWEEN 60000 AND 80000;
+
 12. Using IN Operator
+
 Employees from Mumbai, Delhi, and Pune
+
 SELECT *
 FROM employees
 WHERE city IN ('Mumbai', 'Delhi', 'Pune');
+
 13. Using LIKE Operator
 
 Used for pattern matching.
 
 Employees whose name starts with 'P'
+
 SELECT *
 FROM employees
 WHERE emp_name LIKE 'P%';
+
 Employees whose name ends with 'a'
+
 SELECT *
 FROM employees
 WHERE emp_name LIKE '%a';
+
 Employees whose name contains 'h'
+
 SELECT *
 FROM employees
 WHERE emp_name LIKE '%h%';
+
 14. Using IS NULL
 
 First insert NULL value.
 
 INSERT INTO employees (emp_name, department, salary, age, city)
 VALUES ('Rohit', NULL, 45000, 24, 'Chennai');
+
 Find employees with NULL department
+
 SELECT *
 FROM employees
 WHERE department IS NULL;
+
 15. Using LIMIT
+
 Display first 3 employees
+
 SELECT *
 FROM employees
 LIMIT 3;
+
 Sorting Data in MySQL
+
 16. What is Sorting?
 
 Sorting means arranging records in ascending or descending order.
@@ -1107,15 +1203,21 @@ Sorting means arranging records in ascending or descending order.
 MySQL uses:
 
 ORDER BY
+
 17. Sort by Salary Ascending
+
 SELECT *
 FROM employees
 ORDER BY salary ASC;
+
 18. Sort by Salary Descending
+
 SELECT *
 FROM employees
 ORDER BY salary DESC;
+
 19. Sort by Name Alphabetically
+
 SELECT *
 FROM employees
 ORDER BY emp_name;
@@ -1123,50 +1225,70 @@ ORDER BY emp_name;
 Default order is ascending.
 
 20. Sort by Multiple Columns
+
 Sort by department then salary descending
+
 SELECT *
 FROM employees
 ORDER BY department ASC, salary DESC;
+
 21. Restrict + Sort Together
+
 IT employees sorted by highest salary
+
 SELECT *
 FROM employees
 WHERE department = 'IT'
 ORDER BY salary DESC;
+
 22. Top Highest Paid Employee
+
 SELECT *
 FROM employees
 ORDER BY salary DESC
 LIMIT 1;
+
 23. Second Highest Salary
+
 SELECT *
 FROM employees
 ORDER BY salary DESC
 LIMIT 1 OFFSET 1;
+
 24. Youngest Employee
+
 SELECT *
 FROM employees
 ORDER BY age ASC
 LIMIT 1;
+
 25. Employees Sorted by City and Name
+
 SELECT *
 FROM employees
 ORDER BY city ASC, emp_name ASC;
+
 26. Complex Example
+
 Employees from IT or Finance department
 Salary above 65000
 Sorted by salary descending
+
 SELECT emp_name, department, salary
 FROM employees
 WHERE department IN ('IT', 'Finance')
 AND salary > 65000
 ORDER BY salary DESC;
+
 27. Using Alias with Sorting
+
 SELECT emp_name,
        salary AS monthly_salary
 FROM employees
 ORDER BY monthly_salary DESC;
+
 28. Case Sensitivity Example
+
 SELECT *
 FROM employees
 WHERE emp_name LIKE 'r%';
@@ -1174,23 +1296,34 @@ WHERE emp_name LIKE 'r%';
 Depending on collation settings, this may match Rahul.
 
 29. Real-Time Scenario Examples
+
 Example 1: HR Dashboard
+
 Find top 5 highest paid employees
+
 SELECT *
 FROM employees
 ORDER BY salary DESC
 LIMIT 5;
+
 Example 2: Banking Application
+
 Find customers with balance greater than 100000
+
 SELECT *
 FROM customers
 WHERE balance > 100000;
+
 Example 3: E-Commerce Website
+
 Products sorted by price low to high
+
 SELECT *
 FROM products
 ORDER BY price ASC;
+
 30. Important Operators Summary
+
 Operator	Purpose
 =	Equal
 >	Greater than
@@ -1199,11 +1332,487 @@ Operator	Purpose
 <=	Less than equal
 <> or !=	Not equal
 BETWEEN	Range checking
-IN	Multiple values
+IN		Multiple values
 LIKE	Pattern matching
 IS NULL	NULL checking
 AND	Multiple conditions
-OR	Any condition
+OR		Any condition
 NOT	Reverse condition
+
+
+DML : DML (Data Manipulation Language) in MySQL
+
+What is DML?
+
+DML (Data Manipulation Language) is used to manage and manipulate data inside database tables.
+
+DML commands allow you to:
+
+Insert data
+Retrieve data
+Update data
+Delete data
+
+DML mainly works on the rows/records of a table.
+
+Main DML Commands in MySQL
+
+Command	Purpose
+
+INSERT	Add new records
+SELECT	Retrieve records
+UPDATE	Modify existing records
+DELETE	Remove records
+
+Step-by-Step Practical Example
+
+We will create a database and work with a table called employees.
+
+1️⃣ Create Database
+
+CREATE DATABASE company_db;
+
+2️⃣ Use Database
+
+USE company_db;
+
+3️⃣ Create Table
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    emp_name VARCHAR(100),
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    city VARCHAR(50)
+);
+
+Table Structure Explanation
+
+Column	Description
+emp_id	Employee ID
+emp_name	Employee Name
+department	Department Name
+salary	Employee Salary
+city		Employee City
+
+1. INSERT Statement
+
+Purpose
+
+Used to insert new records into a table.
+
+Example 1: Insert Single Record
+
+INSERT INTO employees(emp_name, department, salary, city)
+VALUES('John', 'IT', 55000, 'Mumbai');
+
+Example 2: Insert Multiple Records
+
+INSERT INTO employees(emp_name, department, salary, city)
+VALUES
+('Amit', 'HR', 45000, 'Pune'),
+('Sara', 'Finance', 70000, 'Delhi'),
+('David', 'IT', 65000, 'Bangalore');
+
+Verify Data
+
+SELECT * FROM employees;
+
+Output
+
+emp_id	emp_name	department	salary	city
+1		John			IT			55000	Mumbai
+2		Amit			HR			45000	Pune
+3		Sara			Finance		70000	Delhi
+4		David		IT			65000	Bangalore
+
+2. SELECT Statement
+
+Purpose
+
+Used to retrieve data from tables.
+
+Example 1: Fetch All Records
+
+SELECT * FROM employees;
+
+Example 2: Fetch Specific Columns
+
+SELECT emp_name, salary
+FROM employees;
+
+Example 3: Using WHERE Condition
+
+SELECT *
+FROM employees
+WHERE department = 'IT';
+
+Example 4: Using AND Condition
+
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND salary > 60000;
+
+Example 5: Using ORDER BY
+
+SELECT *
+FROM employees
+ORDER BY salary DESC;
+
+Example 6: Using LIKE
+
+SELECT *
+FROM employees
+WHERE emp_name LIKE 'S%';
+
+Example 7: Using BETWEEN
+
+SELECT *
+FROM employees
+WHERE salary BETWEEN 50000 AND 70000;
+
+Example 8: Using IN Operator
+
+SELECT *
+FROM employees
+WHERE city IN ('Mumbai', 'Delhi');
+
+3. UPDATE Statement
+
+Purpose
+
+Used to modify existing records.
+
+Example 1: Update Single Record
+
+UPDATE employees
+SET salary = 60000
+WHERE emp_id = 1;
+
+Example 2: Update Multiple Columns
+
+UPDATE employees
+SET department = 'Admin',
+    city = 'Hyderabad'
+WHERE emp_name = 'Amit';
+
+Example 3: Increase Salary by 10%
+
+UPDATE employees
+SET salary = salary + (salary * 0.10)
+WHERE department = 'IT';
+
+Verify Updated Data
+
+SELECT * FROM employees;
+
+4. DELETE Statement
+
+Purpose
+
+Used to remove records from a table.
+
+Example 1: Delete Specific Record
+
+DELETE FROM employees
+WHERE emp_id = 2;
+
+Example 2: Delete Employees from HR Department
+
+DELETE FROM employees
+WHERE department = 'HR';
+
+Example 3: Delete All Records
+
+DELETE FROM employees;
+
+Table structure remains available after DELETE.
+
+Difference Between DELETE, TRUNCATE, and DROP
+
+Command 		Removes Data	Removes Table Structure
+DELETE			Yes				No
+TRUNCATE		Yes				No
+DROP			Yes				Yes
+
+Real-Time Scenario Example
+
+Online Shopping System : 
+
+Insert New Product : 
+
+INSERT INTO products(product_name, price, stock)
+VALUES('Laptop', 75000, 20);
+
+View Available Products :
+
+SELECT *
+FROM products
+WHERE stock > 0;
+
+Update Product Stock After Purchase :
+
+UPDATE products :
+
+SET stock = stock - 1
+WHERE product_id = 101;  // 101  19
+
+Remove Out-of-Stock Products :
+
+DELETE FROM products
+WHERE stock = 0;
+
+Complete Practical Example :
+
+CREATE DATABASE school_db;
+
+USE school_db;
+
+CREATE TABLE students(
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_name VARCHAR(100),
+    course VARCHAR(50),
+    marks INT
+);
+
+-- INSERT
+INSERT INTO students(student_name, course, marks)
+VALUES
+('Rahul', 'Java', 85),
+('Priya', 'Python', 92),
+('Neha', 'Testing', 76);
+
+-- SELECT
+SELECT * FROM students;
+
+SELECT student_name, marks
+FROM students
+WHERE marks > 80;
+
+-- UPDATE
+
+UPDATE students
+SET marks = 95
+WHERE student_name = 'Rahul';
+
+-- DELETE
+
+DELETE FROM students
+WHERE student_name = 'Neha';
+
+-- FINAL OUTPUT
+
+SELECT * FROM students;
+
+
+DDL : What is DDL?
+
+DDL (Data Definition Language) is used to define and manage the structure of database objects such as:
+
+Databases
+Tables
+Views
+Indexes
+Constraints
+
+DDL commands change the database schema (structure).
+
+Main DDL 	Commands in MySQL
+Command	Purpose
+
+CREATE		Creates database/table
+ALTER		Modifies existing structure
+DROP		Deletes objects permanently
+TRUNCATE	Removes all rows from table
+RENAME	Renames database objects
+
+1. CREATE Command
+
+The CREATE command is used to create databases and tables.
+
+Example 1: Create Database
+
+CREATE DATABASE company_db;
+
+Use Database
+
+USE company_db;
+
+Example 2: Create Employee Table
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(100),
+    salary DECIMAL(10,2),
+    department VARCHAR(50),
+    joining_date DATE
+);
+
+Insert Sample Data
+
+INSERT INTO employees
+VALUES
+(101, 'Rahul', 45000.50, 'HR', '2025-01-10'),
+(102, 'Sneha', 55000.00, 'IT', '2025-02-15'),
+(103, 'Amit', 60000.75, 'Finance', '2025-03-01');
+
+View Data
+
+SELECT * FROM employees;
+
+2. ALTER Command
+
+The ALTER command modifies an existing table structure.
+
+Example 1: Add New Column
+
+Add email column:
+
+ALTER TABLE employees
+ADD email VARCHAR(100);
+
+Example 2: Modify Column Data Type
+
+Increase department size:
+
+ALTER TABLE employees
+MODIFY department VARCHAR(100);
+
+Example 3: Rename Column
+
+Rename emp_name to employee_name:
+
+ALTER TABLE employees
+RENAME COLUMN emp_name TO employee_name;
+
+Example 4: Drop Column
+
+Remove email column:
+
+ALTER TABLE employees
+DROP COLUMN email;
+
+3. DROP Command
+
+The DROP command permanently deletes database objects.
+
+Example 1: Drop Table
+
+DROP TABLE employees;
+
+⚠️ Entire table structure and data will be deleted permanently.
+
+Example 2: Drop Database
+
+DROP DATABASE company_db;
+
+⚠️ Entire database will be removed permanently.
+
+4. TRUNCATE Command
+
+TRUNCATE removes all rows from a table but keeps the table structure.
+
+Example
+
+TRUNCATE TABLE employees;
+
+Difference Between DELETE and TRUNCATE
+
+Feature	DELETE	TRUNCATE
+Removes specific rows	Yes	No
+WHERE clause allowed	Yes	No
+Removes all rows	Optional	Yes
+Faster	No	Yes
+Resets AUTO_INCREMENT	No	Yes
+
+5. RENAME Command
+
+Used to rename tables.
+
+Example
+
+RENAME TABLE employees TO staff_members;
+
+Complete Real-Time Example
+
+Step 1: Create Database
+
+CREATE DATABASE school_db;
+
+Step 2: Use Database
+
+USE school_db;
+Step 3: Create Student Table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100),
+    course VARCHAR(50),
+    marks INT
+);
+
+Step 4: Insert Data
+
+INSERT INTO students
+VALUES
+(1, 'Arjun', 'Java', 85),
+(2, 'Priya', 'Python', 90),
+(3, 'Karan', 'MySQL', 88);
+
+Step 5: View Table
+
+SELECT * FROM students;
+
+Step 6: Add New Column
+
+ALTER TABLE students
+ADD city VARCHAR(50);
+
+Step 7: Update City Values
+
+UPDATE students
+SET city = 'Pune'
+WHERE student_id = 1;
+
+Step 8: Rename Table
+
+RENAME TABLE students TO college_students;
+
+Step 9: Remove All Data
+
+TRUNCATE TABLE college_students;
+
+Step 10: Delete Table
+
+DROP TABLE college_students;
+
+Important DDL Characteristics
+
+Feature				Description
+Auto Commit			DDL automatically saves changes
+Permanent Changes		Most operations cannot be rolled back
+Structure Management	Used for schema modifications
+Fast Execution			Optimized for structure handling
+
+Common Constraints Used with DDL : 
+
+Constraint			Purpose
+
+PRIMARY KEY		Unique identifier
+FOREIGN KEY		Relationship between tables
+UNIQUE				No duplicate values
+NOT NULL			Value cannot be empty
+DEFAULT			Default value
+CHECK				Restricts values // validations purposes
+
+Example with Constraints
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) CHECK (price > 0),
+    category VARCHAR(50) DEFAULT 'General'
+);
+
 
 
