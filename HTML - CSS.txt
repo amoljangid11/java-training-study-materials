@@ -1,0 +1,964 @@
+HTML Templates : HTML <template> is a special HTML element used to store reusable HTML content that is not rendered immediately on the webpage.
+
+It is useful when you want to:
+
+Dynamically create UI components
+Reuse HTML blocks
+Improve performance
+Build cards, tables, modals, lists, etc.
+Work with JavaScript frameworks and Web Components
+
+1. What is an HTML Template?
+
+The <template> tag contains HTML code that is hidden until JavaScript uses it.
+
+Syntax
+<template id="templateName">
+    <!-- Hidden HTML -->
+</template>
+
+The content inside:
+
+Does NOT display on the page initially
+Does NOT execute scripts immediately
+Can be cloned and inserted using JavaScript
+
+2. Why Use Templates?
+
+Without templates:
+
+<div class="card">
+   <h2>John</h2>
+   <p>Developer</p> CSS
+</div>
+
+<div class="card">
+   <h2>Mike</h2>
+   <p>Tester</p>
+</div>
+
+This creates repeated code.
+
+With templates:
+
+Write once
+Reuse many times
+Dynamically inject data
+
+3. Basic HTML Template Example
+
+Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Template Example</title>
+</head>
+<body>
+
+<h1>HTML Template Demo</h1>
+
+<template id="myTemplate">
+    <div class="card">
+        <h2>Name</h2>
+        <p>Role</p>
+    </div>
+</template>
+
+<script>
+
+    // Access template
+    const template = document.getElementById("myTemplate");
+
+    // Clone template content
+    const clone = template.content.cloneNode(true);
+
+    // Add clone to body
+    document.body.appendChild(clone);
+
+</script>
+
+</body>
+</html>
+
+4. Understanding Key Concepts
+
+template.content
+
+Returns the hidden DOM inside the template.
+
+template.content
+
+cloneNode(true)
+
+Creates a deep copy of the template.
+
+cloneNode(true)
+
+true means:
+Copy all child elements
+false means:
+
+Copy only parent node
+
+5. Dynamic Template Example
+
+Create employee cards dynamically. //DOM
+
+Complete Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Cards</title>
+
+    <style>
+
+        .card{
+            border:1px solid gray;
+            padding:15px;
+            margin:10px;
+            width:250px;
+            border-radius:10px;
+            background:#f5f5f5;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h1>Employee List</h1>
+
+<div id="container"></div>
+
+<!-- Template -->
+<template id="employeeTemplate">
+
+    <div class="card">
+
+        <h2 class="name"></h2>
+
+        <p class="designation"></p>
+
+        <button>View Profile</button>
+
+    </div>
+
+</template>
+
+<script>
+
+    const employees = [ // Array of Object
+
+        {
+            name:"Amol",
+            designation:"Java Developer"
+        },
+
+        {
+            name:"Ravi",
+            designation:"Angular Developer"
+        },
+
+        {
+            name:"Sneha",
+            designation:"Python Developer"
+        }
+
+    ];
+
+    const template = document.getElementById("employeeTemplate");
+
+    const container = document.getElementById("container");
+
+    employees.forEach(emp => {
+
+        // Clone template
+        const clone = template.content.cloneNode(true);
+
+        // Modify cloned content
+        clone.querySelector(".name").textContent = emp.name;
+
+        clone.querySelector(".designation").textContent =
+            emp.designation;
+
+        // Append to container
+        container.appendChild(clone);
+
+    });
+
+</script>
+
+</body>
+</html>
+
+6. Output
+
+The page dynamically creates:
+
+--------------------
+Amol
+Java Developer
+[View Profile]
+--------------------
+
+--------------------
+Ravi
+Angular Developer
+[View Profile]
+--------------------
+
+7. Template vs Hidden Div
+
+Using Hidden Div
+
+<div id="temp" style="display:none">
+</div>
+
+Problems:
+
+Added to DOM immediately
+Less efficient
+CSS/JS may affect it
+
+Using Template
+
+<template>
+</template>
+
+Advantages:
+
+Not rendered
+Cleaner
+Better performance
+Safer DOM handling
+
+8. Real-Time Example — Product Cards
+
+Complete Product Template Example
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Products</title>
+
+    <style>
+
+        .product{
+            border:1px solid black;
+            padding:20px;
+            margin:10px;
+            width:200px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Product List</h1>
+
+<div id="products"></div>
+
+<template id="productTemplate">
+
+    <div class="product">
+
+        <h2 class="title"></h2>
+
+        <p class="price"></p>
+
+        <button class="buyBtn">Buy Now</button>
+
+    </div>
+
+</template>
+
+<script>
+
+const products = [
+
+    {
+        title:"Laptop",
+        price:75000
+    },
+
+    {
+        title:"Mobile",
+        price:25000
+    },
+
+    {
+        title:"Keyboard",
+        price:2000
+    }
+
+];
+
+const template =
+document.getElementById("productTemplate");
+
+const container =
+document.getElementById("products");
+
+products.forEach(product => {
+
+    const clone =
+    template.content.cloneNode(true);
+
+    clone.querySelector(".title").textContent =
+    product.title;
+
+    clone.querySelector(".price").textContent =
+    "₹" + product.price;
+
+    clone.querySelector(".buyBtn")
+    .addEventListener("click", () => {
+
+        alert(product.title + " Purchased");
+
+    });
+
+    container.appendChild(clone);
+
+});
+
+</script>
+
+</body>
+</html>
+
+
+Semantic HTML, multimedia, SVG, Geolocations, Web Storage, Accessibility (A11y) : 
+
+
+1. Semantic HTML : HTML5 header, section, article, footer, aside, details, summary, nav
+
+What is Semantic HTML?
+
+Semantic HTML means using HTML tags according to their meaning.
+
+Instead of using only <div> everywhere, semantic elements describe the purpose of content.
+
+Benefits :
+
+Better SEO
+Better Accessibility
+Easier maintenance
+Better readability
+Helps screen readers // those who are not able to access the contents of HTML like blind person
+
+Common Semantic Tags
+
+Tag	Purpose
+
+<header>	Top section
+<nav>	Navigation links
+<main>	Main content
+<section>	Grouped content   <div>
+<article>	Independent content
+<aside>	Sidebar
+<footer>	Bottom section
+<figure>	Images/diagrams
+<figcaption>	Caption
+
+Complete Semantic HTML Example
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Example</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+
+        header, nav, section, article, aside, footer {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid gray;
+        }
+
+        nav a {
+            margin-right: 15px;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        section {
+            flex: 3;
+        }
+
+        aside {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>My Website</h1>
+        <p>Learning Semantic HTML</p>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <main class="container">
+
+        <section>
+
+            <article>
+                <h2>Java Full Stack</h2>
+                <p>This article explains Java Full Stack development.</p>
+            </article>
+
+            <article>
+                <h2>Angular Training</h2>
+                <p>This article explains Angular concepts.</p>
+            </article>
+
+        </section>
+
+        <aside>
+            <h3>Sidebar</h3>
+            <p>Latest updates and ads.</p>
+        </aside>
+
+    </main>
+
+    <footer>
+        <p>Copyright 2026</p>
+    </footer>
+
+</body>
+</html>
+
+2. Multimedia in HTML5
+
+HTML5 introduced built-in support for: // in HTML audio and video file then flash player third party plugins
+
+Audio
+Video
+
+Audio Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Example</title>
+</head>
+<body>
+
+<h1>Audio Example</h1>
+
+<audio controls>
+    <source src="song.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+</audio>
+
+</body>
+</html>
+
+Video Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Example</title>
+</head>
+<body>
+
+<h1>Video Example</h1>
+
+<video width="500" controls>
+    <source src="movie.mp4" type="video/mp4">
+    Your browser does not support video.
+</video>
+
+</body>
+</html>
+
+Multimedia Attributes
+
+Attribute	Purpose
+
+controls	Shows play buttons
+autoplay	Auto start
+loop		Repeat
+muted	Mute sound
+poster	Thumbnail image
+
+Video Example with All Features
+
+<video width="500"
+       controls
+       autoplay
+       muted
+       loop
+       poster="thumbnail.jpg">
+
+    <source src="movie.mp4" type="video/mp4">
+
+</video>
+
+3. SVG (Scalable Vector Graphics)
+
+What is SVG?
+
+SVG is XML-based graphics.
+
+Benefits : 
+
+Scalable without losing quality
+Lightweight
+Supports animation
+Can be styled with CSS
+
+SVG Shapes
+
+Shape		Tag
+
+Rectangle		<rect>
+Circle		<circle>
+Line			<line>
+Ellipse		<ellipse>
+Polygon		<polygon>
+
+SVG Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG Example</title>
+</head>
+<body>
+
+<h1>SVG Shapes</h1>
+
+<svg width="500" height="300">
+
+    <!-- Rectangle -->
+    <rect x="20"
+          y="20"
+          width="120"
+          height="80"
+          fill="blue">
+    </rect>
+
+    <!-- Circle -->
+    <circle cx="250"
+            cy="60"
+            r="40"
+            fill="red">
+    </circle>
+
+    <!-- Line -->
+    <line x1="20"
+          y1="150"
+          x2="300"
+          y2="150"
+          stroke="green"
+          stroke-width="5">
+    </line>
+
+</svg>
+
+</body>
+</html>
+
+SVG Animation Example
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg width="400" height="200">
+
+    <circle cx="50" cy="100" r="30" fill="orange">
+
+        <animate attributeName="cx"
+                 from="50"
+                 to="350"
+                 dur="3s"
+                 repeatCount="indefinite" />
+
+    </circle>
+
+</svg>
+
+</body>
+</html>
+
+4. Geolocation API
+
+What is Geolocation?
+
+Geolocation API allows browsers to access user location.
+
+Uses :
+
+Maps
+Delivery apps
+Tracking
+Nearby services
+
+Important Notes :
+
+Requires user permission
+
+Works better with HTTPS
+
+Geolocation Example :
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation Example</title>
+</head>
+
+<body>
+
+<h1>Get Current Location</h1>
+
+<button onclick="getLocation()">
+    Get Location
+</button>
+
+<p id="result"></p>
+
+<script>
+
+function getLocation() {
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+            showPosition,
+            showError
+        );
+
+    } else {
+        document.getElementById("result").innerHTML =
+            "Geolocation not supported";
+    }
+}
+
+function showPosition(position) {
+
+    document.getElementById("result").innerHTML =
+        "Latitude: " + position.coords.latitude +
+        "<br>Longitude: " + position.coords.longitude;
+}
+
+function showError(error) {
+
+    switch(error.code) {
+
+        case error.PERMISSION_DENIED:
+            alert("Permission denied");
+            break;
+
+        case error.POSITION_UNAVAILABLE:
+            alert("Location unavailable");
+            break;
+
+        case error.TIMEOUT:
+            alert("Request timeout");
+            break;
+
+        default:
+            alert("Unknown error");
+    }
+}
+
+</script>
+
+</body>
+</html>
+
+5. Web Storage API
+
+What is Web Storage?
+
+HTML5 provides client-side storage.
+
+Types
+
+Storage	Lifetime
+
+localStorage	Permanent
+sessionStorage 	Until tab closes JavaScript predefined
+
+localStorage Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local Storage</title>
+</head>
+
+<body>
+
+<h1>Local Storage Example</h1>
+
+<input type="text" id="username">
+
+<button onclick="saveData()">
+    Save
+</button>
+
+<button onclick="getData()">
+    Get
+</button>
+
+<p id="output"></p>
+
+<script>
+
+function saveData() {
+
+    let name =
+        document.getElementById("username").value;
+
+    localStorage.setItem("username", name);
+
+    alert("Data Saved");
+}
+
+function getData() {
+
+    let name =
+        localStorage.getItem("username");
+
+    document.getElementById("output").innerHTML =
+        "Stored Name: " + name;
+}
+
+</script>
+
+</body>
+</html>
+
+sessionStorage Example
+
+sessionStorage.setItem("course", "Angular");
+
+let course =
+    sessionStorage.getItem("course");
+
+console.log(course);
+
+Remove Storage Data : 
+
+localStorage.removeItem("username");
+
+localStorage.clear();
+
+6. Accessibility (A11y)
+
+What is Accessibility?
+
+Accessibility means making websites usable for:
+
+Blind users
+Keyboard users
+Screen readers
+Disabled users
+Accessibility Best Practices
+Practice	Benefit
+Semantic HTML	Better screen readers
+alt text	Image understanding
+Labels	Form accessibility
+Keyboard navigation	Non-mouse users
+ARIA attributes	Extra accessibility support
+Accessible Form Example
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Accessible Form</title>
+</head>
+
+<body>
+
+<h1>Registration Form</h1>
+
+<form>
+
+    <!-- Label connected with input -->
+
+    <label for="fullname">
+        Full Name
+    </label>
+
+    <input type="text"
+           id="fullname"
+           name="fullname">
+
+    <br><br>
+
+    <label for="email">
+        Email
+    </label>
+
+    <input type="email"
+           id="email"
+           name="email">
+
+    <br><br>
+
+    <button type="submit">
+        Register
+    </button>
+
+</form>
+
+</body>
+</html>
+
+Image Accessibility Example
+
+<img src="student.jpg"
+     alt="Student learning HTML">
+
+ARIA Example
+
+ARIA = Accessible Rich Internet Applications
+
+<button aria-label="Close Popup">
+    X
+</button>
+Keyboard Accessibility Example
+<button tabindex="0">
+    Click Me
+</button>
+Screen Reader Example
+<div role="alert">
+    Payment Successful
+</div>
+Complete Accessible Webpage Example
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Accessible Website</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        nav a {
+            margin-right: 15px;
+        }
+
+        button {
+            padding: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Learning Accessibility</h1>
+
+</header>
+
+<nav aria-label="Main Navigation">
+
+    <a href="#">Home</a>
+    <a href="#">Courses</a>
+    <a href="#">Contact</a>
+
+</nav>
+
+<main>
+
+<section>
+
+    <h2>Course Registration</h2>
+
+    <form>
+
+        <label for="name">
+            Name
+        </label>
+
+        <input type="text"
+               id="name">
+
+        <br><br>
+
+        <label for="email">
+            Email
+        </label>
+
+        <input type="email"
+               id="email">
+
+        <br><br>
+
+        <button type="submit">
+            Submit
+        </button>
+
+    </form>
+
+</section>
+
+<section>
+
+    <h2>Course Image</h2>
+
+    <img src="course.jpg"
+         alt="Students learning web development"
+         width="300">
+
+</section>
+
+</main>
+
+<footer>
+
+    <p>Accessible Website Example</p>
+
+</footer>
+
+</body>
+
+</html>
+Summary
+Topic	Purpose
+Semantic HTML	Meaningful structure
+Multimedia	Audio & video
+SVG	Vector graphics
+Geolocation	User location
+Web Storage	Browser storage
+Accessibility	Inclusive websites
+
+

@@ -1815,4 +1815,2488 @@ CREATE TABLE products (
 );
 
 
+Introduction to JDBC : 1. What is JDBC?
 
+JDBC (Java Database Connectivity) is a Java API used to connect Java applications with databases.
+
+Using JDBC, a Java program can: CRUD
+
+Connect to a database
+Execute SQL queries
+Insert, update, delete records
+Retrieve data from tables
+Handle transactions
+
+JDBC acts as a bridge between:
+
+Java Application
+Database (MySQL, Oracle, PostgreSQL, SQL Server, etc.)
+
+2. Why JDBC is Needed?
+
+Without JDBC:
+
+Java applications cannot directly communicate with databases.
+
+With JDBC:
+
+Java programs can store and retrieve data easily.
+
+Example:
+
+Banking applications
+E-commerce websites
+Employee management systems
+Student management systems
+
+3. JDBC Architecture
+
+JDBC Flow :
+
+Java Application
+       ↓
+JDBC API
+       ↓
+JDBC Driver
+       ↓
+Database
+
+4. Components of JDBC
+
+1. JDBC API
+
+Provides classes and interfaces for database operations.
+
+Package:
+
+java.sql
+
+2. JDBC Driver
+
+A software component that enables Java application to communicate with database.
+
+Different databases use different drivers.
+
+Examples:
+
+Database	Driver
+
+MySQL		MySQL Connector/J
+Oracle		Oracle JDBC Driver
+PostgreSQL	PostgreSQL Driver
+
+3. Database
+
+Stores application data.
+
+Examples:
+
+MySQL
+Oracle
+PostgreSQL
+SQL Server
+
+5. Types of JDBC Drivers
+
+Type 1 – JDBC-ODBC Bridge Driver
+
+Java → JDBC → ODBC → Database // Database is open to connect means the connection of database is open to connect
+
+Old driver
+
+Slow
+
+Removed from Java 8
+
+Type 2 – Native API Driver
+
+Java → Native Library → Database
+
+Uses native database libraries
+Platform dependent
+
+Type 3 – Network Protocol Driver
+
+Java → Middleware Server → Database // network is available bridge API
+
+Uses middleware server
+
+Type 4 – Thin Driver (Most Used)
+
+Java → Database
+Pure Java driver
+Fast
+Platform independent
+
+Example:
+
+MySQL Connector/J
+
+6. JDBC Process Steps
+
+Main JDBC steps:
+
+Import packages
+Load driver
+Create connection
+Create statement     1. Prepared Statement, Result Statement, Callable Statement
+Execute query
+Process result
+Close connection
+
+7. JDBC Packages
+
+Important package:
+
+import java.sql.*; // all the classes and interface use to connect Java with Database
+
+8. Important JDBC Interfaces and Classes
+
+Interface/Class			Purpose
+
+DriverManager		Manages database drivers
+Connection			Creates database connection
+Statement				Executes SQL queries
+PreparedStatement		Executes parameterized queries
+CallableStatement		Executes stored procedures
+ResultSet				Stores query result
+SQLException			Handles database errors
+
+9. Setting Up MySQL JDBC
+
+Step 1: Install MySQL
+
+Install:
+
+MySQL
+
+Step 2: Add MySQL JDBC Driver
+
+Download:
+
+MySQL Connector/J
+
+10. Create Database and Table
+
+
+SQL
+
+CREATE DATABASE company;
+
+USE company;
+
+CREATE TABLE employee(
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    salary DOUBLE
+);
+
+11. First JDBC Program
+
+Example: Connect Java with MySQL
+
+import java.sql.*;
+
+public class JdbcDemo {
+
+    public static void main(String[] args) {
+
+        try {
+
+            // Step 1: Load Driver
+            Class.forName("com.mysql.cj.jdbc.Driver"); 
+
+            // Step 2: Create Connection
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/company", // path of MySQL database
+                    "root",
+                    "password");
+
+            System.out.println("Connected Successfully");
+
+            // Step 3: Close Connection
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+12. Understanding Connection URL
+
+jdbc:mysql://localhost:3306/company
+
+Breakdown:
+
+Part		Meaning
+jdbc		JDBC protocol
+mysql	Database
+localhost	Server
+3306	MySQL port
+company	Database name
+
+13. Executing SQL Queries
+
+Using Statement : 
+
+Statement stmt = con.createStatement();
+
+14. Insert Data Example
+
+import java.sql.*;
+
+public class InsertDemo {
+
+    public static void main(String[] args) {
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/company",
+                    "root",
+                    "password");
+
+            Statement stmt = con.createStatement();
+
+            String query =
+                    "INSERT INTO employee VALUES(1,'John',50000)";
+
+            int rows = stmt.executeUpdate(query);
+
+            System.out.println(rows + " row inserted");
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+15. Retrieve Data Example
+
+Using ResultSet
+
+import java.sql.*;
+
+public class SelectDemo {
+
+    public static void main(String[] args) {
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/company",
+                    "root",
+                    "password");
+
+            Statement stmt = con.createStatement();
+
+            ResultSet rs =
+                    stmt.executeQuery("SELECT * FROM employee");
+
+            while(rs.next()) {
+
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double salary = rs.getDouble("salary");
+
+                System.out.println(
+                        id + " " + name + " " + salary);
+            }
+
+            con.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+16. PreparedStatement (Very Important)
+
+Problem with Statement
+
+Using Statement can cause:
+
+SQL Injection // injecting the sql query into the java application
+Performance issues
+
+Solution: PreparedStatement
+
+Safer and faster.
+
+17. PreparedStatement Example
+
+import java.sql.*;
+
+public class PreparedDemo {
+
+    public static void main(String[] args) {
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/company",
+                    "root",
+                    "password");
+
+            String query =
+                    "INSERT INTO employee VALUES(?,?,?)";
+
+            PreparedStatement ps =
+                    con.prepareStatement(query);
+
+            ps.setInt(1, 101);
+            ps.setString(2, "David");
+            ps.setDouble(3, 75000);
+
+            int rows = ps.executeUpdate();
+
+            System.out.println(rows + " row inserted");
+
+            con.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+18. Advantages of PreparedStatement
+
+Feature			Benefit
+
+Precompiled query	Faster execution
+Prevents SQL Injection	More secure
+Dynamic parameters	Flexible
+
+19. Update Example
+
+String query =
+    "UPDATE employee SET salary=? WHERE id=?";
+
+PreparedStatement ps =
+    con.prepareStatement(query);
+
+ps.setDouble(1, 90000);
+ps.setInt(2, 101);
+
+int rows = ps.executeUpdate();
+
+20. Delete Example
+
+String query =
+    "DELETE FROM employee WHERE id=?";
+
+PreparedStatement ps =
+    con.prepareStatement(query);
+
+ps.setInt(1, 101);
+
+int rows = ps.executeUpdate();
+
+21. JDBC Transaction Management
+
+Transaction = Group of SQL statements executed together.
+
+Example:
+
+Money transfer
+Order placement
+
+22. Auto Commit
+
+By default:
+
+con.setAutoCommit(true);
+
+Each query commits automatically.
+
+23. Manual Transaction Example
+
+con.setAutoCommit(false);
+
+try {
+
+    // SQL Queries
+
+    con.commit();
+
+} catch(Exception e) {
+
+    con.rollback();
+}
+
+24. Batch Processing
+
+Executes multiple queries together.
+
+Used for:
+
+Bulk insert
+Bulk update
+
+25. Batch Example
+
+Statement stmt = con.createStatement();
+
+stmt.addBatch(
+    "INSERT INTO employee VALUES(1,'A',1000)");
+
+stmt.addBatch(
+    "INSERT INTO employee VALUES(2,'B',2000)");
+
+stmt.executeBatch();
+
+26. JDBC Exception Handling
+
+Main exception:
+
+SQLException
+
+Example:
+
+catch(SQLException e) {
+
+    System.out.println(e.getMessage());
+}
+
+27. Try-With-Resources (Best Practice)
+
+Automatically closes resources.
+
+try(
+    Connection con = DriverManager.getConnection(url,user,pass);
+    PreparedStatement ps = con.prepareStatement(query);
+) {
+
+}
+
+28. JDBC Best Practices
+
+Always Use:
+
+PreparedStatement
+Connection Pooling
+Try-with-resources
+Transactions
+
+Avoid:
+
+Hardcoded credentials
+Unclosed connections
+Using Statement unnecessarily Spring Boot
+
+29. JDBC Lifecycle Diagram
+
+Load Driver
+     ↓
+Create Connection
+     ↓
+Create Statement
+     ↓
+Execute Query
+     ↓
+Process Result
+     ↓
+Close Resources
+
+30. Real-Time JDBC Usage
+
+JDBC is used in:
+
+Spring Boot Applications
+Hibernate
+Banking Systems
+ERP Systems
+E-commerce Applications
+
+Frameworks like:
+
+Spring Boot
+Hibernate
+
+internally use JDBC.
+
+31. Advantages of JDBC
+
+Advantage	Description
+
+Simple API	Easy to use
+Database Independent	Works with many databases
+Secure	Using PreparedStatement
+Efficient	Supports batch processing
+
+32. Disadvantages of JDBC
+
+Disadvantage	Description
+
+Boilerplate code	More code
+Manual resource handling	Need cleanup
+Complex for large apps	Hard to maintain
+
+33. JDBC Interview Questions
+
+Basic Questions
+What is JDBC?
+What are JDBC drivers?
+Difference between Statement and PreparedStatement?
+What is ResultSet?
+What is SQL Injection?
+What is transaction management?
+Difference between executeQuery and executeUpdate?
+What is batch processing?
+What is connection pooling?
+What is auto commit?
+
+34. Summary
+
+JDBC is the core technology used to connect Java applications with databases.
+
+Main concepts:
+
+JDBC Drivers
+Connection
+Statement
+PreparedStatement
+ResultSet
+Transactions
+Batch Processing
+
+JDBC is the foundation for advanced frameworks like:
+
+Spring Framework
+Spring Boot
+Hibernate
+
+which internally perform database operations using JDBC.
+
+
+
+Establishing Connection : JDBC CRUD Operation with MySQL — Complete Step-by-Step Example
+
+This tutorial explains how to build a complete CRUD (Create, Read, Update, Delete) application using:
+
+Java
+JDBC
+MySQL
+
+We will create:
+
+Database
+Table
+Java Project
+JDBC Connection
+CRUD Operations
+Proper Folder Structure
+Complete Source Code
+
+1️⃣ What is JDBC?
+
+JDBC (Java Database Connectivity) is an API used to connect Java applications with databases.
+
+Using JDBC, we can:
+
+Connect Java with MySQL
+Insert records
+Read records
+Update records
+Delete records
+
+2️⃣ Software Required
+
+Install the following:
+
+Software	Purpose
+Java JDK 17+	Java Programming
+MySQL Server	Database
+MySQL Workbench	Database GUI
+Eclipse / IntelliJ	IDE
+MySQL JDBC Driver	JDBC Connector
+
+3️⃣ Create MySQL Database
+
+Open MySQL Workbench and execute:
+
+CREATE DATABASE jdbc_demo;
+
+USE jdbc_demo;
+
+4️⃣ Create Employee Table
+
+CREATE TABLE employee (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    salary DOUBLE
+);
+
+5️⃣ Create Java Project Structure
+
+JDBCDemo/
+│
+├── src/
+│   ├── com/
+│       ├── jdbc/
+│           ├── connection/
+│           │      DBConnection.java
+│           │
+│           ├── model/
+│           │      Employee.java
+│           │
+│           ├── dao/
+│           │      EmployeeDAO.java
+│           │
+│           ├── main/
+│                  Main.java
+│
+├── lib/
+│      mysql-connector-j.jar
+
+6️⃣ Add MySQL JDBC Driver
+
+Download MySQL Connector/J from:
+
+MySQL Connector/J Official Download
+
+Add the .jar file into project build path.
+
+7️⃣ JDBC Architecture
+
+6
+
+Flow:
+
+Java Application
+       ↓
+JDBC API
+       ↓
+JDBC Driver
+       ↓
+MySQL Database
+
+8️⃣ Create Model Class
+
+Employee.java
+
+package com.jdbc.model;
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private String email;
+    private double salary;
+
+    // Default Constructor
+    public Employee() {
+
+    }
+
+    // Parameterized Constructor
+    public Employee(String name, String email, double salary) {
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    // Getter and Setter Methods
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+
+9️⃣ Create JDBC Connection Class
+
+DBConnection.java
+
+package com.jdbc.connection;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/jdbc_demo";
+
+    private static final String USERNAME = "root";
+
+    private static final String PASSWORD = "root";
+
+    public static Connection getConnection() {
+
+        Connection connection = null;
+
+        try {
+
+            // Load Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create Connection
+            connection = DriverManager.getConnection(
+                    URL,
+                    USERNAME,
+                    PASSWORD
+            );
+
+            System.out.println("Database Connected Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return connection;
+    }
+}
+
+🔟 DAO Class for CRUD Operations
+
+EmployeeDAO.java
+
+package com.jdbc.dao;
+
+import com.jdbc.connection.DBConnection;
+import com.jdbc.model.Employee;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class EmployeeDAO {
+
+    // INSERT OPERATION
+    public void insertEmployee(Employee employee) {
+
+        String query =
+                "INSERT INTO employee(name, email, salary) VALUES(?,?,?)";
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setString(1, employee.getName());
+            ps.setString(2, employee.getEmail());
+            ps.setDouble(3, employee.getSalary());
+
+            int rows = ps.executeUpdate();
+
+            if(rows > 0) {
+                System.out.println("Employee Inserted Successfully");
+            }
+
+            connection.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // READ OPERATION
+    public void getAllEmployees() {
+
+        String query = "SELECT * FROM employee";
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id") + " "
+                        + rs.getString("name") + " "
+                        + rs.getString("email") + " "
+                        + rs.getDouble("salary")
+                );
+            }
+
+            connection.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // UPDATE OPERATION
+    public void updateEmployee(int id, double salary) {
+
+        String query =
+                "UPDATE employee SET salary=? WHERE id=?";
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setDouble(1, salary);
+            ps.setInt(2, id);
+
+            int rows = ps.executeUpdate();
+
+            if(rows > 0) {
+                System.out.println("Employee Updated Successfully");
+            }
+
+            connection.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE OPERATION
+    public void deleteEmployee(int id) {
+
+        String query =
+                "DELETE FROM employee WHERE id=?";
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setInt(1, id);
+
+            int rows = ps.executeUpdate();
+
+            if(rows > 0) {
+                System.out.println("Employee Deleted Successfully");
+            }
+
+            connection.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+1️⃣1️⃣ Create Main Class
+
+Main.java
+
+package com.jdbc.main;
+
+import com.jdbc.dao.EmployeeDAO;
+import com.jdbc.model.Employee;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        EmployeeDAO dao = new EmployeeDAO();
+
+        // INSERT
+        Employee emp =
+                new Employee(
+                        "John",
+                        "john@gmail.com",
+                        50000
+                );
+
+        dao.insertEmployee(emp);
+
+        // READ
+        System.out.println("\nAll Employees:");
+        dao.getAllEmployees();
+
+        // UPDATE
+        dao.updateEmployee(1, 75000);
+
+        // DELETE
+        dao.deleteEmployee(1);
+    }
+}
+
+
+1️⃣2️⃣ Output
+
+Database Connected Successfully
+Employee Inserted Successfully
+
+All Employees:
+1 John john@gmail.com 50000.0
+
+Employee Updated Successfully
+
+Employee Deleted Successfully
+
+1️⃣3️⃣ Understanding CRUD Operations
+
+Operation	SQL	JDBC Method
+Create	INSERT	executeUpdate()
+Read	SELECT	executeQuery()
+Update	UPDATE	executeUpdate()
+Delete	DELETE	executeUpdate()
+
+1️⃣4️⃣ JDBC Important Interfaces
+
+Interface/Class	Purpose
+
+DriverManager	Creates DB connection
+Connection	Represents DB connection
+PreparedStatement	Executes parameterized query
+ResultSet	Holds SELECT query data
+
+1️⃣5️⃣ Why Use PreparedStatement?
+
+Advantages:
+
+Prevents SQL Injection
+Faster execution
+Reusable queries
+Easy parameter handling
+
+Example:
+
+PreparedStatement ps =
+connection.prepareStatement(
+"INSERT INTO employee(name,email,salary) VALUES(?,?,?)"
+);
+
+1️⃣6️⃣ Improved Version Using Try-With-Resources
+
+Modern JDBC coding style:
+
+try (
+    Connection connection =
+        DBConnection.getConnection();
+
+    PreparedStatement ps =
+        connection.prepareStatement(query)
+) {
+
+    // logic
+
+} catch(Exception e) {
+    e.printStackTrace();
+}
+
+Benefits:
+
+Automatically closes resources
+Cleaner code
+Prevents memory leaks
+
+1️⃣7️⃣ Common JDBC Errors
+
+Error				Reason
+No suitable driver	JDBC jar missing
+Access denied		Wrong username/password
+Unknown database	Database not created
+Table doesn't exist	Wrong table name
+
+1️⃣8️⃣ Best Practices
+
+✅ Use PreparedStatement
+✅ Close DB resources
+✅ Use layered architecture
+✅ Store DB config separately
+✅ Use Connection Pooling in real projects
+✅ Handle exceptions properly
+
+1️⃣9️⃣ Real-Time Project Flow
+
+5
+UI Layer
+   ↓
+Service Layer
+   ↓
+DAO Layer
+   ↓
+JDBC
+   ↓
+MySQL
+
+
+
+
+
+Executing Query and Processing result : This tutorial explains how to perform CRUD operations using JDBC with a MySQL database from scratch.
+
+CRUD Operations:
+
+C → Create (INSERT)
+R → Read (SELECT)
+U → Update (UPDATE)
+D → Delete (DELETE)
+
+We will build:
+
+MySQL Database
+JDBC Project
+Java Model Class
+JDBC Utility Class
+DAO Class
+Main Class
+1️⃣ What is JDBC?
+
+JDBC (Java Database Connectivity) is a Java API used to connect Java applications with databases.
+
+Using JDBC, Java applications can:
+
+Execute SQL queries
+Insert records
+Update records
+Delete records
+Fetch database results
+2️⃣ JDBC Architecture
+6
+
+Flow:
+
+Java Application
+JDBC API
+JDBC Driver
+MySQL Database
+3️⃣ Software Required
+
+Install the following:
+
+Software	Purpose
+Java JDK 17+	Java Development
+MySQL Server	Database
+MySQL Workbench	Database GUI
+Eclipse / IntelliJ	IDE
+MySQL JDBC Driver	Database Connectivity
+4️⃣ Create MySQL Database
+
+Open MySQL Workbench and execute:
+
+CREATE DATABASE jdbc_demo;
+
+USE jdbc_demo;
+
+CREATE TABLE employee (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    salary DOUBLE
+);
+5️⃣ Maven Dependency
+
+If using Maven, add dependency in pom.xml
+
+<dependencies>
+
+    <!-- MySQL JDBC Driver -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>9.3.0</version>
+    </dependency>
+
+</dependencies>
+6️⃣ Project Structure
+JDBC-CRUD/
+│
+├── src/
+│   ├── com.jdbc.model/
+│   │       Employee.java
+│   │
+│   ├── com.jdbc.util/
+│   │       DBConnection.java
+│   │
+│   ├── com.jdbc.dao/
+│   │       EmployeeDAO.java
+│   │
+│   └── com.jdbc.main/
+│           Main.java
+│
+└── pom.xml
+7️⃣ Create Employee Model Class
+Employee.java
+package com.jdbc.model;
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private String email;
+    private double salary;
+
+    // Default Constructor
+    public Employee() {
+
+    }
+
+    // Parameterized Constructor
+    public Employee(String name, String email, double salary) {
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    // Full Constructor
+    public Employee(int id, String name, String email, double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee [id=" + id + 
+               ", name=" + name + 
+               ", email=" + email + 
+               ", salary=" + salary + "]";
+    }
+}
+8️⃣ Create Database Connection Class
+DBConnection.java
+package com.jdbc.util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/jdbc_demo";
+
+    private static final String USERNAME = "root";
+
+    private static final String PASSWORD = "root";
+
+    public static Connection getConnection() {
+
+        Connection connection = null;
+
+        try {
+
+            // Load Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create Connection
+            connection = DriverManager.getConnection(
+                    URL,
+                    USERNAME,
+                    PASSWORD
+            );
+
+            System.out.println("Database Connected Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return connection;
+    }
+}
+9️⃣ JDBC CRUD Operations DAO Class
+EmployeeDAO.java
+package com.jdbc.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import com.jdbc.model.Employee;
+import com.jdbc.util.DBConnection;
+
+public class EmployeeDAO {
+
+    // INSERT OPERATION
+    public void insertEmployee(Employee employee) {
+
+        String query =
+                "INSERT INTO employee(name, email, salary) VALUES (?, ?, ?)";
+
+        try (
+                Connection connection = DBConnection.getConnection();
+
+                PreparedStatement preparedStatement =
+                        connection.prepareStatement(query);
+        ) {
+
+            preparedStatement.setString(1, employee.getName());
+            preparedStatement.setString(2, employee.getEmail());
+            preparedStatement.setDouble(3, employee.getSalary());
+
+            int rows = preparedStatement.executeUpdate();
+
+            System.out.println(rows + " Employee Inserted Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // SELECT ALL EMPLOYEES
+    public void getAllEmployees() {
+
+        String query = "SELECT * FROM employee";
+
+        try (
+                Connection connection = DBConnection.getConnection();
+
+                Statement statement = connection.createStatement();
+
+                ResultSet resultSet = statement.executeQuery(query);
+        ) {
+
+            while (resultSet.next()) {
+
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                double salary = resultSet.getDouble("salary");
+
+                System.out.println(
+                        id + " | " +
+                        name + " | " +
+                        email + " | " +
+                        salary
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // SELECT EMPLOYEE BY ID
+    public void getEmployeeById(int empId) {
+
+        String query = "SELECT * FROM employee WHERE id = ?";
+
+        try (
+                Connection connection = DBConnection.getConnection();
+
+                PreparedStatement preparedStatement =
+                        connection.prepareStatement(query);
+        ) {
+
+            preparedStatement.setInt(1, empId);
+
+            ResultSet resultSet =
+                    preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+
+                System.out.println("Employee Found");
+
+                System.out.println(
+                        resultSet.getInt("id") + " | " +
+                        resultSet.getString("name") + " | " +
+                        resultSet.getString("email") + " | " +
+                        resultSet.getDouble("salary")
+                );
+
+            } else {
+
+                System.out.println("Employee Not Found");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // UPDATE EMPLOYEE
+    public void updateEmployeeSalary(
+            int id,
+            double newSalary
+    ) {
+
+        String query =
+                "UPDATE employee SET salary = ? WHERE id = ?";
+
+        try (
+                Connection connection = DBConnection.getConnection();
+
+                PreparedStatement preparedStatement =
+                        connection.prepareStatement(query);
+        ) {
+
+            preparedStatement.setDouble(1, newSalary);
+            preparedStatement.setInt(2, id);
+
+            int rows =
+                    preparedStatement.executeUpdate();
+
+            System.out.println(rows +
+                    " Employee Updated Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE EMPLOYEE
+    public void deleteEmployee(int id) {
+
+        String query =
+                "DELETE FROM employee WHERE id = ?";
+
+        try (
+                Connection connection = DBConnection.getConnection();
+
+                PreparedStatement preparedStatement =
+                        connection.prepareStatement(query);
+        ) {
+
+            preparedStatement.setInt(1, id);
+
+            int rows =
+                    preparedStatement.executeUpdate();
+
+            System.out.println(rows +
+                    " Employee Deleted Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+🔟 Create Main Class
+Main.java
+package com.jdbc.main;
+
+import com.jdbc.dao.EmployeeDAO;
+import com.jdbc.model.Employee;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+
+        // INSERT
+        Employee employee1 =
+                new Employee(
+                        "John",
+                        "john@gmail.com",
+                        50000
+                );
+
+        employeeDAO.insertEmployee(employee1);
+
+        // INSERT
+        Employee employee2 =
+                new Employee(
+                        "David",
+                        "david@gmail.com",
+                        65000
+                );
+
+        employeeDAO.insertEmployee(employee2);
+
+        System.out.println();
+
+        // SELECT ALL
+        System.out.println("All Employees");
+        employeeDAO.getAllEmployees();
+
+        System.out.println();
+
+        // SELECT BY ID
+        System.out.println("Get Employee By ID");
+        employeeDAO.getEmployeeById(1);
+
+        System.out.println();
+
+        // UPDATE
+        System.out.println("Update Salary");
+        employeeDAO.updateEmployeeSalary(1, 90000);
+
+        System.out.println();
+
+        // SELECT AFTER UPDATE
+        employeeDAO.getEmployeeById(1);
+
+        System.out.println();
+
+        // DELETE
+        System.out.println("Delete Employee");
+        employeeDAO.deleteEmployee(2);
+
+        System.out.println();
+
+        // FINAL DATA
+        System.out.println("Final Employees Data");
+        employeeDAO.getAllEmployees();
+    }
+}
+1️⃣1️⃣ Expected Output
+Database Connected Successfully
+1 Employee Inserted Successfully
+
+Database Connected Successfully
+1 Employee Inserted Successfully
+
+All Employees
+1 | John | john@gmail.com | 50000.0
+2 | David | david@gmail.com | 65000.0
+
+Get Employee By ID
+Employee Found
+1 | John | john@gmail.com | 50000.0
+
+Update Salary
+1 Employee Updated Successfully
+
+Employee Found
+1 | John | john@gmail.com | 90000.0
+
+Delete Employee
+1 Employee Deleted Successfully
+
+Final Employees Data
+1 | John | john@gmail.com | 90000.0
+
+1️⃣2️⃣ Important JDBC Interfaces
+
+Interface	Purpose
+
+Connection	Create database connection
+Statement	Execute SQL query
+PreparedStatement	Execute parameterized query
+ResultSet	Store query result
+DriverManager	Manage JDBC drivers
+
+1️⃣3️⃣ Difference Between Statement and PreparedStatement
+
+Statement	PreparedStatement
+
+Dynamic Query	Precompiled Query
+Less Secure	More Secure
+SQL Injection Possible	Prevents SQL Injection
+Slower	Faster
+
+
+
+
+Using PreparedStatement and Metadata objects : 
+
+1. What is PreparedStatement in Java?
+
+PreparedStatement is an interface in JDBC used to execute parameterized SQL queries.
+
+It helps:
+
+Improve performance
+Prevent SQL Injection
+Execute dynamic queries safely
+Reuse SQL statements
+
+It belongs to:
+
+java.sql.PreparedStatement
+
+2. Why Use PreparedStatement?
+
+Problems with Statement
+
+Using normal Statement:
+
+String sql = "SELECT * FROM users WHERE name='" + name + "'";
+
+Issues:
+
+Vulnerable to SQL Injection scripting 
+
+Slow for repeated execution
+Difficult to maintain
+
+3. Advantages of PreparedStatement
+
+Feature	Benefit
+
+Precompiled Query	Faster execution
+Parameterized Query	Secure
+Reusable	Better performance
+Easy Handling	Cleaner code
+
+4. PreparedStatement Syntax
+
+PreparedStatement ps = connection.prepareStatement(sql);
+
+Example:
+
+String sql = "INSERT INTO student(name, email) VALUES(?, ?)";
+
+PreparedStatement ps = con.prepareStatement(sql);
+
+ps.setString(1, "John");
+ps.setString(2, "john@gmail.com");
+
+ps.executeUpdate();
+
+5. Important Methods of PreparedStatement
+
+Method	Description
+setInt()	Sets integer value
+setString()	Sets String value
+setDouble()	Sets double value
+executeUpdate()	INSERT/UPDATE/DELETE
+executeQuery()	SELECT
+execute()			Any SQL
+clearParameters()	Clears values
+
+6. What is Metadata in JDBC?
+
+Metadata means:
+
+“Data about data”
+
+JDBC provides:
+
+Database metadata
+ResultSet metadata
+
+7. Types of Metadata in JDBC
+
+Metadata Type	Description
+
+DatabaseMetaData	Information about database
+ResultSetMetaData	Information about table columns
+
+8. DatabaseMetaData
+
+Used to get:
+
+Database name
+Driver name
+Version
+Tables info
+
+Example:
+
+DatabaseMetaData dbmd = con.getMetaData();
+
+9. ResultSetMetaData
+
+Used to get:
+
+Column names
+Column count
+Column type
+
+Example:
+
+ResultSetMetaData rsmd = rs.getMetaData();
+
+10. Complete Project — CRUD Using PreparedStatement + Metadata
+
+Step 1: Install Software
+
+Required
+
+JDK 17+
+Eclipse IDE
+MySQL Server
+MySQL Workbench
+
+Step 2: Create Database
+
+Open MySQL Workbench and execute:
+
+CREATE DATABASE jdbc_demo;
+
+USE jdbc_demo;
+
+CREATE TABLE employee (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    salary DOUBLE
+);
+
+Step 3: Create Eclipse Java Project
+
+Create Project
+
+File → New → Java Project
+
+Project Name:
+
+JDBCPreparedStatementDemo
+
+Click Finish.
+
+Step 4: Add MySQL JDBC Driver
+
+Download JDBC Driver from:
+
+MySQL Connector/J Official Download
+
+Add Jar in Eclipse
+
+Project
+
+ → Right Click
+ → Build Path
+ → Configure Build Path
+ → Libraries
+ → Add External JARs
+
+Select:
+
+mysql-connector-j-9.x.x.jar
+Step 5: Project Structure
+
+JDBCPreparedStatementDemo
+|
+|-- src
+    |
+    |-- com.jdbc
+          |
+          |-- DBConnection.java
+          |-- Employee.java
+          |-- EmployeeDAO.java
+          |-- MainApp.java
+
+Step 6: Create DBConnection.java
+
+package com.jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    static Connection con;
+
+    public static Connection getConnection() {
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/jdbc_demo",
+                    "root",
+                    "root");
+
+            System.out.println("Database Connected Successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return con;
+    }
+}
+
+Step 7: Create Employee.java
+
+package com.jdbc;
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private String email;
+    private double salary;
+
+    public Employee() {
+
+    }
+
+    public Employee(String name, String email, double salary) {
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    public Employee(int id, String name, String email, double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+Step 8: Create EmployeeDAO.java
+
+package com.jdbc;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.DatabaseMetaData;
+
+public class EmployeeDAO {
+
+    Connection con = DBConnection.getConnection();
+
+    // INSERT
+    public void insertEmployee(Employee emp) {
+
+        try {
+
+            String sql = "INSERT INTO employee(name,email,salary) VALUES(?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, emp.getName());
+            ps.setString(2, emp.getEmail());
+            ps.setDouble(3, emp.getSalary());
+
+            int rows = ps.executeUpdate();
+
+            System.out.println(rows + " Record Inserted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // UPDATE
+    public void updateEmployee(Employee emp) {
+
+        try {
+
+            String sql =
+                    "UPDATE employee SET name=?, email=?, salary=? WHERE id=?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, emp.getName());
+            ps.setString(2, emp.getEmail());
+            ps.setDouble(3, emp.getSalary());
+            ps.setInt(4, emp.getId());
+
+            int rows = ps.executeUpdate();
+
+            System.out.println(rows + " Record Updated");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE
+    public void deleteEmployee(int id) {
+
+        try {
+
+            String sql = "DELETE FROM employee WHERE id=?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            int rows = ps.executeUpdate();
+
+            System.out.println(rows + " Record Deleted");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // SELECT
+    public void getAllEmployees() {
+
+        try {
+
+            String sql = "SELECT * FROM employee";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            // ResultSet Metadata
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            int columnCount = rsmd.getColumnCount();
+
+            System.out.println("\n===== COLUMN DETAILS =====");
+
+            for (int i = 1; i <= columnCount; i++) {
+
+                System.out.println("Column Name : "
+                        + rsmd.getColumnName(i));
+
+                System.out.println("Column Type : "
+                        + rsmd.getColumnTypeName(i));
+
+                System.out.println("----------------------");
+            }
+
+            System.out.println("\n===== EMPLOYEE DATA =====");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id") + " "
+                        + rs.getString("name") + " "
+                        + rs.getString("email") + " "
+                        + rs.getDouble("salary"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Database Metadata
+    public void databaseInfo() {
+
+        try {
+
+            DatabaseMetaData dbmd = con.getMetaData();
+
+            System.out.println("\n===== DATABASE INFO =====");
+
+            System.out.println("Database Product Name : "
+                    + dbmd.getDatabaseProductName());
+
+            System.out.println("Database Version : "
+                    + dbmd.getDatabaseProductVersion());
+
+            System.out.println("Driver Name : "
+                    + dbmd.getDriverName());
+
+            System.out.println("Driver Version : "
+                    + dbmd.getDriverVersion());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+Step 9: Create MainApp.java
+
+package com.jdbc;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+
+        EmployeeDAO dao = new EmployeeDAO();
+
+        // INSERT
+        Employee e1 =
+                new Employee("John", "john@gmail.com", 50000);
+
+        dao.insertEmployee(e1);
+
+        // UPDATE
+        Employee e2 =
+                new Employee(1,
+                        "John Updated",
+                        "johnupdated@gmail.com",
+                        75000);
+
+        dao.updateEmployee(e2);
+
+        // SELECT
+        dao.getAllEmployees();
+
+        // DATABASE METADATA
+        dao.databaseInfo();
+
+        // DELETE
+        dao.deleteEmployee(1);
+    }
+}
+
+Step 10: Run the Application
+
+Run
+
+Right Click MainApp.java
+→ Run As
+→ Java Application
+
+11. Expected Output
+
+Database Connected Successfully
+
+1 Record Inserted
+
+1 Record Updated
+
+===== COLUMN DETAILS =====
+
+Column Name : id
+Column Type : INT
+
+Column Name : name
+Column Type : VARCHAR
+
+Column Name : email
+Column Type : VARCHAR
+
+Column Name : salary
+Column Type : DOUBLE
+
+===== EMPLOYEE DATA =====
+
+1 John Updated johnupdated@gmail.com 75000.0
+
+===== DATABASE INFO =====
+
+Database Product Name : MySQL
+Database Version : 8.0
+Driver Name : MySQL Connector/J
+Driver Version : 9.x.x
+
+1 Record Deleted
+
+12. How PreparedStatement Prevents SQL Injection
+
+Unsafe:
+
+String sql =
+
+"SELECT * FROM users WHERE username='"
++ username + "'";
+
+Safe:
+
+String sql =
+"SELECT * FROM users WHERE username=?";
+
+PreparedStatement ps =
+con.prepareStatement(sql);
+
+ps.setString(1, username);
+
+13. Difference Between Statement and PreparedStatement
+
+Statement	PreparedStatement
+
+Dynamic SQL	Precompiled SQL
+
+Slow	Faster
+
+Not Secure	Secure
+
+SQL Injection Possible	Prevents Injection
+
+Hard to Maintain	Easy
+
+
+
+Using Callable Statement and Transactions : 1. What is CallableStatement in JDBC?
+
+CallableStatement is a JDBC interface used to execute Stored Procedures and Stored Functions from Java.
+
+A stored procedure is a precompiled SQL block stored inside the database.
+
+Advantages :
+
+Better performance
+Reusable SQL logic
+Reduced network traffic
+Improved security
+Centralized business logic
+
+2. Types of Parameters in Stored Procedures
+
+Parameter Type	Description
+
+IN		Input parameter
+OUT	Output parameter
+INOUT	Both input and output
+
+3. Syntax of CallableStatement
+
+CallableStatement cs = connection.prepareCall("{call procedure_name(?, ?)}");
+
+4. What are Transactions in JDBC?
+
+A transaction is a group of SQL operations executed as a single unit.
+
+Transaction Properties (ACID)
+
+Property			Meaning
+Atomicity			All operations succeed or fail together
+Consistency		Database remains valid
+Isolation			Transactions do not interfere
+Durability			Changes are permanently saved
+
+5. Transaction Methods in JDBC
+
+Method				Description
+
+setAutoCommit(false)	Starts manual transaction
+commit()				Saves changes permanently
+rollback()				Undo changes
+setSavepoint()			Partial rollback point
+
+6. Real-Time Banking Example
+
+We will implement:
+
+MySQL Database
+Stored Procedure
+Java JDBC Project
+CallableStatement
+Transactions
+Commit & Rollback
+
+7. Software Required
+
+Install:
+
+Java JDK 17+
+Eclipse IDE
+MySQL Server
+MySQL Workbench
+MySQL JDBC Driver
+
+8. Create Database
+
+Open MySQL Workbench.
+
+Create Database
+
+CREATE DATABASE jdbc_transactions;
+
+Use database:
+
+USE jdbc_transactions;
+
+9. Create Table
+
+CREATE TABLE accounts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    balance DOUBLE
+);
+
+10. Insert Sample Data
+
+INSERT INTO accounts(name, balance)
+VALUES
+('Amol', 5000),
+('Rahul', 3000);
+
+11. Verify Data
+
+SELECT * FROM accounts;
+
+Output:
+
+id	name	balance
+1	Amol	5000
+2	Rahul	3000
+
+12. Create Stored Procedure
+
+This procedure transfers money between accounts.
+
+DELIMITER $$
+
+CREATE PROCEDURE transfer_money(
+    IN sender_id INT,
+    IN receiver_id INT,
+    IN amount DOUBLE
+)
+BEGIN
+
+    UPDATE accounts
+    SET balance = balance - amount
+    WHERE id = sender_id;
+
+    UPDATE accounts
+    SET balance = balance + amount
+    WHERE id = receiver_id;
+
+END $$
+
+DELIMITER ;
+
+13. Test Stored Procedure
+
+CALL transfer_money(1, 2, 500);
+
+Check result:
+
+SELECT * FROM accounts;
+
+14. Create Java Project in Eclipse
+
+Step 1: Open Eclipse
+
+Click:
+
+File → New → Java Project
+
+Project Name:
+
+JDBC_CallableStatement_Transactions
+
+Click Finish.
+
+15. Add MySQL JDBC Driver
+Step 1
+
+Download JDBC Driver from:
+
+MySQL Connector/J Official Download
+
+Step 2
+
+Right Click Project
+
+Build Path → Configure Build Path
+Step 3
+Libraries → Classpath → Add External JARs
+
+Select:
+
+mysql-connector-j-9.x.x.jar
+
+Click Apply and Close.
+
+16. Project Structure
+
+JDBC_CallableStatement_Transactions
+ |
+ └── src
+      |
+      └── com.jdbc.transaction
+              |
+              ├── DBConnection.java
+              └── TransactionExample.java
+
+17. Create DBConnection.java
+
+package com.jdbc.transaction;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/jdbc_transactions";
+
+    private static final String USERNAME = "root";
+
+    private static final String PASSWORD = "root";
+
+    public static Connection getConnection() {
+
+        Connection con = null;
+
+        try {
+
+            // Load Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create Connection
+            con = DriverManager.getConnection(
+                    URL,
+                    USERNAME,
+                    PASSWORD);
+
+            System.out.println("Database Connected Successfully");
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return con;
+    }
+}
+
+18. Create TransactionExample.java
+
+package com.jdbc.transaction;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+
+public class TransactionExample {
+
+    public static void main(String[] args) {
+
+        Connection con = null;
+        CallableStatement cs = null;
+
+        try {
+
+            // Get Connection
+            con = DBConnection.getConnection();
+
+            // Start Transaction
+            con.setAutoCommit(false);
+
+            // Prepare Callable Statement
+            cs = con.prepareCall("{call transfer_money(?, ?, ?)}");
+
+            // Set Parameters
+            cs.setInt(1, 1);
+            cs.setInt(2, 2);
+            cs.setDouble(3, 1000);
+
+            // Execute Procedure
+            cs.execute();
+
+            System.out.println("Money Transferred Successfully");
+
+            // Commit Transaction
+            con.commit();
+
+            System.out.println("Transaction Committed");
+
+        } catch (Exception e) {
+
+            try {
+
+                // Rollback Transaction
+                if (con != null) {
+
+                    con.rollback();
+
+                    System.out.println("Transaction Rolled Back");
+                }
+
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+            }
+
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                if (cs != null)
+                    cs.close();
+
+                if (con != null)
+                    con.close();
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+19. Run the Application
+
+Right Click
+
+TransactionExample.java
+
+Click:
+
+Run As → Java Application
+
+20. Console Output
+
+Database Connected Successfully
+Money Transferred Successfully
+Transaction Committed
+
+21. Verify Database Output
+
+Run:
+
+SELECT * FROM accounts;
+
+Output:
+
+id	name	balance
+1	Amol	4000
+2	Rahul	4000
+
+22. Transaction Rollback Example
+
+Modify code:
+
+cs.setDouble(3, 100000);
+
+Suppose insufficient balance validation exists.
+
+Then:
+
+Transaction Rolled Back
+
+No data changes occur.
+
+23. Example Using OUT Parameter
+
+Create Stored Procedure
+
+DELIMITER $$
+
+CREATE PROCEDURE get_balance(
+    IN acc_id INT,
+    OUT total_balance DOUBLE
+)
+BEGIN
+
+    SELECT balance
+    INTO total_balance
+    FROM accounts
+    WHERE id = acc_id;
+
+END $$
+
+DELIMITER ;
+
+24. Java Code for OUT Parameter
+
+package com.jdbc.transaction;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Types;
+
+public class OutParameterExample {
+
+    public static void main(String[] args) {
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            CallableStatement cs =
+                    con.prepareCall("{call get_balance(?, ?)}");
+
+            // IN Parameter
+            cs.setInt(1, 1);
+
+            // OUT Parameter
+            cs.registerOutParameter(2, Types.DOUBLE);
+
+            cs.execute();
+
+            double balance = cs.getDouble(2);
+
+            System.out.println("Balance = " + balance);
+
+            cs.close();
+            con.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+}
+
+25. Output
+
+Balance = 4000.0
