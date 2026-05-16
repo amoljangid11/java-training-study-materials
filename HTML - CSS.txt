@@ -1,0 +1,4882 @@
+HTML Templates : HTML Templates Explained from Scratch
+
+HTML <template> is a special HTML element used to store reusable HTML content that is not rendered immediately on the webpage.
+
+It is useful when you want to:
+
+Dynamically create UI components
+Reuse HTML blocks
+Improve performance
+Build cards, tables, modals, lists, etc.
+Work with JavaScript frameworks and Web Components
+1. What is an HTML Template?
+
+The <template> tag contains HTML code that is hidden until JavaScript uses it.
+
+Syntax
+<template id="templateName">
+    <!-- Hidden HTML -->
+</template>
+
+The content inside:
+
+Does NOT display on the page initially
+Does NOT execute scripts immediately
+Can be cloned and inserted using JavaScript
+2. Why Use Templates?
+
+Without templates:
+
+<div class="card">
+   <h2>John</h2>
+   <p>Developer</p>
+</div>
+
+<div class="card">
+   <h2>Mike</h2>
+   <p>Tester</p>
+</div>
+
+This creates repeated code.
+
+With templates:
+
+Write once
+Reuse many times
+Dynamically inject data
+3. Basic HTML Template Example
+Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Template Example</title>
+</head>
+<body>
+
+<h1>HTML Template Demo</h1>
+
+<template id="myTemplate">
+    <div class="card">
+        <h2>Name</h2>
+        <p>Role</p>
+    </div>
+</template>
+
+<script>
+
+    // Access template
+    const template = document.getElementById("myTemplate");
+
+    // Clone template content
+    const clone = template.content.cloneNode(true);
+
+    // Add clone to body
+    document.body.appendChild(clone);
+
+</script>
+
+</body>
+</html>
+4. Understanding Key Concepts
+template.content
+
+Returns the hidden DOM inside the template.
+
+template.content
+cloneNode(true)
+
+Creates a deep copy of the template.
+
+cloneNode(true)
+true means:
+Copy all child elements
+false means:
+Copy only parent node
+5. Dynamic Template Example
+
+Create employee cards dynamically.
+
+Complete Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Cards</title>
+
+    <style>
+
+        .card{
+            border:1px solid gray;
+            padding:15px;
+            margin:10px;
+            width:250px;
+            border-radius:10px;
+            background:#f5f5f5;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h1>Employee List</h1>
+
+<div id="container"></div>
+
+<!-- Template -->
+<template id="employeeTemplate">
+
+    <div class="card">
+
+        <h2 class="name"></h2>
+
+        <p class="designation"></p>
+
+        <button>View Profile</button>
+
+    </div>
+
+</template>
+
+<script>
+
+    const employees = [
+
+        {
+            name:"Amol",
+            designation:"Java Developer"
+        },
+
+        {
+            name:"Ravi",
+            designation:"Angular Developer"
+        },
+
+        {
+            name:"Sneha",
+            designation:"Python Developer"
+        }
+
+    ];
+
+    const template = document.getElementById("employeeTemplate");
+
+    const container = document.getElementById("container");
+
+    employees.forEach(emp => {
+
+        // Clone template
+        const clone = template.content.cloneNode(true);
+
+        // Modify cloned content
+        clone.querySelector(".name").textContent = emp.name;
+
+        clone.querySelector(".designation").textContent =
+            emp.designation;
+
+        // Append to container
+        container.appendChild(clone);
+
+    });
+
+</script>
+
+</body>
+</html>
+6. Output
+
+The page dynamically creates:
+
+--------------------
+Amol
+Java Developer
+[View Profile]
+--------------------
+
+--------------------
+Ravi
+Angular Developer
+[View Profile]
+--------------------
+7. Template vs Hidden Div
+Using Hidden Div
+<div id="temp" style="display:none">
+</div>
+
+Problems:
+
+Added to DOM immediately
+Less efficient
+CSS/JS may affect it
+Using Template
+<template>
+</template>
+
+Advantages:
+
+Not rendered
+Cleaner
+Better performance
+Safer DOM handling
+8. Real-Time Example — Product Cards
+Complete Product Template Example
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Products</title>
+
+    <style>
+
+        .product{
+            border:1px solid black;
+            padding:20px;
+            margin:10px;
+            width:200px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Product List</h1>
+
+<div id="products"></div>
+
+<template id="productTemplate">
+
+    <div class="product">
+
+        <h2 class="title"></h2>
+
+        <p class="price"></p>
+
+        <button class="buyBtn">Buy Now</button>
+
+    </div>
+
+</template>
+
+<script>
+
+const products = [
+
+    {
+        title:"Laptop",
+        price:75000
+    },
+
+    {
+        title:"Mobile",
+        price:25000
+    },
+
+    {
+        title:"Keyboard",
+        price:2000
+    }
+
+];
+
+const template =
+document.getElementById("productTemplate");
+
+const container =
+document.getElementById("products");
+
+products.forEach(product => {
+
+    const clone =
+    template.content.cloneNode(true);
+
+    clone.querySelector(".title").textContent =
+    product.title;
+
+    clone.querySelector(".price").textContent =
+    "₹" + product.price;
+
+    clone.querySelector(".buyBtn")
+    .addEventListener("click", () => {
+
+        alert(product.title + " Purchased");
+
+    });
+
+    container.appendChild(clone);
+
+});
+
+</script>
+
+</body>
+</html>
+9. Nested Templates
+
+Templates can contain multiple elements.
+
+<template id="multi">
+
+    <header>
+        Header
+    </header>
+
+    <section>
+        Content
+    </section>
+
+    <footer>
+        Footer
+    </footer>
+
+</template>
+10. Template with Table Rows
+Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Table</title>
+</head>
+<body>
+
+<table border="1">
+
+    <tr>
+        <th>Name</th>
+        <th>Course</th>
+    </tr>
+
+    <tbody id="tableBody"></tbody>
+
+</table>
+
+<template id="rowTemplate">
+
+    <tr>
+        <td class="name"></td>
+        <td class="course"></td>
+    </tr>
+
+</template>
+
+<script>
+
+const students = [
+
+    {
+        name:"Amit",
+        course:"Java"
+    },
+
+    {
+        name:"Priya",
+        course:"Python"
+    }
+
+];
+
+const template =
+document.getElementById("rowTemplate");
+
+const tbody =
+document.getElementById("tableBody");
+
+students.forEach(student => {
+
+    const clone =
+    template.content.cloneNode(true);
+
+    clone.querySelector(".name").textContent =
+    student.name;
+
+    clone.querySelector(".course").textContent =
+    student.course;
+
+    tbody.appendChild(clone);
+
+});
+
+</script>
+
+</body>
+</html>
+11. Template + Fetch API Example
+
+Useful for API data rendering.
+
+Example
+<template id="userTemplate">
+
+    <div>
+
+        <h3 class="username"></h3>
+
+        <p class="email"></p>
+
+    </div>
+
+</template>
+fetch("https://jsonplaceholder.typicode.com/users")
+.then(response => response.json())
+.then(users => {
+
+    const template =
+    document.getElementById("userTemplate");
+
+    users.forEach(user => {
+
+        const clone =
+        template.content.cloneNode(true);
+
+        clone.querySelector(".username").textContent =
+        user.name;
+
+        clone.querySelector(".email").textContent =
+        user.email;
+
+        document.body.appendChild(clone);
+
+    });
+
+});
+12. HTML Templates with Web Components
+
+Templates are heavily used inside Web Components.
+
+Example
+<template id="myComponent">
+
+    <style>
+
+        h2{
+            color:red;
+        }
+
+    </style>
+
+    <h2>Custom Component</h2>
+
+</template>
+13. Advantages of HTML Templates
+Feature	Benefit
+Reusable UI	Write once use many times
+Better Performance	DOM created only when needed
+Cleaner Code	Less repetition
+Dynamic Content	Easy data binding
+Maintainability	Easier updates
+Modern Web Development	Used in frameworks/components
+
+
+
+Semantic HTML : Semantic HTML — Complete Beginner to Advanced Guide
+
+Semantic HTML means using HTML tags according to their meaning rather than only for styling or layout.
+
+Semantic elements clearly describe:
+
+The purpose of the content
+The structure of the webpage
+The relationship between sections
+
+This helps:
+
+Browsers
+Search engines (SEO)
+Screen readers
+Developers
+Accessibility tools
+1. What is Semantic HTML?
+Non-Semantic Example
+<div class="header">
+    <div class="menu">
+        <div class="menu-item">Home</div>
+        <div class="menu-item">About</div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="article">
+        Welcome to our website
+    </div>
+</div>
+
+<div class="footer">
+    Copyright 2026
+</div>
+
+Problem:
+
+Everything is <div>
+Browser does not understand meaning
+Poor accessibility
+Difficult maintenance
+Semantic Example
+<header>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+    </nav>
+</header>
+
+<main>
+    <article>
+        Welcome to our website
+    </article>
+</main>
+
+<footer>
+    Copyright 2026
+</footer>
+
+Now:
+
+<header> = top section
+<nav> = navigation
+<main> = main content
+<article> = independent content
+<footer> = bottom section
+
+This is semantic HTML.
+
+2. Benefits of Semantic HTML
+Benefit	Description
+Readability	Easier to understand code
+SEO	Search engines understand page structure
+Accessibility	Better support for screen readers
+Maintenance	Easier future updates
+Reusability	Better component structure
+Browser Understanding	Browser knows page meaning
+3. Important Semantic HTML Tags
+Tag	Purpose
+<header>	Top section
+<nav>	Navigation links
+<main>	Main page content
+<section>	Thematic grouping
+<article>	Independent content
+<aside>	Sidebar content
+<footer>	Bottom section
+<figure>	Image/media container
+<figcaption>	Caption for figure
+<details>	Expandable content
+<summary>	Heading for details
+<mark>	Highlighted text
+<time>	Date/time
+4. Complete Semantic Page Structure
+Full Example
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Example</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+
+        header, nav, main, section, article, aside, footer {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid gray;
+        }
+
+        nav a {
+            margin-right: 15px;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        main {
+            flex: 3;
+        }
+
+        aside {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>My Website</h1>
+        <p>Learning Semantic HTML</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <div class="container">
+
+        <!-- Main Content -->
+        <main>
+
+            <!-- Section -->
+            <section>
+                <h2>Frontend Technologies</h2>
+
+                <!-- Article -->
+                <article>
+                    <h3>HTML</h3>
+                    <p>HTML is used to structure webpages.</p>
+                </article>
+
+                <article>
+                    <h3>CSS</h3>
+                    <p>CSS is used for styling webpages.</p>
+                </article>
+
+            </section>
+
+            <section>
+                <h2>Backend Technologies</h2>
+
+                <article>
+                    <h3>Java</h3>
+                    <p>Java is used for enterprise applications.</p>
+                </article>
+
+            </section>
+
+        </main>
+
+        <!-- Sidebar -->
+        <aside>
+            <h3>Latest News</h3>
+            <p>Angular 20 released.</p>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Copyright © 2026</p>
+    </footer>
+
+</body>
+
+</html>
+5. Understanding Each Semantic Element
+<header>
+
+Represents introductory content.
+
+Example
+<header>
+    <h1>Tech Blog</h1>
+    <p>Learn Latest Technologies</p>
+</header>
+
+Used for:
+
+Logo
+Title
+Intro content
+Search bar
+<nav>
+
+Represents navigation links.
+
+Example
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+</nav>
+
+Used for:
+
+Menus
+Navigation bars
+Sidebar links
+<main>
+
+Represents the primary content.
+
+Only ONE <main> per page.
+
+Example
+<main>
+    <h2>Welcome</h2>
+    <p>Main content goes here.</p>
+</main>
+<section>
+
+Groups related content.
+
+Example
+<section>
+    <h2>Courses</h2>
+    <p>Available training programs.</p>
+</section>
+
+Use section when content has:
+
+Common theme
+Heading/title
+<article>
+
+Independent self-contained content.
+
+Example
+<article>
+    <h2>Angular Tutorial</h2>
+    <p>Learn Angular step by step.</p>
+</article>
+
+Examples:
+
+Blog post
+News article
+Forum post
+Product card
+<aside>
+
+Sidebar or secondary information.
+
+Example
+<aside>
+    <h3>Related Articles</h3>
+    <ul>
+        <li>HTML Basics</li>
+        <li>CSS Flexbox</li>
+    </ul>
+</aside>
+<footer>
+
+Bottom section of page.
+
+Example
+<footer>
+    <p>Copyright © 2026</p>
+</footer>
+
+Usually contains:
+
+Copyright
+Social links
+Contact info
+6. Semantic Media Elements
+<figure> and <figcaption>
+
+Used for images with captions.
+
+Example
+<figure>
+    <img src="nature.jpg" alt="Nature Image" width="300">
+
+    <figcaption>
+        Beautiful Nature View
+    </figcaption>
+</figure>
+7. Semantic Form Elements
+<fieldset> and <legend>
+
+Group related form fields.
+
+Example
+<form>
+
+    <fieldset>
+
+        <legend>Personal Information</legend>
+
+        <label>Name:</label>
+        <input type="text">
+
+        <br><br>
+
+        <label>Email:</label>
+        <input type="email">
+
+    </fieldset>
+
+</form>
+8. Interactive Semantic Elements
+<details> and <summary>
+
+Creates expandable content.
+
+Example
+<details>
+
+    <summary>What is HTML?</summary>
+
+    <p>
+        HTML stands for HyperText Markup Language.
+    </p>
+
+</details>
+9. Text Semantic Elements
+<mark>
+
+Highlights text.
+
+<p>
+    Learn <mark>Semantic HTML</mark> today.
+</p>
+
+
+multimedia : Multimedia in Computer Science
+
+Multimedia means combining multiple forms of media into a single application or system.
+
+These media types include:
+
+Text → Words, paragraphs, titles
+Images → Photos, graphics, icons
+Audio → Music, voice, sound effects
+Video → Movies, animations
+Animation → Moving graphics
+Interactivity → Buttons, menus, user actions
+Real-World Examples of Multimedia
+Application	Multimedia Elements
+YouTube	Video + Audio + Text
+Instagram	Images + Video + Audio
+Online Learning Apps	Text + Animation + Audio
+Video Games	Graphics + Audio + Interaction
+Netflix	Video + Subtitles + Audio
+Types of Multimedia
+1. Linear Multimedia
+
+User watches content from beginning to end.
+
+Example:
+
+Movie
+TV show
+2. Non-Linear Multimedia
+
+User can interact and control navigation.
+
+Example:
+
+Video games
+Websites
+E-learning apps
+Components of Multimedia
+1. Text
+
+Used for:
+
+Headings
+Descriptions
+Menus
+
+Example:
+
+<h1>Welcome to Multimedia</h1>
+2. Images
+
+Used to improve visual understanding.
+
+Example formats:
+
+JPG
+PNG
+GIF
+
+Example:
+
+<img src="nature.jpg" width="300">
+3. Audio
+
+Used for:
+
+Music
+Voice narration
+Alerts
+
+Example formats:
+
+MP3
+WAV
+
+Example:
+
+<audio controls>
+   <source src="music.mp3" type="audio/mpeg">
+</audio>
+4. Video
+
+Used for:
+
+Tutorials
+Movies
+Advertisements
+
+Example formats:
+
+MP4
+AVI
+MOV
+
+Example:
+
+<video width="400" controls>
+   <source src="movie.mp4" type="video/mp4">
+</video>
+5. Animation
+
+Creates movement effects.
+
+Examples:
+
+CSS animations
+Cartoons
+Motion graphics
+Advantages of Multimedia
+Advantage	Description
+Interactive Learning	Better understanding
+Attractive UI	Engages users
+Easy Communication	Visual explanation
+Entertainment	Movies, games
+Online Education	Video-based learning
+Disadvantages of Multimedia
+Disadvantage	Description
+Large Storage	Videos require more space
+High Development Cost	Complex applications
+Hardware Dependency	Needs better systems
+Internet Usage	Streaming consumes bandwidth
+
+
+SVG : SVG in HTML and CSS — Complete Beginner Guide
+What is SVG?
+
+SVG stands for Scalable Vector Graphics.
+
+It is an XML-based format used to create:
+
+Shapes
+Icons
+Charts
+Logos
+Animations
+Illustrations
+
+Unlike JPG or PNG images, SVG does not lose quality when zoomed.
+
+Why SVG is Important
+Advantages of SVG
+Scalable without blur
+Lightweight
+Easy to animate
+Can be styled using CSS
+Can interact with JavaScript
+Better for responsive design
+SVG vs PNG/JPG
+Feature	SVG	PNG/JPG
+Scalable	✅ Yes	❌ No
+Editable with code	✅ Yes	❌ No
+Animation support	✅ Yes	❌ Limited
+Best for	Icons, Logos	Photos
+File Size	Smaller	Larger
+Basic SVG Syntax
+First SVG Example
+Draw a Rectangle
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG Example</title>
+</head>
+<body>
+
+<svg width="300" height="200">
+
+    <rect 
+        x="20" 
+        y="20" 
+        width="200" 
+        height="100"
+        fill="blue"
+    />
+
+</svg>
+
+</body>
+</html>
+Output Explanation
+Rectangle Attributes
+Attribute	Meaning
+x	Horizontal position
+y	Vertical position
+width	Width of rectangle
+height	Height of rectangle
+fill	Background color
+SVG Coordinate System
+
+SVG uses coordinates:
+
+Top-left = (0,0)
+X-axis → horizontal
+Y-axis → vertical
+
+Example:
+
+(0,0) ----------------> X
+
+ |
+ |
+ |
+ V
+
+ Y
+Common SVG Shapes
+1. Rectangle
+<rect x="20" y="20" width="200" height="100" fill="orange"/>
+2. Circle
+<circle cx="100" cy="100" r="50" fill="red"/>
+Attributes
+Attribute	Meaning
+cx	Center X
+cy	Center Y
+r	Radius
+3. Ellipse
+<ellipse cx="150" cy="100" rx="80" ry="40" fill="green"/>
+4. Line
+<line 
+    x1="10" 
+    y1="10" 
+    x2="200" 
+    y2="100"
+    stroke="black"
+    stroke-width="5"
+/>
+5. Polygon
+<polygon 
+    points="100,10 40,198 190,78 10,78 160,198"
+    fill="purple"
+/>
+6. Polyline
+<polyline
+    points="20,20 40,25 60,40 80,120 120,140"
+    fill="none"
+    stroke="blue"
+    stroke-width="4"
+/>
+7. Text in SVG
+<text 
+    x="50" 
+    y="100"
+    font-size="40"
+    fill="red">
+    Hello SVG
+</text>
+Complete SVG Shapes Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG Shapes</title>
+</head>
+<body>
+
+<svg width="600" height="400">
+
+    <!-- Rectangle -->
+    <rect x="20" y="20" width="120" height="80" fill="orange"/>
+
+    <!-- Circle -->
+    <circle cx="250" cy="60" r="40" fill="red"/>
+
+    <!-- Ellipse -->
+    <ellipse cx="420" cy="60" rx="70" ry="40" fill="green"/>
+
+    <!-- Line -->
+    <line x1="20" y1="180" x2="250" y2="180"
+          stroke="black"
+          stroke-width="6"/>
+
+    <!-- Polygon -->
+    <polygon points="350,150 420,250 280,250"
+             fill="purple"/>
+
+    <!-- Text -->
+    <text x="20" y="350"
+          font-size="40"
+          fill="blue">
+          SVG Learning
+    </text>
+
+</svg>
+
+</body>
+</html>
+
+
+Geolocations : HTML5 Concepts from Scratch
+Semantic HTML, Multimedia, SVG, Geolocation, Web Storage, Accessibility (A11y)
+1. Semantic HTML
+What is Semantic HTML?
+
+Semantic HTML means using HTML tags according to their meaning.
+
+Instead of using only <div> everywhere, semantic elements describe the purpose of content.
+
+Benefits
+Better SEO
+Better Accessibility
+Easier maintenance
+Better readability
+Helps screen readers
+Common Semantic Tags
+Tag	Purpose
+<header>	Top section
+<nav>	Navigation links
+<main>	Main content
+<section>	Grouped content
+<article>	Independent content
+<aside>	Sidebar
+<footer>	Bottom section
+<figure>	Images/diagrams
+<figcaption>	Caption
+Complete Semantic HTML Example
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Example</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+
+        header, nav, section, article, aside, footer {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid gray;
+        }
+
+        nav a {
+            margin-right: 15px;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        section {
+            flex: 3;
+        }
+
+        aside {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>My Website</h1>
+        <p>Learning Semantic HTML</p>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <main class="container">
+
+        <section>
+
+            <article>
+                <h2>Java Full Stack</h2>
+                <p>This article explains Java Full Stack development.</p>
+            </article>
+
+            <article>
+                <h2>Angular Training</h2>
+                <p>This article explains Angular concepts.</p>
+            </article>
+
+        </section>
+
+        <aside>
+            <h3>Sidebar</h3>
+            <p>Latest updates and ads.</p>
+        </aside>
+
+    </main>
+
+    <footer>
+        <p>Copyright 2026</p>
+    </footer>
+
+</body>
+</html>
+2. Multimedia in HTML5
+
+HTML5 introduced built-in support for:
+
+Audio
+Video
+Audio Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Example</title>
+</head>
+<body>
+
+<h1>Audio Example</h1>
+
+<audio controls>
+    <source src="song.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+</audio>
+
+</body>
+</html>
+Video Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Example</title>
+</head>
+<body>
+
+<h1>Video Example</h1>
+
+<video width="500" controls>
+    <source src="movie.mp4" type="video/mp4">
+    Your browser does not support video.
+</video>
+
+</body>
+</html>
+Multimedia Attributes
+Attribute	Purpose
+controls	Shows play buttons
+autoplay	Auto start
+loop	Repeat
+muted	Mute sound
+poster	Thumbnail image
+Video Example with All Features
+<video width="500"
+       controls
+       autoplay
+       muted
+       loop
+       poster="thumbnail.jpg">
+
+    <source src="movie.mp4" type="video/mp4">
+
+</video>
+3. SVG (Scalable Vector Graphics)
+What is SVG?
+
+SVG is XML-based graphics.
+
+Benefits
+Scalable without losing quality
+Lightweight
+Supports animation
+Can be styled with CSS
+SVG Shapes
+Shape	Tag
+Rectangle	<rect>
+Circle	<circle>
+Line	<line>
+Ellipse	<ellipse>
+Polygon	<polygon>
+SVG Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG Example</title>
+</head>
+<body>
+
+<h1>SVG Shapes</h1>
+
+<svg width="500" height="300">
+
+    <!-- Rectangle -->
+    <rect x="20"
+          y="20"
+          width="120"
+          height="80"
+          fill="blue">
+    </rect>
+
+    <!-- Circle -->
+    <circle cx="250"
+            cy="60"
+            r="40"
+            fill="red">
+    </circle>
+
+    <!-- Line -->
+    <line x1="20"
+          y1="150"
+          x2="300"
+          y2="150"
+          stroke="green"
+          stroke-width="5">
+    </line>
+
+</svg>
+
+</body>
+</html>
+SVG Animation Example
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg width="400" height="200">
+
+    <circle cx="50" cy="100" r="30" fill="orange">
+
+        <animate attributeName="cx"
+                 from="50"
+                 to="350"
+                 dur="3s"
+                 repeatCount="indefinite" />
+
+    </circle>
+
+</svg>
+
+</body>
+</html>
+4. Geolocation API
+What is Geolocation?
+
+Geolocation API allows browsers to access user location.
+
+Uses
+Maps
+Delivery apps
+Tracking
+Nearby services
+Important Notes
+Requires user permission
+Works better with HTTPS
+Geolocation Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation Example</title>
+</head>
+
+<body>
+
+<h1>Get Current Location</h1>
+
+<button onclick="getLocation()">
+    Get Location
+</button>
+
+<p id="result"></p>
+
+<script>
+
+function getLocation() {
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+            showPosition,
+            showError
+        );
+
+    } else {
+        document.getElementById("result").innerHTML =
+            "Geolocation not supported";
+    }
+}
+
+function showPosition(position) {
+
+    document.getElementById("result").innerHTML =
+        "Latitude: " + position.coords.latitude +
+        "<br>Longitude: " + position.coords.longitude;
+}
+
+function showError(error) {
+
+    switch(error.code) {
+
+        case error.PERMISSION_DENIED:
+            alert("Permission denied");
+            break;
+
+        case error.POSITION_UNAVAILABLE:
+            alert("Location unavailable");
+            break;
+
+        case error.TIMEOUT:
+            alert("Request timeout");
+            break;
+
+        default:
+            alert("Unknown error");
+    }
+}
+
+</script>
+
+</body>
+</html>
+5. Web Storage
+What is Web Storage?
+
+HTML5 provides client-side storage.
+
+Types
+Storage	Lifetime
+localStorage	Permanent
+sessionStorage	Until tab closes
+localStorage Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local Storage</title>
+</head>
+
+<body>
+
+<h1>Local Storage Example</h1>
+
+<input type="text" id="username">
+
+<button onclick="saveData()">
+    Save
+</button>
+
+<button onclick="getData()">
+    Get
+</button>
+
+<p id="output"></p>
+
+<script>
+
+function saveData() {
+
+    let name =
+        document.getElementById("username").value;
+
+    localStorage.setItem("username", name);
+
+    alert("Data Saved");
+}
+
+function getData() {
+
+    let name =
+        localStorage.getItem("username");
+
+    document.getElementById("output").innerHTML =
+        "Stored Name: " + name;
+}
+
+</script>
+
+</body>
+</html>
+sessionStorage Example
+sessionStorage.setItem("course", "Angular");
+
+let course =
+    sessionStorage.getItem("course");
+
+console.log(course);
+Remove Storage Data
+localStorage.removeItem("username");
+
+localStorage.clear();
+6. Accessibility (A11y)
+What is Accessibility?
+
+Accessibility means making websites usable for:
+
+Blind users
+Keyboard users
+Screen readers
+Disabled users
+Accessibility Best Practices
+Practice	Benefit
+Semantic HTML	Better screen readers
+alt text	Image understanding
+Labels	Form accessibility
+Keyboard navigation	Non-mouse users
+ARIA attributes	Extra accessibility support
+
+
+Inline, internal and external css, box model :
+
+CSS Introduction
+
+Cascading Style Sheets (CSS) is used to style HTML pages.
+CSS controls:
+
+Colors
+Fonts
+Layouts
+Spacing
+Borders
+Responsive design
+Animations
+1. Inline CSS
+
+Inline CSS is written directly inside an HTML element using the style attribute.
+
+Syntax
+<tag style="property:value;">
+Example of Inline CSS
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inline CSS Example</title>
+</head>
+<body>
+
+    <h1 style="color:blue;">Welcome to CSS</h1>
+
+    <p style="font-size:20px; color:red;">
+        This paragraph uses inline CSS.
+    </p>
+
+    <button style="background-color:green; color:white; padding:10px;">
+        Click Me
+    </button>
+
+</body>
+</html>
+Output Explanation
+color:blue; → Changes text color
+font-size:20px; → Changes text size
+background-color:green; → Button background color
+padding:10px; → Space inside button
+Advantages of Inline CSS
+Easy for small styling
+Quick testing
+Highest priority among CSS types
+Disadvantages of Inline CSS
+Difficult to maintain
+Repeated code
+Not reusable
+Makes HTML messy
+2. Internal CSS
+
+Internal CSS is written inside the <style> tag within the <head> section.
+
+Syntax
+<style>
+    selector {
+        property:value;
+    }
+</style>
+Complete Example of Internal CSS
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Internal CSS Example</title>
+
+    <style>
+
+        body {
+            background-color: lightgray;
+        }
+
+        h1 {
+            color: blue;
+            text-align: center;
+        }
+
+        p {
+            color: green;
+            font-size: 20px;
+        }
+
+        button {
+            background-color: orange;
+            color: white;
+            padding: 10px;
+            border: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Internal CSS Demo</h1>
+
+    <p>This paragraph is styled using internal CSS.</p>
+
+    <button>Submit</button>
+
+</body>
+</html>
+Advantages of Internal CSS
+Better than inline CSS
+Reusable within the same page
+Cleaner HTML
+Disadvantages of Internal CSS
+Cannot reuse across multiple pages
+Large files become difficult to manage
+3. External CSS
+
+External CSS is written in a separate .css file.
+
+This is the most professional and commonly used method.
+
+Step 1: Create HTML File
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>External CSS Example</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <h1>External CSS Demo</h1>
+
+    <p>This paragraph uses external CSS.</p>
+
+    <button>Login</button>
+
+</body>
+</html>
+Step 2: Create CSS File
+style.css
+body {
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: purple;
+    text-align: center;
+}
+
+p {
+    color: darkgreen;
+    font-size: 22px;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+}
+How External CSS Works
+<link rel="stylesheet" href="style.css">
+
+This line connects HTML with CSS.
+
+Advantages of External CSS
+Reusable across multiple pages
+Easy maintenance
+Cleaner code
+Faster development
+Best for large projects
+Disadvantages of External CSS
+Requires extra file
+CSS file must load separately
+Difference Between Inline, Internal, and External CSS
+Feature	Inline CSS	Internal CSS	External CSS
+Location	Inside HTML tag	Inside <style>	Separate .css file
+Reusability	No	Limited	Yes
+Maintenance	Difficult	Medium	Easy
+Performance	Poor	Medium	Best
+Recommended	Small changes	Single page	Real projects
+CSS Box Model
+
+Every HTML element is treated as a rectangular box.
+
+The CSS Box Model contains:
+
+Content
+Padding
+Border
+Margin
+Structure of Box Model
+ -------------------------
+|         Margin          |
+|  ---------------------  |
+| |       Border        | |
+| |  -----------------  | |
+| | |     Padding     | | |
+| | |  -----------    | | |
+| | | |  Content |    | | |
+| | |  -----------    | | |
+| |  -----------------  | |
+|  ---------------------  |
+ -------------------------
+Box Model Components
+1. Content
+
+Actual text or image inside element.
+
+Example:
+
+<p>Hello World</p>
+2. Padding
+
+Space between content and border.
+
+padding: 20px;
+3. Border
+
+Line around padding/content.
+
+border: 5px solid black;
+4. Margin
+
+Space outside the border.
+
+margin: 30px;
+Complete Box Model Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Box Model Example</title>
+
+    <style>
+
+        .box {
+
+            width: 300px;
+            height: 150px;
+
+            background-color: lightblue;
+
+            padding: 20px;
+
+            border: 5px solid blue;
+
+            margin: 40px;
+
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        This is CSS Box Model Example
+    </div>
+
+</body>
+</html>
+Understanding the Values
+width: 300px;
+
+Content width = 300px
+
+padding: 20px;
+
+20px space inside border
+
+border: 5px solid blue;
+
+5px border around element
+
+margin: 40px;
+
+40px space outside border
+
+Total Width Calculation
+
+Formula:
+
+Total Width =
+Content Width
++ Left Padding + Right Padding
++ Left Border + Right Border
++ Left Margin + Right Margin
+
+Using above example:
+
+300
++ 20 + 20
++ 5 + 5
++ 40 + 40
+
+= 430px
+Box Sizing
+
+Normally, padding and border increase total size.
+
+To avoid this, use:
+
+box-sizing: border-box;
+Example
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+.box {
+    width: 300px;
+    padding: 20px;
+    border: 5px solid red;
+
+    box-sizing: border-box;
+
+    background-color: yellow;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    Width remains 300px
+</div>
+
+</body>
+</html>
+Margin vs Padding
+Feature	Margin	Padding
+Space Location	Outside border	Inside border
+Background Color Applied	No	Yes
+Affects Outside Spacing	Yes	No
+
+
+style attribute, CSS Preprocessors :
+
+Style Attribute in CSS
+
+The style attribute is used to apply CSS directly to an HTML element.
+
+This method is called Inline CSS because the CSS is written inside the HTML tag itself.
+
+Syntax
+<tag style="property:value;">
+
+Example:
+
+<h1 style="color:red;">Welcome</h1>
+Basic Example of Style Attribute
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Style Attribute Example</title>
+</head>
+<body>
+
+    <h1 style="color: blue;">
+        Hello World
+    </h1>
+
+    <p style="font-size:20px;">
+        This is paragraph text.
+    </p>
+
+</body>
+</html>
+Output Explanation
+color: blue; → Changes text color
+font-size:20px; → Changes text size
+Multiple CSS Properties
+
+You can apply multiple CSS properties separated by semicolon (;).
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiple Styles</title>
+</head>
+<body>
+
+    <h2 style="color:white; background-color:black; padding:10px;">
+        Inline CSS Example
+    </h2>
+
+</body>
+</html>
+Common CSS Properties Used in Style Attribute
+Property	Purpose
+color	Text color
+background-color	Background color
+font-size	Text size
+text-align	Alignment
+border	Add border
+margin	Space outside
+padding	Space inside
+width	Element width
+height	Element height
+Example with Different Properties
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Properties</title>
+</head>
+<body>
+
+    <div style="
+        width:300px;
+        height:150px;
+        background-color:lightblue;
+        border:2px solid black;
+        padding:20px;
+        margin:30px;
+    ">
+        Styled DIV Element
+    </div>
+
+</body>
+</html>
+Advantages of Style Attribute
+Advantage	Description
+Quick Styling	Easy for small changes
+No External File	CSS written directly
+Fast Testing	Useful for testing designs
+Disadvantages of Style Attribute
+Disadvantage	Description
+Repeated Code	Same CSS repeated many times
+Hard Maintenance	Difficult in large projects
+Poor Reusability	Cannot reuse styles easily
+Not Professional	Large applications avoid inline CSS
+Best Practice
+
+Use:
+
+Inline CSS → Small testing
+Internal CSS → Small projects
+External CSS → Real applications
+CSS Preprocessors
+
+A CSS Preprocessor is a tool that extends normal CSS with:
+
+Variables
+Functions
+Nesting
+Mixins
+Reusable code
+Mathematical operations
+
+The preprocessor code is converted into normal CSS.
+
+Popular CSS Preprocessors
+Preprocessor	Description
+SASS/SCSS	Most popular
+LESS	JavaScript-based
+Stylus	Flexible syntax
+Why CSS Preprocessors?
+
+Normal CSS becomes difficult in large projects.
+
+Problems:
+
+Repeated colors
+Repeated styles
+Long CSS files
+Difficult maintenance
+
+Preprocessors solve these issues.
+
+SASS (Syntactically Awesome Stylesheets)
+
+Most commonly used CSS preprocessor.
+
+Two formats:
+
+SASS
+SCSS
+
+SCSS is more popular because it looks like CSS.
+
+Installing SASS
+
+Install using Node.js
+
+Then install SASS:
+
+npm install -g sass
+
+Check version:
+
+sass --version
+SCSS File Example
+
+Create file:
+
+style.scss
+Variables in SCSS
+SCSS Code
+$primaryColor: blue;
+$textColor: white;
+
+body {
+    background-color: $primaryColor;
+    color: $textColor;
+}
+Compiled CSS Output
+body {
+    background-color: blue;
+    color: white;
+}
+Compile SCSS to CSS
+sass style.scss style.css
+Nesting in SCSS
+SCSS Code
+nav {
+    background-color: black;
+
+    ul {
+        list-style: none;
+
+        li {
+            display: inline-block;
+
+            a {
+                color: white;
+                text-decoration: none;
+            }
+        }
+    }
+}
+Generated CSS
+nav {
+    background-color: black;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-block;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+Mixins in SCSS
+
+Mixins help reuse code.
+
+SCSS Example
+@mixin buttonStyle {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    @include buttonStyle;
+    background-color: blue;
+    color: white;
+}
+
+.btn-danger {
+    @include buttonStyle;
+    background-color: red;
+    color: white;
+}
+Output CSS
+.btn-primary {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+}
+
+.btn-danger {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: red;
+    color: white;
+}
+Functions in SCSS
+@function double($value) {
+    @return $value * 2;
+}
+
+.container {
+    width: double(200px);
+}
+
+Generated CSS:
+
+.container {
+    width: 400px;
+}
+Inheritance using Extend
+.message {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.success {
+    @extend .message;
+    background-color: lightgreen;
+}
+
+.error {
+    @extend .message;
+    background-color: pink;
+}
+Generated CSS
+.message, .success, .error {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.success {
+    background-color: lightgreen;
+}
+
+.error {
+    background-color: pink;
+}
+Complete Real-Time SCSS Example
+SCSS File
+$mainColor: #3498db;
+$textColor: white;
+
+@mixin cardStyle {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+body {
+    font-family: Arial;
+}
+
+.card {
+    @include cardStyle;
+    background-color: $mainColor;
+    color: $textColor;
+
+    h2 {
+        font-size: 28px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    button {
+        background-color: white;
+        color: $mainColor;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+}
+Generated CSS
+body {
+    font-family: Arial;
+}
+
+.card {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    background-color: #3498db;
+    color: white;
+}
+
+.card h2 {
+    font-size: 28px;
+}
+
+.card p {
+    font-size: 18px;
+}
+
+.card button {
+    background-color: white;
+    color: #3498db;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+HTML Using Generated CSS
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SCSS Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="card">
+        <h2>SCSS Card</h2>
+        <p>This is styled using SCSS.</p>
+        <button>Click Me</button>
+    </div>
+
+</body>
+</html>
+CSS vs SCSS
+Feature	CSS	SCSS
+Variables	No	Yes
+Nesting	No	Yes
+Mixins	No	Yes
+Functions	No	Yes
+Reusability	Limited	High
+Maintenance	Hard	Easy
+Real-World Usage
+
+CSS preprocessors are widely used in:
+
+Angular projects
+React projects
+Vue applications
+Enterprise UI applications
+Bootstrap customization
+
+Example technologies:
+
+Bootstrap
+Angular
+React
+Vue.js
+
+
+CSS Grid Layout, CSS-in-JS : 
+
+CSS Grid Layout
+
+CSS Grid Layout is a 2-dimensional layout system used to design web pages using rows and columns.
+
+It helps developers create:
+
+Responsive layouts
+Dashboards
+Gallery layouts
+Website structures
+Complex UI designs
+1. Why CSS Grid?
+
+Before Grid:
+
+Developers used floats
+Flexbox was used for 1D layouts only
+
+Grid solves:
+
+Row + column layouts together
+Alignment issues
+Complex positioning
+2. Basic Terminologies
+Term	Description
+Grid Container	Parent element
+Grid Item	Child elements
+Grid Row	Horizontal lines
+Grid Column	Vertical lines
+Grid Gap	Space between items
+3. Basic Grid Structure
+HTML
+<div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+</div>
+CSS
+.container {
+    display: grid;
+}
+
+display: grid converts the container into a grid container.
+
+4. Creating Columns
+CSS
+.container {
+    display: grid;
+
+    grid-template-columns: 200px 200px 200px;
+}
+
+This creates:
+
+3 columns
+Each width = 200px
+5. Creating Rows
+.container {
+    display: grid;
+
+    grid-template-columns: 200px 200px 200px;
+
+    grid-template-rows: 100px 100px;
+}
+
+Creates:
+
+2 rows
+Each height = 100px
+6. Complete Grid Example
+HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Grid Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="box">Box 1</div>
+    <div class="box">Box 2</div>
+    <div class="box">Box 3</div>
+    <div class="box">Box 4</div>
+    <div class="box">Box 5</div>
+    <div class="box">Box 6</div>
+</div>
+
+</body>
+</html>
+CSS
+.container {
+    display: grid;
+
+    grid-template-columns: 200px 200px 200px;
+
+    grid-template-rows: 100px 100px;
+
+    gap: 20px;
+
+    justify-content: center;
+
+    margin-top: 50px;
+}
+
+.box {
+    background-color: teal;
+    color: white;
+    font-size: 22px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+Output
+3 columns
+2 rows
+20px gap
+Center aligned boxes
+7. Using Fraction Unit (fr)
+
+Instead of fixed width:
+
+grid-template-columns: 1fr 1fr 1fr;
+
+Meaning:
+
+Divide available space equally
+Example
+.container {
+    display: grid;
+
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+Middle column becomes larger.
+
+8. Repeat Function
+
+Instead of writing repeatedly:
+
+grid-template-columns: repeat(4, 1fr);
+
+Equivalent to:
+
+grid-template-columns: 1fr 1fr 1fr 1fr;
+9. Grid Gap
+gap: 20px;
+
+OR
+
+row-gap: 10px;
+column-gap: 20px;
+10. Positioning Grid Items
+HTML
+<div class="container">
+    <div class="item header">Header</div>
+    <div class="item sidebar">Sidebar</div>
+    <div class="item content">Content</div>
+    <div class="item footer">Footer</div>
+</div>
+CSS
+.container {
+    display: grid;
+
+    grid-template-columns: 1fr 3fr;
+
+    grid-template-rows: 100px 300px 100px;
+
+    gap: 10px;
+}
+
+.header {
+    grid-column: 1 / 3;
+}
+
+.sidebar {
+    grid-row: 2 / 3;
+}
+
+.content {
+    grid-column: 2 / 3;
+}
+
+.footer {
+    grid-column: 1 / 3;
+}
+11. Real Website Layout Example
+HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grid Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <header>Header</header>
+
+    <aside>Sidebar</aside>
+
+    <main>Main Content</main>
+
+    <footer>Footer</footer>
+
+</div>
+
+</body>
+</html>
+CSS
+.container {
+    display: grid;
+
+    grid-template-columns: 250px 1fr;
+
+    grid-template-rows: 80px 500px 80px;
+
+    gap: 10px;
+}
+
+header {
+    background: darkblue;
+    color: white;
+
+    grid-column: 1 / 3;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+aside {
+    background: gray;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    background: lightblue;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+footer {
+    background: black;
+    color: white;
+
+    grid-column: 1 / 3;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+12. Responsive Grid Layout
+Auto Fit Example
+.container {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 20px;
+}
+
+Explanation:
+
+Automatically adjusts columns
+Responsive design
+Minimum width = 250px
+13. Grid Alignment
+Align Items Vertically
+align-items: center;
+Align Items Horizontally
+justify-items: center;
+14. Difference Between Flexbox and Grid
+Flexbox	Grid
+1D Layout	2D Layout
+Row OR Column	Row AND Column
+Simple Layouts	Complex Layouts
+Component Alignment	Full Page Layout
+
+
+CSS-in-JS is a styling approach where CSS styles are written directly inside JavaScript instead of separate .css files.
+
+Normally:
+
+HTML → structure
+CSS → styling
+JavaScript → behavior
+
+In CSS-in-JS:
+
+JavaScript controls styling dynamically.
+
+This concept is commonly used in frameworks like:
+
+React
+Next.js
+Styled Components
+Emotion
+Why CSS-in-JS?
+
+Traditional CSS Problems:
+
+Global style conflicts
+Repeated class names
+Difficult dynamic styling
+Hard component-level styling
+
+CSS-in-JS solves this by:
+
+Keeping styles inside components
+Creating scoped styles
+Allowing dynamic values
+Improving maintainability
+Traditional HTML + CSS Example
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traditional CSS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <button class="btn">
+        Click Me
+    </button>
+
+</body>
+</html>
+style.css
+.btn {
+    background-color: blue;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+}
+CSS-in-JS Concept
+
+Instead of external CSS:
+
+.btn {
+   color: white;
+}
+
+We write:
+
+const style = {
+   color: "white"
+}
+
+and apply it directly.
+
+Complete CSS-in-JS Example Using Pure HTML + JavaScript
+
+This example uses:
+
+HTML
+JavaScript
+Inline CSS object
+
+No external CSS file needed.
+
+Complete Code Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS in JS Example</title>
+</head>
+
+<body>
+
+    <h1 id="title">CSS in JS Demo</h1>
+
+    <button id="btn">
+        Click Me
+    </button>
+
+    <script>
+
+        // CSS-in-JS Style Object
+
+        const buttonStyles = {
+            backgroundColor: "purple",
+            color: "white",
+            padding: "15px 25px",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "18px",
+            cursor: "pointer",
+            boxShadow: "0px 4px 10px gray"
+        };
+
+        // Get Button
+
+        const button = document.getElementById("btn");
+
+        // Apply Styles Dynamically
+
+        Object.assign(button.style, buttonStyles);
+
+    </script>
+
+</body>
+</html>
+Output Features
+
+The button will have:
+
+Purple background
+White text
+Rounded corners
+Shadow effect
+Dynamic styling from JavaScript
+How CSS-in-JS Works
+Step 1 — Create Style Object
+const buttonStyles = {
+    backgroundColor: "purple",
+    color: "white"
+};
+
+CSS properties become JavaScript object properties.
+
+Step 2 — Select HTML Element
+const button = document.getElementById("btn");
+Step 3 — Apply Styles
+Object.assign(button.style, buttonStyles);
+
+This injects styles into the element.
+
+Important Difference Between CSS and CSS-in-JS
+Traditional CSS	CSS-in-JS
+Separate CSS file	Styles inside JS
+Global styles	Scoped styles
+Static styling	Dynamic styling
+Harder reuse	Easier component reuse
+Limited dynamic values	Fully dynamic
+Dynamic CSS-in-JS Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic CSS in JS</title>
+</head>
+
+<body>
+
+    <button id="themeBtn">
+        Dark Mode
+    </button>
+
+    <script>
+
+        const btn = document.getElementById("themeBtn");
+
+        let darkMode = false;
+
+        btn.addEventListener("click", () => {
+
+            darkMode = !darkMode;
+
+            const styles = darkMode
+            ? {
+                backgroundColor: "black",
+                color: "white",
+                padding: "15px",
+                fontSize: "20px"
+            }
+            : {
+                backgroundColor: "white",
+                color: "black",
+                padding: "15px",
+                fontSize: "20px"
+            };
+
+            Object.assign(btn.style, styles);
+
+        });
+
+    </script>
+
+</body>
+</html>
+What Happens Here?
+
+When button is clicked:
+
+JavaScript changes styles dynamically
+No CSS file modification needed
+UI updates instantly
+
+This is the core idea behind modern CSS-in-JS libraries.
+
+Real-World CSS-in-JS Libraries
+Styled Components
+
+Example:
+
+const Button = styled.button`
+   background: blue;
+   color: white;
+`;
+Emotion
+
+Example:
+
+const style = css`
+   color: red;
+`;
+Advantages of CSS-in-JS
+1. Component-Based Styling
+
+Each component has its own styles.
+
+2. Dynamic Styling
+
+Styles can change based on:
+
+props
+state
+conditions
+themes
+3. No Class Name Conflicts
+
+Auto-generated unique class names.
+
+4. Better Maintainability
+
+HTML + CSS + JS logic stay together.
+
+Disadvantages of CSS-in-JS
+1. More JavaScript Execution
+
+Extra runtime processing.
+
+2. Slightly Slower Rendering
+
+Compared to static CSS.
+
+3. Learning Curve
+
+Different syntax from traditional CSS.
+
+When to Use CSS-in-JS
+
+Use it when:
+
+Building component-based apps
+Using React
+Creating dynamic themes
+Need reusable UI components
+
+Avoid it when:
+
+Building simple static websites
+SEO-critical lightweight pages
+Very large static styling systems
+Summary
+
+CSS-in-JS means:
+
+Writing CSS using JavaScript objects/functions
+Applying styles dynamically
+Keeping styling close to components
+
+Basic flow:
+
+HTML Element
+     ↓
+JavaScript Style Object
+     ↓
+Apply Styles Dynamically
+
+
+Animation and Transitions, Responsive Design Patterns :
+
+
+1. CSS Transitions
+
+CSS Transitions allow smooth changes between property values over a specified duration.
+
+Syntax
+transition: property duration timing-function delay;
+Example: Button Hover Transition
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .btn {
+      background-color: blue;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+
+      transition: background-color 0.5s ease,
+                  transform 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: green;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+<button class="btn">Hover Me</button>
+
+</body>
+</html>
+Transition Properties
+Property	Description
+transition-property	CSS property to animate
+transition-duration	Time taken
+transition-timing-function	Speed curve
+transition-delay	Delay before start
+Timing Functions
+Function	Description
+linear	Same speed
+ease	Slow start/end
+ease-in	Slow start
+ease-out	Slow end
+ease-in-out	Slow both ends
+Example: Card Hover Effect
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .card {
+      width: 250px;
+      padding: 20px;
+      background: lightgray;
+      border-radius: 10px;
+
+      transition: transform 0.4s ease,
+                  box-shadow 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Product Card</h2>
+  <p>Hover on this card</p>
+</div>
+
+</body>
+</html>
+2. CSS Animations
+
+Animations provide more advanced movement/control than transitions.
+
+Animations use:
+
+@keyframes
+animation property
+Animation Syntax
+animation: name duration timing-function delay iteration-count direction;
+Example: Moving Box Animation
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .box {
+      width: 100px;
+      height: 100px;
+      background: red;
+      position: relative;
+
+      animation: moveBox 4s infinite;
+    }
+
+    @keyframes moveBox {
+      0% {
+        left: 0;
+        background: red;
+      }
+
+      50% {
+        left: 300px;
+        background: blue;
+      }
+
+      100% {
+        left: 0;
+        background: green;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="box"></div>
+
+</body>
+</html>
+Animation Properties
+Property	Description
+animation-name	Keyframe name
+animation-duration	Total animation time
+animation-delay	Start delay
+animation-iteration-count	Number of repetitions
+animation-direction	Normal/reverse
+animation-timing-function	Speed
+animation-fill-mode	Final state handling
+Example: Loading Spinner
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .loader {
+      width: 80px;
+      height: 80px;
+
+      border: 10px solid #ddd;
+      border-top: 10px solid blue;
+      border-radius: 50%;
+
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loader"></div>
+
+</body>
+</html>
+Example: Fade In Text
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    h1 {
+      animation: fadeIn 3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Welcome to CSS Animation</h1>
+
+</body>
+</html>
+3. Responsive Design in CSS
+
+Responsive Design means websites automatically adapt to:
+
+Mobile
+Tablet
+Laptop
+Desktop
+Core Responsive Techniques
+Technique	Purpose
+Media Queries	Different styles for devices
+Flexbox	Flexible layout
+CSS Grid	2D layouts
+Relative Units	%, rem, vw
+Responsive Images	Flexible images
+Media Queries
+Syntax
+@media screen and (max-width: 768px) {
+
+}
+Example: Responsive Layout
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .box {
+      flex: 1;
+      padding: 40px;
+      background: lightblue;
+      text-align: center;
+    }
+
+    @media screen and (max-width: 768px) {
+
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="box">Box 1</div>
+  <div class="box">Box 2</div>
+  <div class="box">Box 3</div>
+</div>
+
+</body>
+</html>
+4. Responsive Design Patterns
+Pattern 1: Fluid Layout
+
+Uses percentages instead of fixed widths.
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      width: 90%;
+      margin: auto;
+      background: lightgray;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  Fluid Width Layout
+</div>
+
+</body>
+</html>
+Pattern 2: Responsive Navigation Menu
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    nav {
+      background: black;
+      padding: 15px;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+
+    @media screen and (max-width: 600px) {
+
+      nav ul {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Services</a></li>
+  </ul>
+</nav>
+
+</body>
+</html>
+Pattern 3: Responsive Grid System
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+
+      gap: 20px;
+    }
+
+    .item {
+      background: orange;
+      padding: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid">
+  <div class="item">Item 1</div>
+  <div class="item">Item 2</div>
+  <div class="item">Item 3</div>
+  <div class="item">Item 4</div>
+</div>
+
+</body>
+</html>
+Pattern 4: Responsive Images
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<img src="image.jpg" alt="Responsive Image">
+
+</body>
+</html>
+Pattern 5: Mobile-First Design
+
+Design starts for mobile devices first.
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+
+    /* Mobile */
+    body {
+      background: lightblue;
+    }
+
+    /* Tablet */
+    @media (min-width: 768px) {
+      body {
+        background: lightgreen;
+      }
+    }
+
+    /* Desktop */
+    @media (min-width: 1024px) {
+      body {
+        background: lightcoral;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Mobile First Design</h1>
+
+</body>
+</html>
+5. Complete Real-World Responsive Animated Webpage
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <style>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial;
+    }
+
+    header {
+      background: #222;
+      color: white;
+      padding: 20px;
+
+      animation: slideDown 1s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+
+      transition: color 0.3s ease;
+    }
+
+    .menu a:hover {
+      color: yellow;
+    }
+
+    .hero {
+      height: 400px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: linear-gradient(to right,
+                  blue, purple);
+
+      color: white;
+
+      animation: fadeIn 2s ease;
+    }
+
+    .hero h1 {
+      font-size: 50px;
+    }
+
+    .cards {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+      gap: 20px;
+
+      padding: 40px;
+    }
+
+    .card {
+      background: #f2f2f2;
+      padding: 30px;
+      border-radius: 10px;
+
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+
+      nav {
+        flex-direction: column;
+      }
+
+      .menu {
+        flex-direction: column;
+        margin-top: 10px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <nav>
+    <h2>My Website</h2>
+
+    <ul class="menu">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+</header>
+
+<section class="hero">
+  <h1>Responsive Animated Website</h1>
+</section>
+
+<section class="cards">
+
+  <div class="card">
+    <h2>Card 1</h2>
+    <p>Responsive Design Example</p>
+  </div>
+
+  <div class="card">
+    <h2>Card 2</h2>
+    <p>CSS Animation Example</p>
+  </div>
+
+  <div class="card">
+    <h2>Card 3</h2>
+    <p>CSS Transition Example</p>
+  </div>
+
+</section>
+
+</body>
+</html>
+Best Practices
+Animations
+Keep animations smooth and simple
+Avoid excessive animations
+Use transform instead of changing width/height
+Prefer GPU-accelerated properties
+Responsive Design
+Use Mobile-First approach
+Use Flexbox/Grid
+Avoid fixed widths
+Test on multiple screen sizes
+Use relative units (rem, %, vw)
+
+
+Grid system, Typography,  Navbars in Bootstrap :
+
+Bootstrap is a popular CSS framework used to create responsive and mobile-first web applications quickly.
+
+Bootstrap provides:
+
+Responsive Grid System
+Predefined Typography styles
+Navigation bars (Navbars)
+Components like buttons, cards, forms, modals, etc.
+
+Official website: Bootstrap
+
+1. Bootstrap Grid System
+
+The Bootstrap Grid System helps create responsive layouts using:
+
+Rows
+Columns
+Containers
+
+Bootstrap uses a 12-column layout system.
+
+Grid Structure
+<div class="container">
+    <div class="row">
+        <div class="col">
+            Column Content
+        </div>
+    </div>
+</div>
+Bootstrap Grid Breakpoints
+Class	Screen Size
+col-	Extra Small
+col-sm-	Small ≥576px
+col-md-	Medium ≥768px
+col-lg-	Large ≥992px
+col-xl-	Extra Large ≥1200px
+col-xxl-	Extra Extra Large ≥1400px
+Example 1: Equal Columns
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Grid Example</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col bg-primary text-white p-3">
+            Column 1
+        </div>
+
+        <div class="col bg-success text-white p-3">
+            Column 2
+        </div>
+
+        <div class="col bg-danger text-white p-3">
+            Column 3
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+Output Explanation
+container → Adds responsive fixed width
+row → Creates horizontal row
+col → Automatically divides space equally
+p-3 → Padding
+mt-5 → Margin top
+Example 2: 12-Column Layout
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-4 bg-primary text-white p-3">
+            col-4
+        </div>
+
+        <div class="col-8 bg-warning p-3">
+            col-8
+        </div>
+
+    </div>
+
+</div>
+
+Explanation:
+
+First column takes 4/12 width
+Second column takes 8/12 width
+Example 3: Responsive Grid
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-6 col-lg-4 bg-info p-3">
+            Responsive Column 1
+        </div>
+
+        <div class="col-md-6 col-lg-4 bg-secondary text-white p-3">
+            Responsive Column 2
+        </div>
+
+        <div class="col-md-12 col-lg-4 bg-success text-white p-3">
+            Responsive Column 3
+        </div>
+
+    </div>
+
+</div>
+
+Behavior:
+
+Mobile → Full width
+Tablet → 2 columns
+Large screens → 3 columns
+2. Typography in Bootstrap
+
+Bootstrap provides predefined typography styles.
+
+Headings
+<h1>Bootstrap Heading h1</h1>
+<h2>Bootstrap Heading h2</h2>
+<h3>Bootstrap Heading h3</h3>
+<h4>Bootstrap Heading h4</h4>
+<h5>Bootstrap Heading h5</h5>
+<h6>Bootstrap Heading h6</h6>
+Display Headings
+<h1 class="display-1">Display 1</h1>
+<h1 class="display-2">Display 2</h1>
+<h1 class="display-3">Display 3</h1>
+
+Large stylish headings.
+
+Text Colors
+<p class="text-primary">Primary Text</p>
+<p class="text-success">Success Text</p>
+<p class="text-danger">Danger Text</p>
+<p class="text-warning">Warning Text</p>
+Text Alignment
+<p class="text-start">Left Align</p>
+<p class="text-center">Center Align</p>
+<p class="text-end">Right Align</p>
+Font Weight
+<p class="fw-bold">Bold Text</p>
+<p class="fw-light">Light Text</p>
+<p class="fw-semibold">Semi Bold</p>
+Lead Paragraph
+<p class="lead">
+    This is an important highlighted paragraph.
+</p>
+Complete Typography Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Typography</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <h1 class="display-3 text-primary">
+        Bootstrap Typography
+    </h1>
+
+    <p class="lead">
+        Bootstrap makes typography beautiful and responsive.
+    </p>
+
+    <p class="fw-bold text-success">
+        Bold Success Text
+    </p>
+
+    <p class="text-center text-danger">
+        Center Aligned Danger Text
+    </p>
+
+</div>
+
+</body>
+</html>
+3. Bootstrap Navbar
+
+Navbar is used for website navigation menus.
+
+Bootstrap navbar is:
+
+Responsive
+Mobile-friendly
+Customizable
+Basic Navbar Structure
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="#">
+            MyWebsite
+        </a>
+
+    </div>
+
+</nav>
+Important Navbar Classes
+Class	Purpose
+navbar	Creates navbar
+navbar-expand-lg	Expands on large screens
+navbar-dark	Dark text style
+bg-dark	Dark background
+navbar-brand	Website logo/title
+navbar-nav	Navigation container
+nav-item	Navigation item
+nav-link	Navigation link
+Complete Responsive Navbar Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Navbar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand" href="#">
+            MyWebsite
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button 
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMenu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <!-- Navbar Menu -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        About
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Services
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+Navbar Features Explained
+Feature	Description
+navbar-expand-lg	Collapses menu on smaller devices
+navbar-toggler	Hamburger menu button
+collapse navbar-collapse	Hide/show menu
+ms-auto	Align menu to right
+Full Combined Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Complete Example</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="#">
+            Bootstrap Demo
+        </a>
+
+        <button 
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#menu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- Typography -->
+<div class="container mt-5">
+
+    <h1 class="display-4 text-primary">
+        Welcome to Bootstrap
+    </h1>
+
+    <p class="lead">
+        Learn Grid System, Typography, and Navbars.
+    </p>
+
+</div>
+
+<!-- Grid -->
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-4 bg-primary text-white p-4">
+            Column 1
+        </div>
+
+        <div class="col-md-4 bg-success text-white p-4">
+            Column 2
+        </div>
+
+        <div class="col-md-4 bg-danger text-white p-4">
+            Column 3
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+Summary
+Topic	Description
+Grid System	Creates responsive layouts
+Typography	Styles text beautifully
+Navbar	Responsive navigation menu
+Key Bootstrap Utility Classes
+Class	Meaning
+mt-5	Margin top
+p-3	Padding
+text-center	Center text
+bg-primary	Primary background
+text-white	White text
+d-flex	Flexbox
+justify-content-center	Center flex items
+
+
+button enhancements, Customization, SASS Integration : 
+
+
+Bootstrap provides powerful button utilities that allow developers to:
+
+Create responsive and styled buttons quickly
+Customize button colors, sizes, borders, and states
+Extend Bootstrap using SASS variables and mixins
+Build reusable UI themes
+1. Bootstrap Button Basics
+
+Bootstrap buttons use the .btn class with contextual classes.
+
+CDN Setup
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bootstrap Buttons</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+</head>
+<body class="p-4">
+
+  <button class="btn btn-primary">Primary</button>
+  <button class="btn btn-success">Success</button>
+  <button class="btn btn-danger">Danger</button>
+  <button class="btn btn-warning">Warning</button>
+
+</body>
+</html>
+2. Button Enhancements in Bootstrap
+
+Bootstrap provides multiple enhancement utilities.
+
+2.1 Button Sizes
+<button class="btn btn-primary btn-lg">
+  Large Button
+</button>
+
+<button class="btn btn-success">
+  Default Button
+</button>
+
+<button class="btn btn-danger btn-sm">
+  Small Button
+</button>
+2.2 Outline Buttons
+<button class="btn btn-outline-primary">
+  Outline Primary
+</button>
+
+<button class="btn btn-outline-success">
+  Outline Success
+</button>
+2.3 Block Buttons (Full Width)
+<div class="d-grid gap-2">
+  <button class="btn btn-primary">
+    Full Width Button
+  </button>
+</div>
+2.4 Disabled Buttons
+<button class="btn btn-secondary" disabled>
+  Disabled Button
+</button>
+2.5 Loading Buttons
+<button class="btn btn-primary" disabled>
+  <span class="spinner-border spinner-border-sm"></span>
+  Loading...
+</button>
+2.6 Button Groups
+<div class="btn-group">
+  <button class="btn btn-primary">Left</button>
+  <button class="btn btn-primary">Middle</button>
+  <button class="btn btn-primary">Right</button>
+</div>
+2.7 Toggle Buttons
+<input type="checkbox" class="btn-check" id="btncheck1">
+
+<label class="btn btn-outline-primary" for="btncheck1">
+  Toggle Button
+</label>
+2.8 Icon Buttons
+
+Using Bootstrap Icons:
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  >
+</head>
+
+<button class="btn btn-success">
+  <i class="bi bi-download"></i>
+  Download
+</button>
+3. Advanced Button Customization
+
+You can customize buttons using CSS.
+
+3.1 Custom Color Button
+<style>
+.custom-btn {
+  background-color: purple;
+  color: white;
+  border-radius: 30px;
+  padding: 12px 25px;
+  border: none;
+  transition: 0.3s;
+}
+
+.custom-btn:hover {
+  background-color: darkmagenta;
+  transform: scale(1.05);
+}
+</style>
+
+<button class="custom-btn">
+  Custom Button
+</button>
+3.2 Gradient Button
+<style>
+.gradient-btn {
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+</style>
+
+<button class="gradient-btn">
+  Gradient Button
+</button>
+3.3 Animated Button
+<style>
+.animate-btn {
+  background-color: #0d6efd;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  transition: all 0.4s ease;
+}
+
+.animate-btn:hover {
+  letter-spacing: 2px;
+  box-shadow: 0 0 15px #0d6efd;
+}
+</style>
+
+<button class="animate-btn">
+  Hover Me
+</button>
+4. Bootstrap SASS Integration
+
+Bootstrap is built using SASS.
+
+SASS helps you:
+
+Override Bootstrap variables
+Create custom themes
+Reuse styles
+Reduce CSS duplication
+4.1 Install Bootstrap with SASS
+Step 1: Initialize Project
+npm init -y
+Step 2: Install Bootstrap + SASS
+npm install bootstrap sass
+4.2 Project Structure
+project/
+│
+├── scss/
+│   └── custom.scss
+│
+├── css/
+│   └── custom.css
+│
+└── index.html
+4.3 Create Custom SCSS File
+scss/custom.scss
+// Override Bootstrap variables
+
+$primary: #6f42c1;
+$success: #20c997;
+$border-radius: 20px;
+$btn-padding-y: 0.7rem;
+$btn-padding-x: 1.5rem;
+
+// Import Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+// Custom button class
+.custom-theme-btn {
+  background: linear-gradient(45deg, #6f42c1, #d63384);
+  color: white;
+  border: none;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+}
+4.4 Compile SCSS to CSS
+npx sass scss/custom.scss css/custom.css
+4.5 HTML Using Custom Bootstrap Theme
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bootstrap SASS</title>
+
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+
+<body class="p-5">
+
+  <button class="btn btn-primary">
+    Custom Primary
+  </button>
+
+  <button class="btn btn-success">
+    Custom Success
+  </button>
+
+  <button class="btn custom-theme-btn">
+    Gradient Theme
+  </button>
+
+</body>
+</html>
+5. Bootstrap Button States
+
+Bootstrap buttons support multiple states.
+
+5.1 Active State
+<button class="btn btn-primary active">
+  Active Button
+</button>
+5.2 Focus State
+<button class="btn btn-success">
+  Focus Me
+</button>
+
+Bootstrap automatically adds focus shadows.
+
+6. Responsive Buttons
+<div class="d-grid gap-2 d-md-block">
+  <button class="btn btn-primary">
+    Responsive Button
+  </button>
+</div>
+7. Creating Reusable Button Variants with SASS
+SCSS Example
+@mixin customButton($bgColor) {
+  background-color: $bgColor;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-purple {
+  @include customButton(purple);
+}
+
+.btn-orange {
+  @include customButton(orange);
+}
+HTML
+<button class="btn-purple">
+  Purple Button
+</button>
+
+<button class="btn-orange">
+  Orange Button
+</button>
+8. Real-Time Example — Professional Action Buttons
+<!DOCTYPE html>
+<html>
+<head>
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet"
+>
+
+<style>
+.action-btn {
+  border-radius: 50px;
+  padding: 12px 25px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+}
+
+.save-btn {
+  background-color: #198754;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.edit-btn {
+  background-color: #0d6efd;
+  color: white;
+}
+</style>
+
+</head>
+
+<body class="p-5">
+
+<button class="btn action-btn save-btn">
+  Save
+</button>
+
+<button class="btn action-btn edit-btn">
+  Edit
+</button>
+
+<button class="btn action-btn delete-btn">
+  Delete
+</button>
+
+</body>
+</html>
+9. Advantages of SASS in Bootstrap
+Feature	Benefit
+Variables	Easy theme customization
+Mixins	Reusable styles
+Nesting	Cleaner code
+Functions	Dynamic styling
+Modular SCSS	Better maintainability
+Theme support	Build custom design systems
+
+
+Advanced Components, Responsive Design, Accessibility in Bootstrap :
+
+
+1. What is Bootstrap?
+
+Bootstrap Official Website
+
+Bootstrap is a popular front-end CSS framework used to build:
+
+Responsive web applications
+Mobile-first websites
+Reusable UI components
+Fast and modern interfaces
+
+Bootstrap provides:
+
+Grid system
+Prebuilt components
+Utility classes
+Responsive breakpoints
+Accessibility support
+2. Bootstrap Advanced Components
+
+Advanced components are reusable UI widgets provided by Bootstrap.
+
+Common advanced components:
+
+Navbar
+Carousel
+Accordion
+Modal
+Toast
+Cards
+Dropdowns
+Offcanvas
+Tabs
+Tooltips
+3. Project Structure
+bootstrap-project/
+│
+├── index.html
+├── css/
+│    └── style.css
+└── js/
+     └── script.js
+4. Complete Bootstrap Setup
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Advanced Components</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- CONTENT HERE -->
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
+5. Responsive Navigation Bar
+Features
+Mobile responsive
+Hamburger menu
+Dark theme
+Collapsible navigation
+Code Example
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+
+    <a class="navbar-brand" href="#">
+      MyApp
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link active" href="#">
+            Home
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            About
+          </a>
+        </li>
+
+        <li class="nav-item dropdown">
+
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown">
+
+            Services
+          </a>
+
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Web</a></li>
+            <li><a class="dropdown-item" href="#">Mobile</a></li>
+          </ul>
+
+        </li>
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+6. Bootstrap Grid System (Responsive Design)
+
+Bootstrap uses a 12-column responsive grid.
+
+Breakpoints
+Breakpoint	Class Prefix	Device
+Extra Small	col	Mobile
+Small	col-sm	Tablets
+Medium	col-md	Small Laptop
+Large	col-lg	Desktop
+Extra Large	col-xl	Large Screens
+Responsive Cards Example
+<div class="container mt-5">
+
+  <div class="row">
+
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+
+      <div class="card shadow">
+
+        <img
+          src="https://picsum.photos/300/200"
+          class="card-img-top"
+          alt="Technology Image">
+
+        <div class="card-body">
+
+          <h5 class="card-title">
+            Web Development
+          </h5>
+
+          <p class="card-text">
+            Learn Bootstrap responsive layouts.
+          </p>
+
+          <button class="btn btn-primary">
+            Read More
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+
+      <div class="card shadow">
+
+        <img
+          src="https://picsum.photos/301/200"
+          class="card-img-top"
+          alt="Coding Image">
+
+        <div class="card-body">
+
+          <h5 class="card-title">
+            Angular
+          </h5>
+
+          <p class="card-text">
+            Build enterprise applications.
+          </p>
+
+          <button class="btn btn-success">
+            Learn
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+
+      <div class="card shadow">
+
+        <img
+          src="https://picsum.photos/302/200"
+          class="card-img-top"
+          alt="Cloud Image">
+
+        <div class="card-body">
+
+          <h5 class="card-title">
+            Cloud
+          </h5>
+
+          <p class="card-text">
+            Explore DevOps and Cloud.
+          </p>
+
+          <button class="btn btn-danger">
+            Start
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+Responsive Behavior
+Device	Layout
+Mobile	1 card per row
+Tablet	2 cards per row
+Desktop	3 cards per row
+7. Bootstrap Modal Component
+
+A modal is a popup dialog box.
+
+Modal Button
+<div class="container text-center mt-5">
+
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#loginModal">
+
+    Open Login Modal
+
+  </button>
+
+</div>
+Modal Code
+<div
+  class="modal fade"
+  id="loginModal"
+  tabindex="-1"
+  aria-labelledby="loginModalLabel"
+  aria-hidden="true">
+
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title" id="loginModalLabel">
+          Login Form
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <form>
+
+          <div class="mb-3">
+
+            <label class="form-label">
+              Email
+            </label>
+
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Enter email">
+
+          </div>
+
+          <div class="mb-3">
+
+            <label class="form-label">
+              Password
+            </label>
+
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Enter password">
+
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Close
+
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary">
+
+          Login
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+8. Bootstrap Accordion Component
+
+Used for FAQs.
+
+Accordion Example
+<div class="container mt-5">
+
+  <div class="accordion" id="faqAccordion">
+
+    <div class="accordion-item">
+
+      <h2 class="accordion-header">
+
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#question1">
+
+          What is Bootstrap?
+
+        </button>
+
+      </h2>
+
+      <div
+        id="question1"
+        class="accordion-collapse collapse show"
+        data-bs-parent="#faqAccordion">
+
+        <div class="accordion-body">
+
+          Bootstrap is a frontend CSS framework.
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+9. Bootstrap Carousel
+
+Used for image sliders.
+
+Carousel Example
+<div
+  id="carouselExample"
+  class="carousel slide"
+  data-bs-ride="carousel">
+
+  <div class="carousel-inner">
+
+    <div class="carousel-item active">
+
+      <img
+        src="https://picsum.photos/1200/400?1"
+        class="d-block w-100"
+        alt="First Slide">
+
+    </div>
+
+    <div class="carousel-item">
+
+      <img
+        src="https://picsum.photos/1200/400?2"
+        class="d-block w-100"
+        alt="Second Slide">
+
+    </div>
+
+    <div class="carousel-item">
+
+      <img
+        src="https://picsum.photos/1200/400?3"
+        class="d-block w-100"
+        alt="Third Slide">
+
+    </div>
+
+  </div>
+
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="prev">
+
+    <span class="carousel-control-prev-icon"></span>
+
+  </button>
+
+  <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="next">
+
+    <span class="carousel-control-next-icon"></span>
+
+  </button>
+
+</div>
+10. Accessibility in Bootstrap
+
+Accessibility ensures applications work for:
+
+Screen readers
+Keyboard users
+Visually impaired users
+Disabled users
+
+Bootstrap provides:
+
+ARIA attributes
+Semantic HTML
+Keyboard navigation
+Accessible forms
+Important Accessibility Features
+Feature	Purpose
+aria-label	Screen reader support
+alt text	Image accessibility
+Semantic tags	Better navigation
+Keyboard support	Accessibility navigation
+Focus states	Better usability
+Accessible Form Example
+<div class="container mt-5">
+
+  <form>
+
+    <div class="mb-3">
+
+      <label for="username" class="form-label">
+        Username
+      </label>
+
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        aria-describedby="usernameHelp">
+
+      <div id="usernameHelp" class="form-text">
+        Enter your unique username.
+      </div>
+
+    </div>
+
+    <div class="mb-3">
+
+      <label for="email" class="form-label">
+        Email Address
+      </label>
+
+      <input
+        type="email"
+        class="form-control"
+        id="email">
+
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary">
+
+      Submit
+
+    </button>
+
+  </form>
+
+</div>
+11. Bootstrap Utility Classes
+
+Bootstrap provides utilities for:
+
+Margin
+Padding
+Flexbox
+Text alignment
+Colors
+Visibility
+Example
+<div class="container mt-5">
+
+  <div class="bg-primary text-white p-5 rounded shadow">
+
+    <h2 class="text-center">
+      Bootstrap Utilities
+    </h2>
+
+    <p class="text-center">
+      Easy spacing and styling
+    </p>
+
+  </div>
+
+</div>
+12. Responsive Flexbox Layout
+<div class="container mt-5">
+
+  <div class="d-flex flex-column flex-md-row gap-3">
+
+    <div class="p-4 bg-danger text-white">
+      Left Section
+    </div>
+
+    <div class="p-4 bg-success text-white">
+      Right Section
+    </div>
+
+  </div>
+
+</div>
+Behavior
+Device	Layout
+Mobile	Vertical
+Desktop	Horizontal
+13. Custom CSS
+style.css
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.carousel img {
+    height: 400px;
+    object-fit: cover;
+}
+14. Bootstrap JavaScript Example
+script.js
+document.addEventListener('DOMContentLoaded', () => {
+
+    console.log('Bootstrap App Loaded');
+
+});
+15. Best Practices
+Responsive Design
+Use container/container-fluid
+Use grid system properly
+Use responsive utility classes
+Test on multiple devices
+Accessibility
+Use labels for forms
+Add alt text for images
+Ensure keyboard navigation
+Use semantic HTML
+Use sufficient color contrast
+Performance
+Use Bootstrap CDN
+Minimize custom CSS
+Lazy load images
+Use optimized assets
+16. Complete Real-World Mini Dashboard Layout
+<div class="container-fluid">
+
+  <div class="row">
+
+    <aside class="col-md-3 bg-dark text-white p-4 min-vh-100">
+
+      <h3>Admin Panel</h3>
+
+      <ul class="nav flex-column mt-4">
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#">
+            Dashboard
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#">
+            Users
+          </a>
+        </li>
+
+      </ul>
+
+    </aside>
+
+    <main class="col-md-9 p-4">
+
+      <h2>Dashboard</h2>
+
+      <div class="row mt-4">
+
+        <div class="col-md-4">
+
+          <div class="card p-4 shadow">
+            <h4>Total Users</h4>
+            <h2>1200</h2>
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+          <div class="card p-4 shadow">
+            <h4>Revenue</h4>
+            <h2>$80K</h2>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
+17. Summary
+Topic	Description
+Advanced Components	Modal, Carousel, Accordion, Navbar
+Responsive Design	Grid system, Flexbox, Breakpoints
+Accessibility	ARIA, labels, semantic HTML
+Utility Classes	Spacing, text, colors
+Best Practices	Mobile-first, keyboard support
+
+
+
