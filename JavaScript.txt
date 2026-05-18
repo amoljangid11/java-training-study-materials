@@ -1,0 +1,2324 @@
+Date and Time Objects, Closures, DOM Objects : 
+
+JavaScript Date and Time Objects :
+
+In JavaScript, the Date object is used to work with dates and times.
+
+It allows you to:
+
+Create dates
+Get current date and time
+Extract day, month, year, hours, etc.
+Modify dates
+Format dates
+
+1. Creating Date Objects
+
+Syntax
+
+let date = new Date(); // predefined
+
+This creates the current date and time.
+
+Example: Current Date and Time
+
+let currentDate = new Date();
+
+console.log(currentDate);
+
+Output Example
+
+2026-05-17T10:30:15.123Z // ISO format time on the server side and on client side
+
+2. Creating Specific Dates
+
+Example
+
+let customDate = new Date("2026-01-15");
+
+console.log(customDate);
+
+Using Parameters :
+
+let date = new Date(year, month, day, hours, minutes, seconds);
+
+Month starts from 0
+
+Month	Value
+January	0
+February	1
+March	2
+
+Example
+
+let birthday = new Date(2026, 4, 17);
+
+console.log(birthday);
+
+Output
+
+Sun May 17 2026
+
+3. Getting Date Values
+
+Method		Description
+
+getDate()		Day of month
+getMonth()	Month
+getFullYear()	Year
+getDay()		Week day
+getHours()		Hours
+getMinutes()	Minutes
+getSeconds()	Seconds
+
+Example
+
+let now = new Date();
+
+console.log("Date:", now.getDate());
+console.log("Month:", now.getMonth() + 1);
+console.log("Year:", now.getFullYear());
+console.log("Hours:", now.getHours());
+console.log("Minutes:", now.getMinutes());
+console.log("Seconds:", now.getSeconds());
+
+4. Setting Date Values
+
+Method		Description
+setDate()		Set day
+setMonth()	Set month
+setFullYear()	Set year
+setHours()		Set hours
+
+
+Example
+
+let date = new Date();
+
+date.setFullYear(2030);
+date.setMonth(11);
+date.setDate(25);
+
+console.log(date);
+
+5. Date Calculation Example
+
+Find Difference Between Two Dates
+
+let startDate = new Date("2026-01-01");
+let endDate = new Date("2026-01-10");
+
+let difference = endDate - startDate;
+
+let days = difference / (1000 * 60 * 60 * 24);
+
+console.log("Difference in Days:", days);
+
+6. Real-Time Clock Example
+
+HTML
+
+<h1 id="clock"></h1>
+
+JavaScript :
+
+function updateClock() {
+    let now = new Date();
+
+    let time =
+        now.getHours() + ":" +
+        now.getMinutes() + ":" +
+        now.getSeconds();
+
+    document.getElementById("clock").innerHTML = time;
+}
+
+setInterval(updateClock, 1000);
+
+JavaScript Closures : 
+
+A closure is a function that remembers variables from its outer function even after the outer function has finished executing.
+
+Closures are used for:
+
+Data hiding
+Private variables
+Function factories
+Callbacks  // function which call itself again and again
+Event handlers
+
+1. Basic Closure Example
+
+function outerFunction() {
+
+    let message = "Hello from Closure";
+
+    function innerFunction() {
+        console.log(message);
+    }
+
+    return innerFunction;
+}
+
+let result = outerFunction();
+
+result();
+
+
+Output
+
+Hello from Closure
+
+How It Works
+
+innerFunction() is inside outerFunction()
+It remembers the variable message
+Even after outerFunction() completes, message still exists
+
+2. Counter Using Closure
+
+function counter() {
+
+    let count = 0;
+
+    return function () {
+        count++;
+        console.log("Count:", count);
+    };
+}
+
+let increment = counter();
+
+increment();
+increment();
+increment();
+
+Output
+
+Count: 1
+Count: 2
+Count: 3
+
+3. Private Variable Example
+
+function bankAccount() {
+
+    let balance = 1000;
+
+    return {
+        deposit: function(amount) {
+            balance += amount;
+            console.log("Balance:", balance);
+        },
+
+        withdraw: function(amount) {
+            balance -= amount;
+            console.log("Balance:", balance);
+        }
+    };
+}
+
+let account = bankAccount();
+
+account.deposit(500);
+account.withdraw(200);
+
+4. Function Factory Example
+
+function multiply(x) {
+
+    return function(y) {
+        return x * y;
+    };
+}
+
+let double = multiply(2);
+let triple = multiply(3);
+
+console.log(double(5));
+console.log(triple(5));
+
+Output
+
+10
+15
+
+5. Common Closure Problem in Loops
+
+Wrong Example
+
+for (var i = 1; i <= 3; i++) {
+
+    setTimeout(function () {
+        console.log(i);
+    }, 1000);
+}
+
+Output
+
+4
+4
+4
+
+Correct Example Using let
+
+for (let i = 1; i <= 3; i++) {
+
+    setTimeout(function () {
+        console.log(i);
+    }, 1000);
+}
+
+Output
+
+1
+2
+3
+
+JavaScript DOM Objects : 
+
+DOM stands for Document Object Model.   HTML Document Structure of web page, JS Object which is use to perform action on web pages, Model is the combination of D + O
+
+The DOM represents HTML elements as objects.
+
+JavaScript uses the DOM to:
+
+Access HTML elements
+Change content
+Change styles
+Handle events
+Create/delete elements
+
+1. Selecting Elements
+
+HTML
+
+<h1 id="title">Welcome</h1>
+<p class="text">Paragraph 1</p>
+<p class="text">Paragraph 2</p>
+
+JavaScript : 
+
+Select by ID
+
+let heading = document.getElementById("title");
+
+console.log(heading);
+
+Select by Class
+
+let paragraphs = document.getElementsByClassName("text");
+
+console.log(paragraphs);
+
+Query Selector
+
+let element = document.querySelector(".text");
+
+console.log(element);
+
+2. Changing HTML Content
+
+Example
+
+<h1 id="demo">Old Text</h1>
+document.getElementById("demo").innerHTML = "New Text";
+
+3. Changing CSS Styles
+
+Example
+
+<p id="para">Hello JavaScript</p>
+let p = document.getElementById("para");
+
+p.style.color = "blue";
+p.style.fontSize = "30px";
+
+4. Handling Events
+
+HTML : 
+
+<button id="btn">Click Me</button>
+
+JavaScript
+
+document.getElementById("btn")
+.addEventListener("click", function () {
+
+    alert("Button Clicked");
+});
+
+5. Creating Elements Dynamically
+
+HTML
+
+<div id="container"></div>
+
+JavaScript
+
+let newElement = document.createElement("h2");
+
+newElement.innerHTML = "Dynamic Heading";
+
+document.getElementById("container")
+.appendChild(newElement);
+
+6. Removing Elements
+
+HTML
+
+<p id="removeMe">Delete Me</p>
+
+JavaScript
+
+let element = document.getElementById("removeMe");
+
+element.remove();
+
+7. Complete DOM Example
+
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Example</title>
+</head>
+<body>
+
+    <h1 id="heading">Welcome</h1>
+
+    <button id="changeBtn">
+        Change Text
+    </button>
+
+    <script>
+
+        let button =
+            document.getElementById("changeBtn");
+
+        button.addEventListener("click", function () {
+
+            let heading =
+                document.getElementById("heading");
+
+            heading.innerHTML =
+                "Text Changed Successfully";
+
+            heading.style.color = "green";
+        });
+
+    </script>
+
+</body>
+</html>
+
+Important DOM Objects
+
+Object	Description
+
+document	Represents entire HTML page
+window	Browser window
+navigator	Browser information
+location	URL information
+history	Browser history
+screen	Screen information
+
+Example of Window Object
+
+console.log(window.innerWidth);
+console.log(window.innerHeight);
+
+Example of Location Object
+
+console.log(location.href);
+console.log(location.hostname);
+
+Example of Navigator Object
+
+console.log(navigator.userAgent);
+
+Summary
+
+Date Object
+
+Used to:
+
+Create dates
+Handle time
+Format dates
+Calculate date differences
+
+Closures
+
+Used for:
+
+Data encapsulation
+Private variables
+Maintaining state
+Callbacks and async programming
+
+DOM Objects
+
+Used to:
+
+Access HTML elements
+Manipulate webpage content
+Handle user interactions
+Dynamically update UI
+
+
+ES6+ Features, Promises and Async Programming :
+
+ES6+ Features, Promises, and Async Programming in JavaScript  extended functionality of JS
+
+1. Introduction to ES6+ :
+
+ES6 (ECMAScript 2015) introduced many modern JavaScript features that make code:
+
+Cleaner
+Shorter
+Easier to maintain
+More powerful
+
+Later versions (ES7, ES8, ES9...) added more advanced features.
+
+2. let and const
+
+Before ES6, JavaScript used var. ES5 var name = "JavaScript"  var name = "Java"
+
+Problems with var :
+
+Function scoped
+Allows redeclaration
+Causes bugs
+
+let :
+
+Block scoped
+Value can change
+
+let age = 25;
+
+age = 30;
+
+console.log(age);
+
+Output
+
+30
+
+const :
+
+Block scoped
+Cannot reassign
+
+const country = "India";
+
+console.log(country);
+
+Output
+
+India
+
+Example
+
+function demo() {
+    if (true) {
+        let x = 10;
+        const y = 20;
+
+        console.log(x);
+        console.log(y);
+    }
+
+    // console.log(x); // Error
+    // console.log(y); // Error
+}
+
+demo();
+
+3. Arrow Functions
+
+Short syntax for functions.
+
+Traditional Function
+
+function add(a, b) {
+    return a + b;
+}
+
+console.log(add(10, 20));
+
+Arrow Function
+
+const add = (a, b) => {
+    return a + b;
+};
+
+console.log(add(10, 20));
+
+Shorter Version
+
+const multiply = (a, b) => a * b; // if you have only one statement
+
+console.log(multiply(5, 4));
+
+Output
+
+20
+
+4. Template Literals
+
+Use backticks ` instead of quotes.
+
+Benefits:
+
+String interpolation
+Multi-line strings
+
+Old Way:
+
+let name = "Amol";
+
+console.log("Hello " + name);
+
+ES6 Template Literal
+
+let name = "Amol";
+
+console.log(`Hello ${name}`);
+
+Output
+
+Hello Amol
+
+Multi-line String
+
+let message = `
+Welcome to JavaScript
+ES6 Features
+Learning Template Literals
+`;
+
+console.log(message);
+
+5. Default Parameters
+
+function greet(name = "Guest") {
+    console.log(`Hello ${name}`);
+}
+
+greet();
+greet("Amol");
+
+Output
+
+Hello Guest
+Hello Amol
+
+6. Rest Operator (...) // copying
+
+Collect multiple values into an array.
+
+function sum(...numbers) {
+
+    let total = 0;
+
+    for (let num of numbers) {
+        total += num;
+    }
+
+    return total;
+}
+
+console.log(sum(1, 2, 3, 4, 5));
+
+Output
+15
+
+7. Spread Operator (...) // merging
+
+Expand array or object.
+
+Array Example
+
+const arr1 = [1, 2, 3];
+
+const arr2 = [...arr1, 4, 5];
+
+console.log(arr2);
+
+Output
+
+[1, 2, 3, 4, 5]
+
+Object Example : 
+
+const user = {
+    name: "Amol",
+    age: 30
+};
+
+const updatedUser = {
+    ...user,
+    city: "Pune"
+};
+
+console.log(updatedUser);
+
+Output
+{
+  name: 'Amol',
+  age: 30,
+  city: 'Pune'
+}
+
+8. Destructuring
+
+Extract values easily. // assiging the value of array or objects to the variable Array and Object
+
+Array Destructuring
+
+const colors = ["Red", "Green", "Blue"];
+
+const [c1, c2, c3] = colors;
+
+console.log(c1);
+console.log(c2);
+console.log(c3);
+
+Object Destructuring
+
+const employee = {
+    id: 101,
+    name: "Rahul",
+    salary: 50000
+};
+
+const { id, name, salary } = employee;
+
+console.log(id);
+console.log(name);
+console.log(salary);
+
+9. Enhanced Object Literals
+
+let name = "Amol";
+let city = "Mumbai";
+
+const person = {
+    name,
+    city,
+
+    display() {
+        console.log(`${this.name} from ${this.city}`);
+    }
+};
+
+person.display();
+
+10. Classes in ES6
+
+class Employee {
+
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    display() {
+        console.log(`ID: ${this.id}`);
+        console.log(`Name: ${this.name}`);
+    }
+}
+
+const emp1 = new Employee(101, "Amit");
+
+emp1.display();
+
+11. Modules in ES6 // modules are reusable you need to export and import the module
+
+math.js
+
+export function add(a, b) {
+    return a + b;
+}
+
+export function sub(a, b) {
+    return a - b;
+}
+
+app.js
+
+import { add, sub } from './math.js'; by default module support the commonJS module. ES6
+
+console.log(add(10, 5));
+console.log(sub(10, 5));
+
+12. Promises in JavaScript
+
+Promises handle asynchronous operations. Synch Asnch Java JavaScript API Mutlithreading
+
+A Promise has 3 states:
+
+Pending
+Resolved
+Rejected
+
+13. Creating a Promise
+
+const myPromise = new Promise((resolve, reject) => {
+
+    let success = true;
+
+    if (success) {
+        resolve("Operation Successful");
+    } else {
+        reject("Operation Failed");
+    }
+});
+
+myPromise
+    .then((result) => {
+        console.log(result);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+
+14. Real-Time Promise Example
+
+function fetchData() {
+
+    return new Promise((resolve, reject) => {
+
+        setTimeout(() => {
+
+            resolve({
+                id: 1,
+                name: "Laptop",
+                price: 50000
+            });
+
+        }, 3000);
+
+    });
+}
+
+fetchData()
+    .then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+Output After 3 Seconds
+
+{
+  id: 1,
+  name: 'Laptop',
+  price: 50000
+}
+
+15. Promise Chaining
+
+function step1() {
+    return Promise.resolve("Step 1 Completed");
+}
+
+function step2(data) {
+    return Promise.resolve(`${data} -> Step 2 Completed`);
+}
+
+function step3(data) {
+    return Promise.resolve(`${data} -> Step 3 Completed`);
+}
+
+step1()
+    .then((result) => step2(result))
+    .then((result) => step3(result))
+    .then((finalResult) => {
+        console.log(finalResult);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+16. Promise.all()
+
+Run multiple promises together.
+
+const p1 = Promise.resolve("API 1 Data");
+const p2 = Promise.resolve("API 2 Data");
+const p3 = Promise.resolve("API 3 Data");
+
+Promise.all([p1, p2, p3])
+    .then((results) => {
+        console.log(results);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+Output
+[
+  'API 1 Data',
+  'API 2 Data',
+  'API 3 Data'
+]
+
+17. Async and Await
+
+async/await makes asynchronous code look synchronous.
+
+
+18. Async Function
+
+async function hello() {
+    return "Hello Async";
+}
+
+hello().then((result) => {
+    console.log(result);
+});
+
+19. Await Keyword
+
+function getUser() {
+
+    return new Promise((resolve) => {
+
+        setTimeout(() => {
+
+            resolve({
+                id: 101,
+                name: "Amol"
+            });
+
+        }, 2000);
+
+    });
+}
+
+async function displayUser() {
+
+    console.log("Fetching user...");
+
+    const user = await getUser();
+
+    console.log(user);
+
+    console.log("Completed");
+}
+
+displayUser();
+
+Output
+Fetching user...
+
+(after 2 seconds)
+
+{ id: 101, name: 'Amol' }
+
+Completed
+
+20. Async/Await with Error Handling
+
+function fetchEmployee() {
+
+    return new Promise((resolve, reject) => {
+
+        let success = false;
+
+        setTimeout(() => {
+
+            if (success) {
+                resolve({
+                    id: 1,
+                    name: "Rahul"
+                });
+            } else {
+                reject("Unable to fetch employee");
+            }
+
+        }, 2000);
+
+    });
+}
+
+async function getEmployee() {
+
+    try {
+
+        const employee = await fetchEmployee();
+
+        console.log(employee);
+
+    } catch (error) {
+
+        console.log("Error:", error);
+
+    }
+}
+
+getEmployee();
+
+
+21. Real-Time API Example using Fetch
+
+async function loadUsers() {
+
+    try {
+
+        const response = await fetch(
+            'https://jsonplaceholder.typicode.com/users'
+        );
+
+        const users = await response.json(); // JavaScript Object Notation
+
+        console.log(users);
+
+    } catch (error) {
+
+        console.log("API Error:", error);
+
+    }
+}
+
+loadUsers();
+
+26. Complete Real-Time Async Flow Example
+
+function loginUser(username, password) {
+
+    return new Promise((resolve, reject) => {
+
+        setTimeout(() => {
+
+            if (username === "admin" &&
+                password === "1234") {
+
+                resolve({
+                    userId: 101,
+                    username: "admin"
+                });
+
+            } else {
+
+                reject("Invalid Credentials");
+            }
+
+        }, 2000);
+
+    });
+}
+
+function fetchOrders(userId) {
+
+    return new Promise((resolve) => {
+
+        setTimeout(() => {
+
+            resolve([
+                "Laptop",
+                "Mobile",
+                "Keyboard"
+            ]);
+
+        }, 2000);
+
+    });
+}
+
+async function processApplication() {
+
+    try {
+
+        console.log("Logging in...");
+
+        const user =
+            await loginUser("admin", "1234");
+
+        console.log(user);
+
+        console.log("Fetching orders...");
+
+        const orders =
+            await fetchOrders(user.userId);
+
+        console.log(orders);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+}
+
+processApplication();
+
+
+Closures and Scoping, Functional Programming, Error Handling client side scripting :
+
+
+JavaScript Closures and Scoping :
+
+Closures and scoping are core concepts in JavaScript. They help manage variables, memory, data privacy, callbacks, asynchronous programming, and modular code.
+
+1. What is Scope in JavaScript?
+
+Scope determines where variables can be accessed in a program.
+
+JavaScript has:
+
+Global Scope
+Function Scope
+Block Scope
+Lexical Scope
+
+2. Global Scope
+
+Variables declared outside functions are globally accessible.
+
+let company = "OpenAI";
+
+function showCompany() {
+    console.log(company);
+}
+
+showCompany();
+console.log(company);
+
+Output
+
+OpenAI
+OpenAI
+
+3. Function Scope
+
+Variables declared inside a function are accessible only inside that function.
+
+function employeeDetails() {
+    let employeeName = "John";
+    console.log(employeeName);
+}
+
+employeeDetails();
+
+// Error
+
+console.log(employeeName);
+
+Output
+John
+
+ReferenceError: employeeName is not defined
+
+4. Block Scope
+
+let and const are block scoped.
+
+{
+    let city = "Mumbai";
+    const country = "India";
+
+    console.log(city);
+    console.log(country);
+}
+
+// Error
+console.log(city);
+
+5. Lexical Scope
+
+Inner functions can access variables from outer functions.
+
+function outerFunction() {
+    let outerVariable = "I am outer";
+
+    function innerFunction() {
+        console.log(outerVariable);
+    }
+
+    innerFunction();
+}
+
+outerFunction();
+
+Output
+I am outer
+
+6. What is Closure?
+
+A closure is created when:
+
+A function remembers variables from its outer scope
+Even after the outer function has finished execution
+
+Closures preserve data.
+
+7. Basic Closure Example
+
+function outer() {
+    let counter = 0;
+
+    function inner() {
+        counter++;
+        console.log(counter);
+    }
+
+    return inner;
+}
+
+const increment = outer();
+
+increment();
+increment();
+increment();
+
+Output
+
+1
+2
+3
+Explanation
+
+outer() executes once
+counter remains in memory
+inner() remembers counter
+
+This is a closure.
+
+8. Closure with Data Privacy
+
+Closures can simulate private variables.
+
+function bankAccount(initialBalance) {
+    let balance = initialBalance;
+
+    return {
+        deposit(amount) {
+            balance += amount;
+            console.log(`Deposited: ${amount}`);
+        },
+
+        withdraw(amount) {
+            if (amount <= balance) {
+                balance -= amount;
+                console.log(`Withdrawn: ${amount}`);
+            } else {
+                console.log("Insufficient balance");
+            }
+        },
+
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const account = bankAccount(1000);
+
+account.deposit(500);
+account.withdraw(300);
+
+console.log(account.getBalance());
+Output
+
+Deposited: 500
+Withdrawn: 300
+1200
+
+9. Closure in Loops Problem
+
+Incorrect Example
+
+for (var i = 1; i <= 3; i++) {
+    setTimeout(function () {
+        console.log(i);
+    }, 1000);
+}
+
+Output
+
+4
+4
+4
+
+Why?
+
+var is function scoped.
+
+10. Correct Solution using let
+
+for (let i = 1; i <= 3; i++) {
+    setTimeout(function () {
+        console.log(i);
+    }, 1000);
+}
+
+Output
+
+1
+2
+3
+
+11. Real-Time Uses of Closures
+
+Data hiding/private variables
+Event handlers
+Timers
+Callback functions
+Memoization
+Function factories
+Module pattern
+
+Functional Programming in JavaScript : 
+
+Functional Programming (FP) treats functions as first-class citizens.
+
+Key concepts:
+
+Pure Functions
+Immutability
+Higher-Order Functions
+Callback Functions
+Map, Filter, Reduce
+Function Composition
+
+1. Pure Function
+
+A pure function:
+
+Gives same output for same input
+Does not modify external data
+function add(a, b) {
+    return a + b;
+}
+
+console.log(add(2, 3));
+
+2. Impure Function
+let total = 0;
+
+function addToTotal(value) {
+    total += value;
+}
+
+This changes external state.
+
+3. First-Class Functions
+
+Functions can be:
+
+Stored in variables
+Passed as arguments
+Returned from functions
+
+const greet = function(name) {
+    return `Hello ${name}`;
+};
+
+console.log(greet("John"));
+
+4. Higher-Order Function
+
+A function that:
+
+Takes another function as argument
+OR
+Returns another function
+function calculate(a, b, operation) {
+    return operation(a, b);
+}
+
+function multiply(x, y) {
+    return x * y;
+}
+
+console.log(calculate(5, 4, multiply));
+
+Output
+
+20
+5. Callback Functions
+function processUser(name, callback) {
+    console.log("Processing user...");
+
+    callback(name);
+}
+
+processUser("John", function(name) {
+    console.log(`Welcome ${name}`);
+});
+
+6. Array map()
+
+Transforms array elements.
+
+const numbers = [1, 2, 3, 4];
+
+const squared = numbers.map(num => num * num);
+
+console.log(squared);
+Output
+[1, 4, 9, 16]
+
+7. Array filter()
+
+Filters elements.
+
+const ages = [12, 18, 22, 15, 30];
+
+const adults = ages.filter(age => age >= 18);
+
+console.log(adults);
+
+Output
+
+[18, 22, 30]
+
+8. Array reduce()
+
+Reduces array into single value.
+
+const prices = [100, 200, 300];
+
+const total = prices.reduce((sum, price) => {
+    return sum + price;
+}, 0);
+
+console.log(total);
+Output
+600
+
+Error Handling in Client-Side JavaScript :
+
+
+Error handling prevents application crashes and improves user experience.
+
+1. Types of JavaScript Errors
+
+Error Type	Description
+
+Syntax Error	Invalid syntax
+Reference Error	Variable not defined
+Type Error	Wrong data type
+Range Error	Number out of range
+Custom Error	User-defined error
+
+2. try...catch
+
+try {
+    let result = 10 / 0;
+
+    console.log(result);
+
+    console.log(userName);
+
+} catch(error) {
+    console.log("An error occurred");
+    console.log(error.message);
+}
+Output
+Infinity
+An error occurred
+userName is not defined
+
+3. finally Block
+
+finally always executes.
+
+try {
+    console.log("Connecting to server...");
+} catch(error) {
+    console.log(error.message);
+} finally {
+    console.log("Connection closed");
+}
+4. throw Statement
+function validateAge(age) {
+    if (age < 18) {
+        throw new Error("Age must be 18 or above");
+    }
+
+    return "Eligible";
+}
+
+try {
+    console.log(validateAge(15));
+} catch(error) {
+    console.log(error.message);
+}
+
+5. Form Validation Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation</title>
+</head>
+<body>
+
+<input type="text" id="username" placeholder="Enter username">
+<button onclick="validateForm()">Submit</button>
+
+<script>
+function validateForm() {
+
+    try {
+        let username = document.getElementById("username").value;
+
+        if(username.trim() === "") {
+            throw new Error("Username cannot be empty");
+        }
+
+        alert("Form submitted successfully");
+
+    } catch(error) {
+        alert(error.message);
+    }
+}
+</script>
+
+</body>
+</html>
+
+
+
+JSON, JSON - Objects, arrays etc, JSON-Ajax, Advanced DOM Manipulation :
+
+
+1. What is JSON?
+Definition
+
+JSON (JavaScript Object Notation) is a lightweight data-interchange format used to exchange data between:
+
+Client ↔ Server
+APIs ↔ Applications
+Frontend ↔ Backend
+
+JSON is:
+
+Human readable
+Easy to parse
+Language independent
+
+2. JSON Syntax Rules
+
+JSON supports:
+
+Objects
+Arrays
+Strings
+Numbers
+Boolean
+null
+
+Example JSON
+{
+  "id": 101,
+  "name": "Amol",
+  "skills": ["JavaScript", "Angular", "React"],
+  "isActive": true
+}
+
+3. JSON Object
+
+JavaScript Object
+
+let employee = {
+    id: 1,
+    name: "John",
+    salary: 50000
+};
+
+console.log(employee.name);
+console.log(employee.salary);
+
+JSON Object
+{
+   "id": 1,
+   "name": "John",
+   "salary": 50000
+}
+
+Important Difference
+
+JavaScript Object	JSON
+Keys may not need quotes	Keys MUST have double quotes
+Supports functions	Functions NOT allowed
+Used inside JS	Used for data exchange
+
+4. JSON Arrays
+
+JSON Array Example
+
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "John"
+    },
+    {
+      "id": 2,
+      "name": "David"
+    }
+  ]
+}
+
+5. JavaScript JSON Methods
+
+JSON.stringify()
+
+Converts JavaScript object → JSON string
+
+Example
+let student = {
+    id: 101,
+    name: "Amol",
+    course: "JavaScript"
+};
+
+let jsonData = JSON.stringify(student);
+
+console.log(jsonData);
+console.log(typeof jsonData);
+Output
+{"id":101,"name":"Amol","course":"JavaScript"}
+string
+JSON.parse()
+
+Converts JSON string → JavaScript object
+
+Example
+let jsonText = '{"id":101,"name":"Amol","course":"React"}';
+
+let obj = JSON.parse(jsonText);
+
+console.log(obj.name);
+console.log(obj.course);
+
+6. Complete JSON Example
+
+let employee = {
+    id: 1001,
+    name: "Rahul",
+    department: "IT",
+    skills: ["Java", "Spring Boot", "Angular"]
+};
+
+// Convert object to JSON
+let jsonString = JSON.stringify(employee);
+
+console.log("JSON String:");
+console.log(jsonString);
+
+// Convert JSON to object
+let obj = JSON.parse(jsonString);
+
+console.log("Converted Object:");
+console.log(obj);
+
+console.log(obj.skills[1]);
+
+7. What is AJAX?
+
+Definition
+
+AJAX (Asynchronous JavaScript And XML) allows web pages to:
+
+Send requests to server
+Receive data without page refresh
+Update page dynamically
+
+Today JSON is mostly used instead of XML.
+
+AJAX Workflow
+Browser
+   ↓
+JavaScript AJAX Request
+   ↓
+Server/API
+   ↓
+JSON Response
+   ↓
+Update Web Page
+
+8. AJAX using XMLHttpRequest
+
+HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Example</title>
+</head>
+<body>
+
+    <button onclick="loadData()">Load Users</button>
+
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+
+JavaScript
+
+function loadData() {
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open("GET", "https://jsonplaceholder.typicode.com/users");
+
+    xhr.onload = function () {
+
+        if (xhr.status === 200) {
+
+            let users = JSON.parse(xhr.responseText);
+
+            let output = "";
+
+            users.forEach(function(user) {
+
+                output += `
+                    <h3>${user.name}</h3>
+                    <p>Email: ${user.email}</p>
+                    <hr>
+                `;
+            });
+
+            document.getElementById("result").innerHTML = output;
+        }
+    };
+
+    xhr.send();
+}
+
+21. Form Validation Example
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<input type="text" id="email">
+
+<button onclick="validate()">Submit</button>
+
+<p id="error"></p>
+
+<script>
+
+function validate() {
+
+    let email = document.getElementById("email").value;
+
+    if(email === "") {
+
+        document.getElementById("error")
+        .innerText = "Email is required";
+
+    } else {
+
+        document.getElementById("error")
+        .innerText = "Submitted Successfully";
+    }
+}
+
+</script>
+
+</body>
+</html>
+
+23. Summary
+Topic	Description
+JSON	Data exchange format
+JSON.parse()	JSON → Object
+JSON.stringify()	Object → JSON
+AJAX	Load data asynchronously
+Fetch API	Modern AJAX
+DOM	Manipulate HTML dynamically
+Events	User interactions
+Dynamic Elements	Create/remove HTML
+Advanced DOM	Traversing, classes, filtering
+
+
+
+jQuery Plugins, Event Delegation, Ajax and Deferred Objects, Optimization and Performance :
+
+
+1. jQuery Plugins
+
+A jQuery Plugin is a reusable JavaScript function added to jQuery’s prototype ($.fn) so that it can be used on jQuery-selected elements.
+
+Plugins help:
+
+Reuse code
+Create custom UI components
+Encapsulate logic
+Improve maintainability
+Structure of a jQuery Plugin
+(function ($) {
+
+    $.fn.highlightText = function (options) {
+
+        // Default settings
+        const settings = $.extend({
+            color: 'yellow',
+            textColor: 'black'
+        }, options);
+
+        // Apply plugin functionality
+        return this.each(function () {
+            $(this).css({
+                backgroundColor: settings.color,
+                color: settings.textColor,
+                padding: '10px'
+            });
+        });
+    };
+
+})(jQuery);
+
+HTML Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery Plugin Example</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        (function ($) {
+
+            $.fn.highlightText = function (options) {
+
+                const settings = $.extend({
+                    color: 'yellow',
+                    textColor: 'black'
+                }, options);
+
+                return this.each(function () {
+
+                    $(this).css({
+                        backgroundColor: settings.color,
+                        color: settings.textColor,
+                        padding: '10px',
+                        border: '2px solid black'
+                    });
+
+                });
+            };
+
+        })(jQuery);
+
+        $(document).ready(function () {
+
+            $("#box1").highlightText({
+                color: "lightblue",
+                textColor: "darkblue"
+            });
+
+            $("#box2").highlightText({
+                color: "pink",
+                textColor: "red"
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="box1">Welcome to Plugin Example</div>
+    <br>
+    <div id="box2">Reusable jQuery Plugin</div>
+
+</body>
+</html>
+
+Output
+
+First div becomes light blue
+Second div becomes pink
+Plugin is reusable on multiple elements
+Real-World Use Cases
+Slider plugins
+Modal popup plugins
+Data tables
+Custom form validation
+UI themes
+
+2. Event Delegation
+
+What is Event Delegation?
+
+Event Delegation means:
+
+Attach one event listener to a parent element
+Handle events for dynamically added child elements
+
+It uses:
+
+Event Bubbling
+Problem Without Delegation
+$(".btn").click(function () {
+    alert("Button clicked");
+});
+
+This works only for existing buttons.
+
+Newly added buttons will NOT work.
+
+Solution Using Event Delegation
+
+$("#container").on("click", ".btn", function () {
+    alert("Dynamic Button Clicked");
+});
+
+Complete Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Delegation Example</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            // Add dynamic buttons
+            $("#addBtn").click(function () {
+
+                $("#container").append(
+                    '<button class="btn">New Button</button><br><br>'
+                );
+
+            });
+
+            // Event Delegation
+            $("#container").on("click", ".btn", function () {
+
+                alert($(this).text() + " Clicked");
+
+            });
+
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <button id="addBtn">Add Button</button>
+
+    <hr>
+
+    <div id="container">
+
+        <button class="btn">Initial Button</button>
+
+    </div>
+
+</body>
+</html>
+
+How It Works
+
+Click "Add Button"
+New buttons are created dynamically
+Parent container handles all button clicks
+No need to bind events repeatedly
+
+Advantages
+
+Better performance
+Less memory usage
+Works with dynamic elements
+Cleaner code
+Real-World Use Cases
+Dynamic tables
+Chat applications
+Infinite scrolling lists
+React/Angular event systems internally
+
+3. Ajax and Deferred Objects
+
+What is AJAX?
+
+AJAX = Asynchronous JavaScript And XML
+
+Used to:
+
+Call server without page refresh
+Fetch/send data asynchronously
+Basic AJAX Example
+$.ajax({
+    url: "https://jsonplaceholder.typicode.com/users",
+    method: "GET",
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(error) {
+        console.log(error);
+    }
+});
+Complete AJAX Example
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Example</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#loadBtn").click(function () {
+
+                $.ajax({
+
+                    url: "https://jsonplaceholder.typicode.com/users",
+                    type: "GET",
+
+                    beforeSend: function () {
+                        $("#result").html("Loading...");
+                    },
+
+                    success: function (data) {
+
+                        let output = "";
+
+                        data.forEach(function (user) {
+
+                            output += `
+                                <p>
+                                    <b>${user.name}</b> - ${user.email}
+                                </p>
+                            `;
+
+                        });
+
+                        $("#result").html(output);
+                    },
+
+                    error: function () {
+
+                        $("#result").html("Error loading data");
+
+                    },
+
+                    complete: function () {
+
+                        console.log("Request Completed");
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <button id="loadBtn">Load Users</button>
+
+    <div id="result"></div>
+
+</body>
+</html>
+Deferred Objects
+What are Deferred Objects?
+
+Deferred Objects help manage:
+
+Asynchronous operations
+Success/failure states
+Promise-like behavior
+Deferred Example
+function getData() {
+
+    const deferred = $.Deferred();
+
+    setTimeout(function () {
+
+        let success = true;
+
+        if (success) {
+            deferred.resolve("Data Loaded Successfully");
+        } else {
+            deferred.reject("Error Loading Data");
+        }
+
+    }, 2000);
+
+    return deferred.promise();
+}
+
+Using Deferred Object
+
+getData()
+
+.done(function (response) {
+
+    console.log(response);
+
+})
+
+.fail(function (error) {
+
+    console.log(error);
+
+})
+
+.always(function () {
+
+    console.log("Completed");
+
+});
+
+Complete Deferred Example
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deferred Object Example</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+
+        function fetchData() {
+
+            const deferred = $.Deferred();
+
+            setTimeout(function () {
+
+                const success = true;
+
+                if (success) {
+
+                    deferred.resolve({
+                        name: "John",
+                        role: "Developer"
+                    });
+
+                } else {
+
+                    deferred.reject("API Failed");
+
+                }
+
+            }, 3000);
+
+            return deferred.promise();
+        }
+
+        $(document).ready(function () {
+
+            $("#fetchBtn").click(function () {
+
+                $("#status").html("Fetching Data...");
+
+                fetchData()
+
+                    .done(function (data) {
+
+                        $("#status").html(`
+                            Name: ${data.name}
+                            <br>
+                            Role: ${data.role}
+                        `);
+
+                    })
+
+                    .fail(function (error) {
+
+                        $("#status").html(error);
+
+                    })
+
+                    .always(function () {
+
+                        console.log("Execution Finished");
+
+                    });
+
+            });
+
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <button id="fetchBtn">Fetch Data</button>
+
+    <div id="status"></div>
+
+</body>
+</html>
+Advantages of Deferred Objects
+Cleaner async code
+Better error handling
+Promise chaining
+Avoid callback hell
+
+4. Optimization and Performance in JavaScript
+
+Performance optimization improves:
+
+Speed
+Memory usage
+User experience
+Common Optimization Techniques
+Technique	Purpose
+Event Delegation	Reduce listeners
+Debouncing	Limit frequent calls
+Throttling	Control execution rate
+Caching DOM	Reduce DOM lookup
+Lazy Loading	Load resources later
+Minification	Reduce file size
+Async Loading	Non-blocking execution
+DOM Caching Example
+Bad Practice
+for(let i = 0; i < 1000; i++) {
+    document.getElementById("box").innerHTML += i;
+}
+
+DOM searched repeatedly.
+
+Optimized Version
+const box = document.getElementById("box");
+
+let content = "";
+
+for(let i = 0; i < 1000; i++) {
+    content += i + "<br>";
+}
+
+box.innerHTML = content;
+
+Debouncing Example
+
+Use Case
+
+Search box API calls.
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debounce Example</title>
+</head>
+
+<body>
+
+    <input type="text" id="searchBox" placeholder="Search...">
+
+    <script>
+
+        function debounce(func, delay) {
+
+            let timer;
+
+            return function () {
+
+                clearTimeout(timer);
+
+                timer = setTimeout(() => {
+
+                    func.apply(this, arguments);
+
+                }, delay);
+
+            };
+        }
+
+        function searchData() {
+
+            console.log("API Called");
+        }
+
+        const optimizedSearch = debounce(searchData, 1000);
+
+        document
+            .getElementById("searchBox")
+            .addEventListener("keyup", optimizedSearch);
+
+    </script>
+
+</body>
+</html>
+
+Throttling Example
+
+function throttle(func, limit) {
+
+    let waiting = false;
+
+    return function () {
+
+        if (!waiting) {
+
+            func.apply(this, arguments);
+
+            waiting = true;
+
+            setTimeout(() => {
+                waiting = false;
+            }, limit);
+
+        }
+    };
+}
+Lazy Loading Image Example
+<img loading="lazy"
+     src="large-image.jpg"
+     alt="Image">
+Using requestAnimationFrame
+
+Better for animations.
+
+function animate() {
+
+    console.log("Animating...");
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+Avoid Memory Leaks
+Bad Practice
+let largeData = new Array(1000000);
+
+Unused variables still occupy memory.
+
+Better Practice
+largeData = null;
+JavaScript Performance Best Practices
+Best Practice	Benefit
+Use let/const	Better scope management
+Minimize DOM Manipulation	Faster rendering
+Use Event Delegation	Less memory
+Use Async/Await	Cleaner async code
+Use Debouncing	Fewer API calls
+Avoid Global Variables	Prevent memory issues
+Use CDN	Faster loading
+Compress JS Files	Better performance
+
+
+
