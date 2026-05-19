@@ -1,0 +1,1104 @@
+Introduction, Installation, Setting up environment variables and verification : 
+
+
+What is Maven?
+
+Apache Maven is a powerful build automation and project management tool primarily used for Java applications.
+
+It helps developers to:
+
+Manage project dependencies (JAR files)
+Compile source code
+Run unit tests
+Package applications (JAR/WAR)
+Deploy applications
+Maintain a standard project structure
+
+Maven simplifies the development process by using a configuration file called:
+
+pom.xml
+
+POM stands for:
+
+Project Object Model
+
+Why Maven is Used?
+
+Before Maven, developers had to manually:
+
+Download JAR files
+Add libraries to classpath
+Compile code manually
+Maintain project builds
+
+Maven automates all these tasks.
+
+Features of Maven
+1. Dependency Management
+
+Automatically downloads required libraries from the Maven repository.
+
+Example:
+
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.13.2</version>
+</dependency>
+2. Build Automation
+
+Maven automates:
+
+Compilation
+Testing
+Packaging
+Deployment
+3. Standard Project Structure
+
+Maven follows a predefined directory structure.
+
+project-name/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   └── resources/
+│   │
+│   └── test/
+│       ├── java/
+│       └── resources/
+│
+├── pom.xml
+4. Repository Management
+
+Maven uses repositories to store libraries.
+
+Main repository:
+
+Maven Central Repository
+Maven Architecture
+Components of Maven
+1. POM.xml
+
+Contains project configuration.
+
+2. Repository
+
+Stores dependencies/plugins.
+
+3. Plugins
+
+Used to perform tasks like:
+
+Compilation
+Packaging
+Testing
+4. Build Lifecycle
+
+Defines build phases.
+
+Example phases:
+
+validate
+compile
+test
+package
+install
+deploy
+Prerequisites for Maven Installation
+
+Before installing Maven:
+
+Install Java
+
+Maven requires Java.
+
+Verify Java installation:
+
+java -version
+
+Example output:
+
+java version "21.0.1"
+Maven Installation in Windows
+Step 1: Download Maven
+
+Go to the official website:
+
+Apache Maven Official Website
+
+Download the Binary zip archive.
+
+Example:
+
+apache-maven-3.9.x-bin.zip
+Step 2: Extract Maven
+
+Extract the ZIP file.
+
+Example location:
+
+C:\Program Files\Apache\Maven
+Setting Up Environment Variables
+Step 1: Create MAVEN_HOME
+Open Environment Variables
+Search:
+Edit the system environment variables
+Click:
+Environment Variables
+Step 2: Add MAVEN_HOME
+
+Create a new system variable:
+
+Variable Name	Variable Value
+MAVEN_HOME	C:\Program Files\Apache\Maven
+Step 3: Add Maven bin to PATH
+
+Edit the Path variable.
+
+Add:
+
+%MAVEN_HOME%\bin
+Setting Up JAVA_HOME
+
+Maven also requires JAVA_HOME.
+
+Add JAVA_HOME
+Variable Name	Variable Value
+JAVA_HOME	C:\Program Files\Java\jdk-21
+Add Java bin to PATH
+%JAVA_HOME%\bin
+Verification of Maven Installation
+
+Open Command Prompt and run:
+
+mvn -version
+
+Example output:
+
+Apache Maven 3.9.6
+Maven home: C:\Program Files\Apache\Maven
+Java version: 21
+Default locale: en_US
+OS name: "windows 11"
+
+If you see the above output, Maven is installed successfully.
+
+Maven Installation in Linux
+Step 1: Install Java
+
+Ubuntu example:
+
+sudo apt update
+sudo apt install openjdk-21-jdk
+
+Verify:
+
+java -version
+Step 2: Download Maven
+wget https://downloads.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+Step 3: Extract Maven
+tar -xvf apache-maven-3.9.9-bin.tar.gz
+
+Move to:
+
+sudo mv apache-maven-3.9.9 /opt/maven
+Configure Environment Variables in Linux
+
+Edit:
+
+nano ~/.bashrc
+
+Add:
+
+export MAVEN_HOME=/opt/maven
+export PATH=$MAVEN_HOME/bin:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+
+Reload:
+
+source ~/.bashrc
+Verify Maven in Linux
+mvn -version
+Maven Installation in macOS
+
+Using Homebrew:
+
+brew install maven
+
+Verify:
+
+mvn -version
+First Maven Project
+Create Maven Project
+
+Command:
+
+mvn archetype:generate
+
+This generates a Java project structure automatically.
+
+Important Maven Commands
+Command	Description
+mvn compile	Compiles source code
+mvn test	Runs test cases
+mvn package	Creates JAR/WAR
+mvn install	Installs to local repository
+mvn clean	Deletes target folder
+Maven Lifecycle
+Default Lifecycle
+validate → compile → test → package → verify → install → deploy
+Example pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>demo-project</artifactId>
+    <version>1.0</version>
+
+</project>
+Advantages of Maven
+Easy dependency management
+Standard project structure
+Faster build process
+Easy integration with CI/CD
+Supports plugins
+Simplifies project management
+
+
+
+Maven Features, Archetype generation, Maven build lifecycle :
+
+
+Introduction to Maven
+
+Apache Maven is a powerful build automation and project management tool mainly used for Java projects. It simplifies project setup, dependency management, compilation, testing, packaging, and deployment.
+
+Maven follows the concept of:
+
+Convention over Configuration
+Standardized project structure
+Dependency management through repositories
+Automated build lifecycle
+Key Features of Maven
+1. Dependency Management
+
+Maven automatically downloads required libraries (JAR files) from repositories.
+
+Example:
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>6.0.0</version>
+    </dependency>
+</dependencies>
+Benefits
+No manual JAR management
+Handles transitive dependencies
+Version control management
+2. Standard Project Structure
+
+Maven provides a predefined directory structure.
+
+project-name/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   ├── resources/
+│   │
+│   ├── test/
+│       ├── java/
+│       ├── resources/
+│
+├── pom.xml
+Advantages
+Easy maintenance
+Better team collaboration
+Industry-standard structure
+3. Build Automation
+
+Maven automates:
+
+Compilation
+Testing
+Packaging
+Deployment
+
+Command:
+
+mvn package
+4. Repository Management
+
+Maven uses repositories to store dependencies.
+
+Types of Repositories
+Repository Type	Description
+Local Repository	Stored on developer machine
+Central Repository	Public Maven repository
+Remote Repository	Company/private repository
+
+Default local repository:
+
+.m2/repository
+5. Plugin Architecture
+
+Everything in Maven is executed through plugins.
+
+Examples:
+
+Compiler Plugin
+Surefire Plugin
+Jar Plugin
+WAR Plugin
+
+Example:
+
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+        </plugin>
+    </plugins>
+</build>
+6. Dependency Scope
+
+Maven supports scopes to control dependency visibility.
+
+Scope	Description
+compile	Available everywhere
+provided	Provided by server/runtime
+runtime	Needed during execution
+test	Only for testing
+system	Local system dependency
+
+Example:
+
+<scope>test</scope>
+7. Multi-module Project Support
+
+Maven supports parent-child project structures.
+
+Example:
+
+parent-project
+   ├── employee-service
+   ├── payment-service
+   └── common-library
+8. Continuous Integration Support
+
+Maven integrates easily with:
+
+Jenkins
+GitHub Actions
+GitLab
+Bamboo
+Maven Archetype Generation
+What is Archetype?
+
+An archetype is a Maven project template used to generate a new project structure automatically.
+
+It creates:
+
+Folder structure
+pom.xml
+Sample source files
+Generate Maven Project Using Archetype
+Command
+mvn archetype:generate
+Important Parameters
+Parameter	Description
+groupId	Company/project package
+artifactId	Project name
+version	Project version
+package	Base package name
+Example: Create Java Project
+mvn archetype:generate ^
+-DgroupId=com.example ^
+-DartifactId=employee-app ^
+-DarchetypeArtifactId=maven-archetype-quickstart ^
+-DinteractiveMode=false
+Generated Project Structure
+employee-app/
+│
+├── pom.xml
+├── src/
+│   ├── main/java/com/example/App.java
+│   └── test/java/com/example/AppTest.java
+Common Maven Archetypes
+Archetype	Purpose
+maven-archetype-quickstart	Basic Java project
+maven-archetype-webapp	Web application
+spring-boot-archetype	Spring Boot project
+javafx-archetype	JavaFX project
+Sample Generated pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>employee-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
+Maven Build Lifecycle
+
+Maven lifecycle defines the sequence of build phases.
+
+There are 3 built-in lifecycles:
+
+Lifecycle	Purpose
+Default	Build and deployment
+Clean	Cleanup
+Site	Documentation
+1. Default Lifecycle
+
+This is the main lifecycle.
+
+Important Phases
+Phase	Description
+validate	Validate project
+compile	Compile source code
+test	Run unit tests
+package	Create JAR/WAR
+verify	Run quality checks
+install	Install into local repository
+deploy	Deploy to remote repository
+Maven Lifecycle Flow
+validate
+   ↓
+compile
+   ↓
+test
+   ↓
+package
+   ↓
+verify
+   ↓
+install
+   ↓
+deploy
+Example Commands
+Compile Project
+mvn compile
+Run Tests
+mvn test
+Create JAR File
+mvn package
+Install to Local Repository
+mvn install
+Deploy to Remote Repository
+mvn deploy
+Important Concept
+
+If you run:
+
+mvn package
+
+Maven executes all previous phases automatically:
+
+validate → compile → test → package
+2. Clean Lifecycle
+
+Used to remove generated files.
+
+Phases
+Phase	Description
+pre-clean	Before cleaning
+clean	Delete target folder
+post-clean	After cleaning
+
+Command:
+
+mvn clean
+3. Site Lifecycle
+
+Used to generate project documentation.
+
+Phases
+Phase	Description
+site	Generate documentation
+site-deploy	Deploy documentation
+
+Command:
+
+mvn site
+Maven Build Example
+
+Suppose you execute:
+
+mvn clean install
+Execution Flow
+Clean Lifecycle:
+clean
+
+Default Lifecycle:
+validate
+compile
+test
+package
+install
+Real-Time Maven Build Process
+Step-by-Step
+Step 1: Developer Writes Code
+src/main/java
+Step 2: Maven Downloads Dependencies
+From Maven Central Repository
+Step 3: Maven Compiles Code
+mvn compile
+Step 4: Maven Runs Unit Tests
+mvn test
+Step 5: Maven Creates JAR/WAR
+mvn package
+Step 6: Maven Installs Artifact
+mvn install
+Step 7: CI/CD Deployment
+mvn deploy
+Advantages of Maven
+Advantage	Description
+Easy dependency management	Automatic JAR handling
+Standard structure	Better maintainability
+Build automation	Reduces manual work
+Reusability	Shared plugins and dependencies
+CI/CD support	Easy integration
+Large ecosystem	Thousands of plugins
+Disadvantages of Maven
+Disadvantage	Description
+XML verbosity	pom.xml becomes large
+Learning curve	Lifecycle understanding required
+Build speed	Sometimes slower than Gradle
+
+
+
+Dependency management, Maven with Eclipse :
+
+
+1. What is Dependency Management?
+
+Dependency Management means managing external libraries (JAR files) required in a Java project.
+
+Example:
+
+Logging library
+Database drivers
+Testing frameworks
+Spring Framework libraries
+
+Without dependency management:
+
+Developers manually download JARs
+Add them into the project
+Handle version conflicts manually
+
+This becomes difficult for large projects.
+
+2. What is Maven?
+
+Apache Maven is a build automation and dependency management tool used for Java projects.
+
+Maven helps to:
+
+Download required libraries automatically
+Manage project dependencies
+Compile code
+Run tests
+Package applications
+Deploy applications
+3. Advantages of Maven
+✅ Automatic Dependency Download
+
+Maven downloads libraries automatically from Maven Central Repository.
+
+✅ Standard Project Structure
+
+All Maven projects follow a common folder structure.
+
+✅ Dependency Version Management
+
+Easy to manage versions.
+
+✅ Build Automation
+
+Compile, test, package, and deploy using commands.
+
+✅ Transitive Dependencies
+
+If one dependency requires another library, Maven downloads it automatically.
+
+4. Maven Architecture
+Project
+   ↓
+pom.xml
+   ↓
+Maven
+   ↓
+Maven Repository
+   ↓
+Dependencies Downloaded
+5. Maven Repository Types
+Local Repository
+
+Stored in local machine.
+
+C:\Users\<username>\.m2
+Central Repository
+
+Official Maven repository.
+
+https://repo.maven.apache.org/maven2
+Remote Repository
+
+Organization private repository.
+
+6. Maven Installation
+Step 1: Install Java
+
+Install:
+
+JDK 17 or above
+
+Check:
+
+java -version
+Step 2: Download Maven
+
+Download from:
+
+Apache Maven Official Website
+
+Step 3: Configure Environment Variables
+
+Add:
+
+MAVEN_HOME
+Path
+
+Check installation:
+
+mvn -version
+7. Maven Project Structure
+project-name
+│
+├── src
+│   ├── main
+│   │   ├── java
+│   │   └── resources
+│   │
+│   └── test
+│       ├── java
+│       └── resources
+│
+├── pom.xml
+8. What is pom.xml?
+
+POM = Project Object Model
+
+It is the heart of Maven project.
+
+Contains:
+
+Project information
+Dependencies
+Plugins
+Build configuration
+9. Create Maven Project in Eclipse
+Step 1
+
+Open Eclipse
+
+Step 2
+
+Go to:
+
+File → New → Maven Project
+Step 3
+
+Select:
+
+Create a simple project
+Step 4
+
+Enter:
+
+Group Id  : com.example
+Artifact Id : maven-demo
+Step 5
+
+Click Finish
+
+10. First Maven Project Example
+Project Structure
+maven-demo
+│
+├── src/main/java
+│     └── com/example/App.java
+│
+├── pom.xml
+11. pom.xml Example
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>maven-demo</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- JUnit Dependency -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
+12. Java Class Example
+App.java
+package com.example;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        System.out.println("Welcome to Maven Project");
+
+    }
+}
+13. Run Maven Project in Eclipse
+Method 1
+
+Right Click Project
+
+Run As → Java Application
+Method 2 Using Maven
+Run As → Maven Build
+
+Goals:
+
+clean install
+14. Important Maven Commands
+Command	Description
+mvn clean	Deletes target folder
+mvn compile	Compiles code
+mvn test	Runs test cases
+mvn package	Creates JAR/WAR
+mvn install	Installs into local repository
+mvn clean install	Clean + Build
+15. Understanding Dependencies
+
+Suppose project requires:
+
+MySQL Driver
+Log4j
+JUnit
+
+Instead of downloading manually, add dependencies in pom.xml.
+
+16. MySQL Dependency Example
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.33</version>
+</dependency>
+
+Maven automatically downloads:
+
+MySQL Driver
+Required transitive dependencies
+17. Complete JDBC Maven Example
+Step 1: Add Dependency
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>jdbc-maven-demo</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- MySQL Dependency -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.3.0</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
+Step 2: Create Database
+CREATE DATABASE company;
+
+USE company;
+
+CREATE TABLE employee(
+    id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+Step 3: Java JDBC Program
+EmployeeInsert.java
+package com.example;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class EmployeeInsert {
+
+    public static void main(String[] args) {
+
+        String url = "jdbc:mysql://localhost:3306/company";
+        String username = "root";
+        String password = "root";
+
+        try {
+
+            // Create connection
+            Connection con = DriverManager.getConnection(
+                    url,
+                    username,
+                    password);
+
+            // SQL Query
+            String sql =
+                    "INSERT INTO employee(id,name) VALUES(?,?)";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ps.setInt(1, 101);
+            ps.setString(2, "Amol");
+
+            int rows = ps.executeUpdate();
+
+            System.out.println(rows + " row inserted");
+
+            con.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+    }
+}
+18. Maven Dependency Download Process
+
+When project is built:
+
+Maven checks pom.xml
+        ↓
+Searches dependency
+        ↓
+Downloads JAR from Maven Central
+        ↓
+Stores in .m2 repository
+        ↓
+Adds to project build path
+19. Dependency Scope
+Scope	Description
+compile	Default scope
+test	Only for testing
+provided	Provided by server
+runtime	Needed during runtime
+system	Local system dependency
+20. Example of Dependency Scope
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.13.2</version>
+    <scope>test</scope>
+</dependency>
+
+This dependency is available:
+
+During testing
+Not included in final JAR
+21. Maven Build Lifecycle
+validate
+compile
+test
+package
+verify
+install
+deploy
+22. Maven Plugins
+
+Plugins provide additional functionality.
+
+Example:
+
+Compiler Plugin
+Surefire Plugin
+Jar Plugin
+23. Maven Compiler Plugin Example
+<build>
+
+    <plugins>
+
+        <plugin>
+
+            <groupId>org.apache.maven.plugins</groupId>
+
+            <artifactId>maven-compiler-plugin</artifactId>
+
+            <version>3.11.0</version>
+
+            <configuration>
+
+                <source>17</source>
+                <target>17</target>
+
+            </configuration>
+
+        </plugin>
+
+    </plugins>
+
+</build>
+24. Complete Maven Project Example
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.training</groupId>
+    <artifactId>employee-app</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- MySQL Dependency -->
+        <dependency>
+
+            <groupId>com.mysql</groupId>
+
+            <artifactId>mysql-connector-j</artifactId>
+
+            <version>8.3.0</version>
+
+        </dependency>
+
+        <!-- JUnit -->
+        <dependency>
+
+            <groupId>junit</groupId>
+
+            <artifactId>junit</artifactId>
+
+            <version>4.13.2</version>
+
+            <scope>test</scope>
+
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+
+                <artifactId>maven-compiler-plugin</artifactId>
+
+                <version>3.11.0</version>
+
+                <configuration>
+
+                    <source>17</source>
+                    <target>17</target>
+
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>
+25. Advantages of Using Maven in Eclipse
+✅ Easy Dependency Management
+✅ Automatic Build Path Configuration
+✅ Faster Development
+✅ Standardized Project Structure
+✅ Easy Integration with:
+Spring Boot
+Hibernate
+JUnit
+Selenium
+Docker
+Jenkins
+26. Common Maven Problems
+Problem	Solution
+Dependency not downloading	Maven → Update Project
+Version conflict	Use correct versions
+Internet issue	Check proxy/network
+pom.xml error	Validate XML syntax
+27. Maven Update Project in Eclipse
+
+Right Click Project:
+
+Maven → Update Project
+
+Shortcut:
+
+Alt + F5
+28. Real-Time Industry Usage
+
+Maven is used in:
+
+Enterprise Java Applications
+Spring Boot Projects
+Microservices
+Banking Applications
+Cloud Applications
+CI/CD Pipelines
+
+Companies commonly use:
+
+Oracle Corporation
+Infosys
+Tata Consultancy Services
+Accenture
+
+
