@@ -1,0 +1,1541 @@
+Introduction to Spring Framework
+
+The Spring Framework is a powerful, lightweight, and open-source framework used for developing Java enterprise applications. It simplifies Java development by providing infrastructure support, dependency management, transaction handling, security, MVC architecture, and integration capabilities.
+
+Spring was created to reduce the complexity of Java EE development and promote:
+
+Loose coupling
+Reusability
+Maintainability
+Testability
+Modular development
+
+Spring applications are built using POJO (Plain Old Java Objects) and Dependency Injection concepts.
+
+Benefits of Spring Framework
+1. Lightweight Framework
+Spring is lightweight compared to traditional Java EE frameworks.
+Uses POJO-based programming.
+2. Loose Coupling
+Objects are independent.
+Dependencies are injected externally.
+3. Easy Testing
+Supports unit testing with JUnit and Mockito.
+4. Modular Architecture
+Different modules can be used independently.
+5. Transaction Management
+Declarative transaction handling.
+6. Integration Support
+Easily integrates with:
+Hibernate
+JDBC
+REST APIs
+JMS
+Microservices
+7. Simplifies Enterprise Development
+Reduces boilerplate code.
+Features of Spring Framework
+Core Features
+Feature	Description
+IOC Container	Manages object creation
+Dependency Injection	Injects dependencies automatically
+Aspect Oriented Programming	Logging, Security, Transactions
+Spring MVC	Web framework
+Transaction Management	Database transaction handling
+Security	Authentication and authorization
+ORM Integration	Hibernate/JPA integration
+REST Support	Build REST APIs
+
+
+Spring Framework Architecture :
+
+
+Spring Architecture Modules :
+
+-----------------------------------------------------
+|                 Spring Framework                  |
+-----------------------------------------------------
+| Presentation Layer                                |  view part means display on browser
+| Spring MVC                                        |
+-----------------------------------------------------
+| Business Layer                                    |
+| Spring Core, Beans, Context, AOP                 |
+-----------------------------------------------------
+| Data Access Layer                                 |
+| JDBC, ORM, Transactions                           |
+-----------------------------------------------------
+| Integration Layer                                 |
+| JMS, Security, Web Services                       |
+-----------------------------------------------------
+
+Important Spring Modules
+
+Module		Purpose
+
+spring-core	Core container
+spring-beans	Bean management
+spring-context	Application context
+spring-aop		Aspect-oriented programming
+spring-jdbc	JDBC abstraction
+spring-webmvc	MVC framework
+
+Bean Factory :
+
+What is BeanFactory?
+
+BeanFactory is the basic IOC container in Spring.
+
+It:
+
+Creates objects
+Configures objects
+Manages lifecycle
+
+Features :
+
+Lazy initialization : if we create an object of a class then if we want to access the object then we have to transer into another class.
+
+Lightweight container
+
+Example :
+
+BeanFactory factory = new XmlBeanFactory(
+       new ClassPathResource("beans.xml"));
+
+Application Context : BeanFactory
+
+What is ApplicationContext?
+
+ApplicationContext is an advanced IOC container.
+
+It provides:
+
+BeanFactory features
+Event handling
+Internationalization : Implementing the different languages into an application
+Automatic bean loading
+
+
+Advantages over BeanFactory
+
+BeanFactory	ApplicationContext
+
+Basic container	Advanced container
+Lazy loading	Eager loading
+No event support	Event support
+Limited features	Enterprise features
+
+Example
+
+ApplicationContext context =
+    new ClassPathXmlApplicationContext("beans.xml");
+
+Spring Bean Scopes :
+
+Spring manages bean lifecycle using scopes. ApplicationContext eager loading
+
+Scope	Description
+
+singleton	Single object per container  scope = "singleton"   scope = "session" <bean id = "" class = "com.example.Student" scope = "application">
+prototype	New object every request
+request	One bean per HTTP request post and get
+session	One bean per session
+application	One bean per ServletContext  class
+
+Dependency Injection (DI) :
+
+What is Dependency Injection?
+
+Dependency Injection means:
+
+Objects receive dependencies from external sources instead of creating them themselves.
+
+Class objects of class property and methods from another class or from API 
+
+Constructor Based and Setter private Employee employee (Employee employee)
+
+Inversion of Control (IOC) :
+
+What is IOC?
+
+IOC means:
+
+Control of object creation is transferred from programmer to Spring container.
+
+Without Spring:
+
+Student s = new Student();
+
+With Spring:
+
+Student s = context.getBean(Student.class);  Container
+
+Types of Dependency Injection
+
+Type		Description
+
+Constructor Injection	Dependencies via constructor
+Setter Injection	Dependencies via setter method
+
+COMPLETE SPRING FRAMEWORK IMPLEMENTATION
+
+Project Structure
+
+SpringCoreDemo/
+│
+├── src/main/java
+│    └── com/demo
+│         ├── App.java
+│         ├── Student.java
+│         ├── Address.java
+│         ├── College.java
+│
+├── src/main/resources
+│    └── beans.xml
+│
+└── pom.xml
+
+Step 1: Maven Dependency
+
+pom.xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demo</groupId>
+    <artifactId>SpringCoreDemo</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- Spring Core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.1.6</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
+
+Step 2: Address Bean
+
+Address.java
+
+package com.demo;
+
+public class Address {
+
+    private String city;
+    private String state;
+
+    public Address() {
+    }
+
+    public Address(String city, String state) {
+        this.city = city;
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
+}
+
+Step 3: College Bean
+
+College.java
+
+package com.demo;
+
+public class College {
+
+    private String collegeName;
+
+    public College() {
+    }
+
+    public College(String collegeName) {
+        this.collegeName = collegeName;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
+    }
+
+    @Override
+    public String toString() {
+        return "College{" +
+                "collegeName='" + collegeName + '\'' +
+                '}';
+    }
+}
+
+Step 4: Student Bean
+
+Student.java
+
+package com.demo;
+
+public class Student {
+
+    private int id;
+    private String name;
+    private Address address;
+    private College college;
+
+    // Default Constructor
+    public Student() {
+    }
+
+    // Constructor Injection
+    public Student(int id, String name, Address address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+    }
+
+    // Setter Injection
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public void display() {
+
+        System.out.println("Student Id : " + id);
+        System.out.println("Student Name : " + name);
+        System.out.println("Address : " + address);
+        System.out.println("College : " + college);
+    }
+}
+
+Step 5: Spring Configuration File
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Address Bean -->
+    <bean id="addressBean"
+          class="com.demo.Address"
+          scope="singleton">
+
+        <property name="city" value="Pune"/>
+        <property name="state" value="Maharashtra"/>
+
+    </bean>
+
+    <!-- College Bean -->
+    <bean id="collegeBean"
+          class="com.demo.College">
+
+        <property name="collegeName"
+                  value="ABC Engineering College"/>
+
+    </bean>
+
+    <!-- Student Bean -->
+    <bean id="studentBean"
+          class="com.demo.Student"
+          scope="prototype">
+
+        <!-- Constructor Injection -->
+        <constructor-arg value="101"/>
+        <constructor-arg value="Rahul"/>
+        <constructor-arg ref="addressBean"/>
+
+        <!-- Setter Injection -->
+        <property name="college"
+                  ref="collegeBean"/>
+
+    </bean>
+
+</beans>
+
+Step 6: Main Class
+
+App.java
+
+package com.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        // IOC Container
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("beans.xml");
+
+        // Fetching Bean
+        Student student1 =
+                (Student) context.getBean("studentBean");
+
+        student1.display();
+
+        System.out.println("--------------------------------");
+
+        Student student2 =
+                (Student) context.getBean("studentBean");
+
+        student2.display();
+
+        // Prototype Scope Verification
+        System.out.println(student1.hashCode());
+        System.out.println(student2.hashCode());
+    }
+}
+
+Output
+
+Student Id : 101
+Student Name : Rahul
+Address : Address{city='Pune', state='Maharashtra'}
+College : College{collegeName='ABC Engineering College'}
+
+--------------------------------
+
+Student Id : 101
+Student Name : Rahul
+Address : Address{city='Pune', state='Maharashtra'}
+College : College{collegeName='ABC Engineering College'}
+
+12548796
+36547895
+
+Different hashcodes confirm:
+
+studentBean uses prototype
+addressBean uses singleton
+
+Concepts Implemented in This Example
+
+Concept		Implemented
+
+Spring Core	✅
+IOC Container	✅
+Dependency Injection	✅
+Constructor Injection	✅
+Setter Injection	✅
+BeanFactory/ApplicationContext	✅
+Bean Scope	✅
+XML Configuration	✅
+Singleton Scope	✅
+Prototype Scope	✅
+
+Real-Time Use Cases of Spring
+
+Industry	Usage
+Banking	Transaction management
+E-Commerce	REST APIs
+Healthcare	Secure systems
+Telecom	Distributed applications
+FinTech	Microservices
+
+
+
+
+
+
+
+
+
+
+
+
+Setter based DI, Constructor based DI, Autowiring of Beans - By Type, Autowiring of Beans - By Name, Autowiring of Beans - By Constructor, Annotations for Autowiring :
+
+
+
+
+
+
+1. What is Dependency Injection (DI)?
+
+Dependency Injection is a design pattern in the Spring Framework where the objects required by a class are provided by the Spring container instead of the class creating them manually.
+
+Without DI :
+
+class EmployeeService {
+    EmployeeRepository repo = new EmployeeRepository();
+}
+
+With DI
+
+class EmployeeService {
+    EmployeeRepository repo;
+
+    public EmployeeService(EmployeeRepository repo) {
+        this.repo = repo;
+    }
+}
+
+Spring injects the dependency automatically.
+
+TYPES OF DEPENDENCY INJECTION
+
+2. Setter Based Dependency Injection
+
+Definition
+
+In Setter Injection, dependencies are injected using setter methods.
+
+Advantages :
+
+Readable and flexible
+Optional dependencies can be handled
+Easy to modify dependency later
+
+Disadvantages :
+
+Object may remain partially initialized
+More boilerplate code
+
+Example: Setter Injection
+
+Project Structure
+
+src
+ └── main
+      └── java
+           └── com/example/setterdi
+                ├── Engine.java
+                ├── Car.java
+                └── MainApp.java
+
+Engine.java
+
+package com.example.setterdi;
+
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started...");
+    }
+}
+
+Car.java
+
+package com.example.setterdi;
+
+public class Car {
+
+    private Engine engine; // DI
+
+    // Setter Injection
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is running...");
+    }
+}
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine" class="com.example.setterdi.Engine"/>
+
+    <bean id="car" class="com.example.setterdi.Car">
+        <property name="engine" ref="engine"/>
+    </bean>
+
+</beans>
+
+MainApp.java
+
+package com.example.setterdi;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("beans.xml");
+
+        Car car = (Car) context.getBean("car");
+
+        car.drive();
+    }
+}
+
+Output
+
+Engine Started...
+Car is running...
+
+3. Constructor Based Dependency Injection
+
+Definition
+
+Dependencies are injected through constructor arguments.
+
+Advantages
+
+Mandatory dependencies are guaranteed
+Object becomes immutable
+Better for unit testing
+
+Disadvantages
+
+Constructor becomes lengthy if many dependencies exist
+
+Example: Constructor Injection
+
+Engine.java
+
+package com.example.constructordi;
+
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started...");
+    }
+}
+
+Car.java
+
+package com.example.constructordi;
+
+public class Car {
+
+    private Engine engine;
+
+    // Constructor Injection
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+beans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine"
+          class="com.example.constructordi.Engine"/>
+
+    <bean id="car"
+          class="com.example.constructordi.Car">
+
+        <constructor-arg ref="engine"/>
+
+    </bean>
+
+</beans>
+
+MainApp.java
+
+package com.example.constructordi;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("beans.xml");
+
+        Car car = context.getBean("car", Car.class);
+
+        car.drive();
+    }
+}
+
+Output
+
+Engine Started...
+Car is moving...
+
+4. Autowiring of Beans
+
+What is Autowiring?
+
+Autowiring allows Spring to automatically resolve and inject collaborating beans.
+
+AUTOWIRING MODES :
+
+byType
+byName
+constructor
+annotation-based (@Autowired)
+
+5. Autowiring By Type
+
+Definition
+
+Spring injects dependency based on data type.
+
+Example
+
+Engine.java
+
+package com.example.autowire.bytype;
+
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started By Type...");
+    }
+}
+
+Car.java
+
+package com.example.autowire.bytype;
+
+public class Car {
+
+    private Engine engine;
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Driving Car...");
+    }
+}
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine"
+          class="com.example.autowire.bytype.Engine"/>
+
+    <bean id="car"
+          class="com.example.autowire.bytype.Car"
+          autowire="byType"/>
+
+</beans>
+
+Output :
+Engine Started By Type...
+Driving Car...
+
+6. Autowiring By Name
+
+Definition
+
+Spring injects dependency based on bean name matching property name.
+
+Example
+
+Engine.java
+
+package com.example.autowire.byname;
+
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started By Name...");
+    }
+}
+
+Car.java
+
+package com.example.autowire.byname;
+
+public class Car {
+
+    private Engine engine;
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car Running...");
+    }
+}
+
+Important Rule :
+
+Property name and bean id must match.
+
+Property:
+
+private Engine engine1;
+
+Bean id:
+
+<bean id="engine">
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine"
+          class="com.example.autowire.byname.Engine"/>
+
+    <bean id="car"
+          class="com.example.autowire.byname.Car"
+          autowire="byName"/>
+
+</beans>
+
+7. Autowiring By Constructor
+
+Definition
+
+Spring injects dependency using constructor matching.
+
+Example
+
+Engine.java
+
+package com.example.autowire.constructor;
+
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started By Constructor...");
+    }
+}
+
+Car.java
+
+package com.example.autowire.constructor;
+
+public class Car {
+
+    private Engine engine;
+
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car Started...");
+    }
+}
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine"
+          class="com.example.autowire.constructor.Engine"/>
+
+    <bean id="car"
+          class="com.example.autowire.constructor.Car"
+          autowire="constructor"/>
+
+</beans>
+
+8. Annotation Based Autowiring 
+
+Common Annotations
+
+Annotation	Purpose
+
+@Component	Declares bean
+@Autowired	Inject dependency
+@Qualifier	Resolve multiple beans
+@Primary		Default bean
+@Value		Inject values
+
+Example: @Autowired
+
+Project Structure
+
+src/main/java
+ └── com/example/annotation
+      ├── Engine.java
+      ├── Car.java
+      └── MainApp.java
+
+Engine.java
+
+package com.example.annotation;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+
+    public void start() {
+        System.out.println("Engine Started Using Annotation...");
+    }
+}
+
+Car.java
+
+package com.example.annotation;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    @Autowired
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car Running Using Annotation...");
+    }
+}
+
+beans.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd
+
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Enable Annotation Scanning -->
+    <context:component-scan
+            base-package="com.example.annotation"/>
+
+</beans>
+
+MainApp.java
+package com.example.annotation;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("beans.xml");
+
+        Car car = context.getBean(Car.class);
+
+        car.drive();
+    }
+}
+
+9. Using @Qualifier
+
+Problem :
+
+Multiple beans of same type cause ambiguity.
+
+Example
+
+PetrolEngine.java
+
+package com.example.qualifier;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class PetrolEngine implements Engine {
+
+    public void start() {
+        System.out.println("Petrol Engine Started");
+    }
+}
+
+DieselEngine.java
+
+package com.example.qualifier;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class DieselEngine implements Engine {
+
+    public void start() {
+        System.out.println("Diesel Engine Started");
+    }
+}
+
+Engine.java
+
+package com.example.qualifier;
+
+public interface Engine {
+    void start();
+}
+
+Car.java
+
+package com.example.qualifier;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    @Autowired
+    @Qualifier("petrolEngine")
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car Running...");
+    }
+}
+
+10. Using @Primary
+
+Definition
+
+Marks one bean as default.
+
+Example
+
+PetrolEngine.java
+
+package com.example.primary;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+@Component
+@Primary
+public class PetrolEngine implements Engine {
+
+    public void start() {
+        System.out.println("Primary Petrol Engine Started");
+    }
+}
+
+Car.java
+
+package com.example.primary;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    @Autowired
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+    }
+}
+
+11. Complete Maven Dependencies
+
+pom.xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>spring-di-demo</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- Spring Core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.1.8</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
+
+
+Complete Example of Spring Boot :
+
+
+1. Software Required
+
+Install the following software:
+
+Software	Version
+Java JDK	17 or above
+Eclipse IDE	Latest
+MySQL Server	8.x
+Maven	Included in Eclipse
+Postman	Optional
+2. Create MySQL Database
+
+Open MySQL Command Line or MySQL Workbench.
+
+Create Database
+CREATE DATABASE springbootdb;
+Use Database
+USE springbootdb;
+3. Create Spring Boot Project
+
+Open Eclipse.
+
+Step 1: Create Project
+File → New → Spring Starter Project
+Step 2: Enter Details
+Field	Value
+Name	springboot-mysql-crud
+Type	Maven
+Packaging	Jar
+Java Version	17
+
+Click Next.
+
+4. Add Dependencies
+
+Select these dependencies:
+
+Spring Web
+Spring Data JPA
+MySQL Driver
+Lombok (Optional)
+
+Click Finish.
+
+5. Project Structure
+springboot-mysql-crud
+|
+├── src/main/java
+|    └── com.example.demo
+|          ├── controller
+|          ├── entity
+|          ├── repository
+|          ├── service
+|          └── DemoApplication.java
+|
+├── src/main/resources
+|    └── application.properties
+|
+└── pom.xml
+6. Configure MySQL Connection
+
+Open:
+
+src/main/resources/application.properties
+
+Add:
+
+spring.datasource.url=jdbc:mysql://localhost:3306/springbootdb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+server.port=8080
+
+Replace username/password according to your MySQL setup.
+
+7. Create Entity Class
+Employee.java
+
+Create package:
+
+com.example.demo.entity
+
+Create class:
+
+package com.example.demo.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "employee")
+public class Employee {
+
+    @Id
+    private int id;
+
+    private String name;
+    private String department;
+    private double salary;
+
+    // Default Constructor
+    public Employee() {
+
+    }
+
+    // Parameterized Constructor
+    public Employee(int id, String name, String department, double salary) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+8. Create Repository Layer
+EmployeeRepository.java
+
+Create package:
+
+com.example.demo.repository
+
+Create interface:
+
+package com.example.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.entity.Employee;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+
+}
+9. Create Service Layer
+EmployeeService.java
+
+Create package:
+
+com.example.demo.service
+package com.example.demo.service;
+
+import java.util.List;
+
+import com.example.demo.entity.Employee;
+
+public interface EmployeeService {
+
+    Employee saveEmployee(Employee employee);
+
+    List<Employee> getAllEmployees();
+
+    Employee getEmployeeById(int id);
+
+    Employee updateEmployee(Employee employee);
+
+    void deleteEmployee(int id);
+}
+10. Service Implementation
+EmployeeServiceImpl.java
+package com.example.demo.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.entity.Employee;
+import com.example.demo.repository.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl implements EmployeeService {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Override
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee getEmployeeById(int id) {
+        return employeeRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Employee updateEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+        employeeRepository.deleteById(id);
+    }
+}
+11. Create REST Controller
+EmployeeController.java
+
+Create package:
+
+com.example.demo.controller
+package com.example.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.entity.Employee;
+import com.example.demo.service.EmployeeService;
+
+@RestController
+@RequestMapping("/employee")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    // Create Employee
+    @PostMapping
+    public Employee saveEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
+    }
+
+    // Get All Employees
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    // Get Employee By ID
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable int id) {
+        return employeeService.getEmployeeById(id);
+    }
+
+    // Update Employee
+    @PutMapping
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        return employeeService.updateEmployee(employee);
+    }
+
+    // Delete Employee
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(@PathVariable int id) {
+
+        employeeService.deleteEmployee(id);
+
+        return "Employee deleted successfully";
+    }
+}
+12. Main Class
+DemoApplication.java
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(DemoApplication.class, args);
+
+    }
+}
+13. Maven Dependencies (pom.xml)
+
+Verify these dependencies exist.
+
+<dependencies>
+
+    <!-- Spring Boot Starter Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Starter Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+
+</dependencies>
+14. Run the Application
+Step 1
+
+Right Click Project
+
+→ Run As
+
+→ Spring Boot App
+
+15. Verify Console Output
+
+You should see:
+
+Tomcat started on port(s): 8080
+Started DemoApplication
+16. Verify Table Creation
+
+Open MySQL Workbench.
+
+Run:
+
+USE springbootdb;
+
+SHOW TABLES;
+
+You will see:
+
+employee
+17. Test CRUD APIs Using Postman
+CREATE Employee
+POST
+http://localhost:8080/employee
+Request Body
+{
+    "id": 1,
+    "name": "John",
+    "department": "IT",
+    "salary": 50000
+}
+READ All Employees
+GET
+http://localhost:8080/employee
+READ Employee By ID
+GET
+http://localhost:8080/employee/1
+UPDATE Employee
+PUT
+http://localhost:8080/employee
+Request Body
+{
+    "id": 1,
+    "name": "John Updated",
+    "department": "Development",
+    "salary": 70000
+}
+DELETE Employee
+DELETE
+http://localhost:8080/employee/1
+18. Database Output
+Check Data
+SELECT * FROM employee;
+
+Example Output:
+
+id	name	department	salary
+1	John Updated	Development	70000

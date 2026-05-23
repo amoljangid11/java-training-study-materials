@@ -1,0 +1,2245 @@
+Introduction to Servlets : 
+
+What is a Servlet?
+
+A Servlet is a Java program that runs on a web server and handles client requests and responses dynamically.
+
+Servlets are mainly used to:
+
+Process HTTP requests get post put delete
+Generate dynamic web pages
+Interact with databases
+Handle form data input checkbox radio date Java SE
+Build web applications
+
+Servlets are part of the Java EE/Jakarta EE technology stack.
+
+Real-Time Flow of Servlet :
+
+Browser Request
+       ↓
+Web Server (Tomcat)
+       ↓
+Servlet Container
+       ↓
+Servlet Class
+       ↓
+Business Logic
+       ↓
+Response Generated
+       ↓
+Browser Displays Output
+
+Why Servlets?
+
+Before Servlets, CGI (Common Gateway Interface) was used.
+
+Problems with CGI:
+
+Slow performance
+New process created for each request
+High memory usage
+
+Servlets solve these problems because:
+
+They use threads
+Faster execution
+Better scalability
+Platform independent
+
+Servlet Architecture
+
+Client (Browser)
+       ↓
+HTTP Request
+       ↓
+Web Server (Tomcat)
+       ↓
+Servlet Container
+       ↓
+Servlet
+       ↓
+HTTP Response
+       ↓
+Client Browser
+
+Servlet API Hierarchy :
+
+
+Servlet (Interface)
+   ↑
+GenericServlet (Abstract Class)
+   ↑
+HttpServlet (Abstract Class)
+   ↑
+
+Your Servlet Class
+
+Important Packages
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+
+OR older version:
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+Servlet Life Cycle :
+
+Servlet life cycle contains 3 important methods.
+
+1. init()
+
+Called only once when servlet is loaded.
+
+Used for:
+
+Initialization
+Database connection
+Loading configuration
+
+public void init()
+
+2. service()
+
+Called for every request.
+
+Used for:
+
+Processing client request
+Generating response
+
+public void service()
+
+3. destroy()
+
+Called once before servlet removal.
+
+Used for:
+
+Cleanup
+Closing resources
+
+public void destroy()
+
+HTTP Servlet Methods :
+
+HttpServlet provides methods:
+
+Method	Purpose
+
+doGet()	Handle GET request
+doPost()	Handle POST request
+doPut()	Handle PUT request
+doDelete()	Handle DELETE request
+
+Servlet Container :
+
+A Servlet Container:
+
+Manages servlet lifecycle
+Creates servlet objects
+Handles requests/responses
+Provides security
+Multithreading support
+
+Examples:
+
+Apache Tomcat Server
+Jetty
+GlassFish
+
+Setting Up Environment :
+
+Required Software :
+
+JDK
+Apache Tomcat
+IDE (Eclipse/IntelliJ)
+Maven (optional)
+
+Folder Structure :
+
+ServletProject/
+│
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/example/
+│       │       └── HelloServlet.java
+│       │
+│       └── webapp/
+│           ├── index.html
+│           └── WEB-INF/
+│               └── web.xml
+
+First Servlet Program (Complete Example)
+
+Step 1: Create Servlet Class
+
+HelloServlet.java
+
+package com.example;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class HelloServlet extends HttpServlet {
+
+    // Called once
+    @Override
+    public void init() throws ServletException {
+        System.out.println("Servlet Initialized");
+    }
+
+    // Handle GET request
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Set content type
+        response.setContentType("text/html");
+
+        // Create writer object
+        PrintWriter out = response.getWriter();
+
+        // HTML Response
+        out.println("<html>");
+        out.println("<body>");
+        out.println("<h1>Welcome to Java Servlet</h1>");
+        out.println("<h2>Hello from Servlet!</h2>");
+        out.println("</body>");
+        out.println("</html>");
+    }
+
+    // Called once before destruction
+    @Override
+    public void destroy() {
+        System.out.println("Servlet Destroyed");
+    }
+}
+Step 2: Configure web.xml
+web.xml
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+         https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+
+    <servlet>
+        <servlet-name>HelloServlet</servlet-name>
+        <servlet-class>com.example.HelloServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HelloServlet</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+Step 3: Start Tomcat Server
+
+Deploy project into Tomcat server.
+
+Access URL:
+
+http://localhost:8080/ServletProject/hello
+
+Output
+
+Welcome to Java Servlet
+Hello from Servlet!
+Understanding doGet()
+protected void doGet(HttpServletRequest request,
+                     HttpServletResponse response)
+HttpServletRequest
+
+Used to:
+
+Read form data
+Read headers
+Read parameters
+Read cookies
+
+Example:
+
+String name = request.getParameter("name");
+HttpServletResponse
+
+Used to:
+
+Send response
+Set content type
+Redirect
+Add cookies
+
+Example:
+
+response.setContentType("text/html");
+
+Example: Reading User Input
+
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+</head>
+<body>
+
+<h2>User Form</h2>
+
+<form action="welcome" method="get">
+
+    Name:
+    <input type="text" name="username">
+
+    <br><br>
+
+    <input type="submit" value="Submit">
+
+</form>
+
+</body>
+</html>
+
+WelcomeServlet.java
+
+package com.example;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.*;
+
+public class WelcomeServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        // Read parameter
+        String username = request.getParameter("username");
+
+        out.println("<h1>Welcome " + username + "</h1>");
+    }
+}
+web.xml Mapping
+<servlet>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <servlet-class>com.example.WelcomeServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <url-pattern>/welcome</url-pattern>
+</servlet-mapping>
+GET vs POST
+Feature	GET	POST
+Data visible in URL	Yes	No
+Secure	Less	More
+Data size	Limited	Large
+Bookmark possible	Yes	No
+Example using doPost()
+@Override
+protected void doPost(HttpServletRequest request,
+                      HttpServletResponse response)
+        throws ServletException, IOException {
+
+    String username = request.getParameter("username");
+
+    response.getWriter().println("Hello " + username);
+}
+Servlet Annotation Example
+
+Instead of web.xml, modern applications use annotations.
+
+HelloServlet.java
+package com.example;
+
+import java.io.IOException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+
+@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws IOException {
+
+        response.getWriter().println("Hello Servlet Annotation");
+    }
+}
+Servlet Life Cycle Example
+public class LifeCycleServlet extends HttpServlet {
+
+    public void init() {
+        System.out.println("init() called");
+    }
+
+    protected void doGet(HttpServletRequest req,
+                         HttpServletResponse res)
+            throws IOException {
+
+        System.out.println("service() called");
+
+        res.getWriter().println("Servlet Running");
+    }
+
+    public void destroy() {
+        System.out.println("destroy() called");
+    }
+}
+Servlet Config Example
+String value = getServletConfig()
+                  .getInitParameter("driver");
+Session Tracking in Servlet
+
+Servlet supports:
+
+Cookies
+Hidden form fields
+URL rewriting
+HttpSession
+
+Example:
+
+HttpSession session = request.getSession();
+
+session.setAttribute("user", "Amol");
+Servlet Exception Handling
+try {
+    int result = 10 / 0;
+}
+catch(Exception e) {
+    response.getWriter()
+            .println("Error: " + e.getMessage());
+}
+Advantages of Servlets
+Advantage	Description
+Fast	Uses threads
+Portable	Java based
+Robust	Exception handling
+Secure	Managed by container
+Scalable	Handles multiple users
+Limitations of Servlets
+Limitation	Description
+HTML inside Java	Hard to maintain
+UI complexity	Not ideal for frontend
+Large applications	Difficult without MVC
+
+This is why technologies like:
+
+JSP
+Spring MVC
+JSF
+Spring Boot
+
+became popular.
+
+Real-Time Servlet Use Cases
+
+Servlets are used in:
+
+Login systems
+Registration forms
+Banking systems
+E-commerce websites
+Session management
+File upload/download
+REST APIs
+Servlet Execution Flow Example
+1. Browser sends request
+2. Tomcat receives request
+3. Servlet container checks servlet
+4. init() called (only first time)
+5. service()/doGet()/doPost() called
+6. Response generated
+7. Browser displays output
+8. destroy() called during shutdown
+Important Interview Questions
+Basic
+What is Servlet?
+Explain servlet lifecycle.
+Difference between GenericServlet and HttpServlet.
+Difference between GET and POST.
+What is Servlet Container?
+Intermediate
+Difference between forward and sendRedirect.
+Explain session tracking techniques.
+What is RequestDispatcher?
+What is load-on-startup?
+Difference between ServletConfig and ServletContext.
+Advanced
+How servlet multithreading works?
+How does Tomcat manage servlet lifecycle?
+Explain filters and listeners.
+How security works in servlets?
+How do servlets handle concurrent requests?
+
+
+What is JSP?
+
+JSP (JavaServer Pages) is a server-side technology used to create dynamic web applications in Java.
+
+JSP allows developers to write HTML code mixed with Java code inside a webpage.
+
+A JSP file is converted into a Servlet by the web server automatically.
+
+Simple Flow :
+
+Browser Request
+       ↓
+JSP Page
+       ↓
+Converted into Servlet
+       ↓
+Compiled into .class file
+       ↓
+Response sent to Browser
+
+Why JSP?
+
+JSP is used to:
+
+Create dynamic web pages
+Reduce Java code in Servlets
+Separate UI from business logic Servlet BL and JSP UI
+Easily integrate with Java backend Spring Boot
+
+Advantages of JSP
+
+Easy to write HTML + Java together
+Faster development
+Reusable components
+Supports MVC architecture
+Automatic servlet generation
+
+JSP Lifecycle :
+
+JSP follows these lifecycle phases:
+
+1. Translation Phase
+
+JSP page converts into Servlet source code.
+
+2. Compilation Phase
+
+Servlet source code compiles into .class.
+
+3. Class Loading
+
+Servlet class loads into memory.
+
+4. Instantiation
+
+Object of servlet gets created.
+
+5. Initialization
+
+jspInit() method executes.
+
+6. Request Processing
+
+_jspService() method handles requests. get post delete put
+
+7. Destruction
+
+jspDestroy() method executes.
+
+JSP File Extension :
+
+.jsp
+
+Example:
+
+index.jsp
+home.jsp
+login.jsp
+
+JSP Syntax Basics
+
+1. JSP Scriptlet Tag
+
+Used to write Java code.
+
+Syntax
+
+<%
+   Java Code
+%>
+
+Example
+
+<%
+   int a = 10;
+   int b = 20;
+   out.println(a + b);
+%>
+
+2. JSP Expression Tag
+
+Used to print output directly.
+
+Syntax
+
+<%= expression %>
+
+Example
+<%= 10 + 20 %>
+
+Output:
+
+30
+3. JSP Declaration Tag
+
+Used to declare variables and methods.
+
+Syntax
+
+<%! declaration %>
+
+Example
+
+<%!
+   int square(int n) {
+      return n * n;
+   }
+%>
+
+<%= square(5) %>
+
+JSP Implicit Objects :
+
+JSP provides built-in objects automatically.
+
+Object		Description
+
+request		Client request
+response		Server response
+out		Print output
+session		Session management
+application		Application context // small unit of information
+config		Servlet config
+pageContext	JSP page context
+exception		Exception object
+
+JSP Directory Structure :
+
+JSPDemo/
+│
+├── src/
+│
+├── WebContent/
+│   ├── index.jsp
+│   ├── welcome.jsp
+│   └── WEB-INF/
+│        └── web.xml
+│
+└── lib/
+
+Software Required
+
+Install:
+JDK 8+
+Apache Tomcat Server
+Eclipse IDE / IntelliJ
+
+Step-by-Step JSP Setup
+
+Step 1: Install JDK
+
+Check installation:
+
+java -version
+
+Step 2: Install Apache Tomcat
+
+Use:
+
+Apache Tomcat
+
+Official Website:
+
+Apache Tomcat
+
+Step 3: Configure Tomcat in IDE
+
+Open Eclipse
+Add Tomcat Server
+Create Dynamic Web Project
+
+First JSP Program
+
+Example 1: Hello World JSP
+
+File: index.jsp   // jsp is like HTML
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>First JSP Program</title>
+</head>
+<body>
+
+<h1>Welcome to JSP</h1>
+
+<%
+   out.println("Hello from JSP!");
+%>
+
+</body>
+</html>
+
+Output
+
+Welcome to JSP 
+
+Hello from JSP!
+
+Example 2: JSP Expression Example
+
+File: expression.jsp
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Expression Example</title>
+</head>
+<body>
+
+<h2>Addition Result:</h2>
+
+<%= 100 + 200 %>
+
+</body>
+</html>
+
+Output
+
+300
+
+Example 3: JSP Declaration Example
+
+File: declaration.jsp
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
+
+<%!
+   int cube(int n) {
+      return n * n * n;
+   }
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Declaration Example</title>
+</head>
+<body>
+
+<h2>Cube of 5:</h2>
+
+<%= cube(5) %>
+
+</body>
+</html>
+
+JSP Directives :
+
+Directives provide instructions to JSP container.
+
+Types of JSP Directives
+
+Directive	Purpose
+
+page	Page settings
+include	Include file
+taglib	Use custom tags
+
+Page Directive Example
+
+<%@ page import="java.util.Date" %>
+
+Current Date:
+
+<%= new Date() %>
+
+Include Directive Example
+
+File: header.jsp
+
+<h1>My Website Header</h1>
+
+File: home.jsp
+
+<%@ include file="header.jsp" %>
+
+<h2>Home Page</h2>
+
+JSP Comments
+
+HTML Comment
+
+<!-- Visible in browser source -->
+
+JSP Comment
+
+<%-- Hidden from browser --%>
+
+JSP Form Handling Example
+
+Example: Login Form
+
+File: login.jsp
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login Form</title>
+</head>
+<body>
+
+<h2>Login Form</h2>
+
+<form action="welcome.jsp" method="post"> used on which page you will navigate after taking an action
+
+Username:
+<input type="text" name="username"><br><br>
+
+Password:
+<input type="password" name="password"><br><br>
+
+<input type="submit" value="Login">
+
+</form>
+
+</body>
+</html>
+
+File: welcome.jsp
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Welcome</title>
+</head>
+<body>
+
+<%
+   String username = request.getParameter("username");
+%>
+
+<h2>
+Welcome <%= username %>
+</h2>
+
+</body>
+</html>
+
+Output
+
+Welcome Amol
+
+JSP Session Example
+
+File: session1.jsp
+<%
+   String user = "Admin";
+
+   session.setAttribute("username", user);
+%>
+
+<a href="session2.jsp">
+Go To Next Page
+</a>
+
+File: session2.jsp
+
+<%
+   String name = (String)session.getAttribute("username");
+%>
+
+Welcome:
+<%= name %>
+
+JSP Exception Handling :
+
+File: error.jsp
+
+<%@ page isErrorPage="true" %>
+
+<h2>Exception Occurred!</h2>
+
+<%= exception %>
+
+File: index.jsp
+
+<%@ page errorPage="error.jsp" %>   // if you want to add one file into another then <%@ page file = "abc.jsp"%>
+
+<%
+   int x = 10 / 0; // AE
+%>
+
+JSP MVC Architecture :
+
+JSP is mostly used as View Layer in MVC. UI
+
+Controller -> Servlet
+Model      -> Java Classes
+View       -> JSP
+
+Best Practice :
+
+Avoid writing heavy Java code inside JSP.
+
+Use:
+
+Servlets
+JavaBeans
+Spring MVC   Business Logic
+
+JSP should mainly contain:
+
+HTML
+CSS
+Minimal Java
+
+JSP vs Servlet
+
+JSP			Servlet
+
+HTML-centric		Java-centric
+Easy UI design		Difficult UI design
+Used for View		Used for Controller
+Faster page development	Better for business logic
+
+
+Real-Time JSP Use Cases
+
+Login pages
+Registration forms
+Shopping cart pages
+Admin dashboards
+Banking portals
+Employee management systems
+
+Complete Mini JSP Project
+
+Project: Student Registration
+
+File: student.jsp
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Student Registration</title>
+</head>
+<body>
+
+<h2>Student Registration Form</h2>
+
+<form action="result.jsp" method="post">
+
+Name:
+<input type="text" name="name"><br><br>
+
+Email:
+<input type="email" name="email"><br><br>
+
+Course:
+<input type="text" name="course"><br><br>
+
+<input type="submit" value="Register">
+
+</form>
+
+</body>
+</html>
+
+File: result.jsp
+
+<%
+   String name = request.getParameter("name");
+   String email = request.getParameter("email");
+   String course = request.getParameter("course");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Result</title>
+</head>
+<body>
+
+<h2>Student Details</h2>
+
+Name:
+<%= name %>
+
+<br><br>
+
+Email:
+<%= email %>
+
+<br><br>
+
+Course:
+<%= course %>
+
+</body>
+</html>
+
+
+Javabean in JSP :
+
+
+
+1. What is JavaBean?
+
+A JavaBean is a reusable Java class that follows specific rules and is mainly used to transfer data between JSP pages, Servlets, and applications.
+
+JavaBeans help separate:
+
+Business Logic → Java Class
+Presentation Logic → JSP Page
+
+This makes applications:
+
+Cleaner
+Reusable
+Easy to maintain
+Easy to test
+
+2. Rules of JavaBean
+
+A class is called a JavaBean if it follows these rules:
+
+✅ Rule 1: Class must be Public
+
+public class StudentBean {
+}
+
+✅ Rule 2: Must have a Public No-Argument Constructor
+
+public StudentBean() {
+}
+
+✅ Rule 3: Properties must be Private
+
+private int id;
+private String name;
+
+✅ Rule 4: Provide Getter and Setter Methods
+
+public int getId() {
+    return id;
+}
+
+public void setId(int id) {
+    this.id = id;
+}
+
+3. Why Use JavaBeans in JSP?
+
+Without JavaBeans:
+
+JSP contains too much Java code
+Difficult to maintain
+
+With JavaBeans:
+
+Clean JSP pages
+Reusable logic
+Better MVC architecture
+
+4. Project Structure
+
+JSPJavaBeanDemo/
+│
+├── src/
+│   └── com/
+│       └── bean/
+│           └── StudentBean.java
+│
+├── WebContent/
+│   ├── index.jsp
+│   ├── display.jsp
+│   └── WEB-INF/
+│       └── web.xml
+
+5. Create JavaBean Class
+
+StudentBean.java
+
+package com.bean;
+
+public class StudentBean {
+
+    // Private properties
+    private int id;
+    private String name;
+    private String course;
+
+    // No-argument constructor
+    public StudentBean() {
+
+    }
+
+    // Getter and Setter methods
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+}
+
+6. JSP Form Page
+
+index.jsp
+
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Form</title>
+</head>
+<body>
+
+<h2>Student Registration Form</h2>
+
+<form action="display.jsp" method="post">
+
+    Student ID:
+    <input type="text" name="id">
+    <br><br>
+
+    Student Name:
+    <input type="text" name="name">
+    <br><br>
+
+    Course:
+    <input type="text" name="course">
+    <br><br>
+
+    <input type="submit" value="Submit">
+
+</form>
+
+</body>
+</html>
+
+7. Using JavaBean in JSP
+
+display.jsp
+
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+
+<%@ page import="com.bean.StudentBean" %>
+
+<html>
+<head>
+    <title>Display Student</title>
+</head>
+<body>
+
+<h2>Student Information</h2>
+
+<!-- Create Bean Object -->
+<jsp:useBean id="student" class="com.bean.StudentBean" scope="request" />
+
+<!-- Set Bean Properties -->
+<jsp:setProperty name="student" property="id" />
+<jsp:setProperty name="student" property="name" />
+<jsp:setProperty name="student" property="course" />
+
+<h3>Student Details</h3>
+
+Student ID:
+<jsp:getProperty name="student" property="id" />
+<br><br>
+
+Student Name:
+<jsp:getProperty name="student" property="name" />
+<br><br>
+
+Course:
+<jsp:getProperty name="student" property="course" />
+<br><br>
+
+</body>
+</html>
+
+8. How This Works Internally
+
+Step 1: User fills form
+
+ID = 101
+Name = Amol
+Course = Java
+
+Step 2: Form submits to display.jsp
+
+
+<form action="display.jsp">
+
+Step 3: JSP Creates Bean
+
+<jsp:useBean id="student"
+             class="com.bean.StudentBean" />
+
+Equivalent Java Code:
+
+StudentBean student = new StudentBean();
+
+Step 4: Properties are Automatically Set
+
+<jsp:setProperty name="student" property="name" />
+
+Equivalent Java Code:
+
+student.setName(request.getParameter("name"));
+
+Step 5: Data is Displayed
+
+<jsp:getProperty name="student" property="name" />
+
+Equivalent Java Code:
+
+out.println(student.getName());
+
+9. JSP Bean Tags Explained
+
+Tag	Purpose
+<jsp:useBean>	Creates bean object
+<jsp:setProperty>	Sets bean property
+<jsp:getProperty>	Gets bean property
+
+10. Scope of JavaBeans
+
+request Scope
+
+scope="request" post request get request
+
+Bean exists for one request only.
+
+session Scope :
+
+scope="session"
+
+Bean exists until session expires.
+
+application Scope :
+
+scope="application"
+
+Bean shared across entire application.
+
+page Scope (Default) :
+
+scope="page"
+
+Bean available only in current JSP page.
+
+11. Example Using Session Scope
+
+login.jsp
+
+<jsp:useBean id="user" class="com.bean.StudentBean" scope="session" />
+
+Now bean data is available across multiple pages.
+
+12. Using Wildcard Property
+
+Instead of setting properties one by one:
+
+<jsp:setProperty name="student" property="*" /> name, email, course
+
+This automatically maps:
+
+form field names
+to
+bean property names
+
+Example:
+
+name="id" → setId()
+name="name" → setName()
+
+13. Improved display.jsp Using Wildcard
+
+<%@ page import="com.bean.StudentBean" %>
+
+<jsp:useBean id="student"
+             class="com.bean.StudentBean"
+             scope="request" />
+
+<jsp:setProperty name="student" property="*" />
+
+<html>
+<body>
+
+<h2>Student Details</h2>
+
+ID:
+<jsp:getProperty name="student" property="id" />
+<br>
+
+Name:
+<jsp:getProperty name="student" property="name" />
+<br>
+
+Course:
+<jsp:getProperty name="student" property="course" />
+
+</body>
+</html>
+
+14. Real-Time Use Cases of JavaBeans
+
+JavaBeans are used for:
+
+User Registration Forms
+Login Modules
+Employee Management
+Shopping Cart
+Banking Applications
+Data Transfer Objects (DTO)
+MVC Applications
+
+15. Advantages of JavaBeans
+
+Advantage		Description
+
+Reusability	Same bean reused everywhere
+Encapsulation	Data hidden using private variables
+Easy Maintenance	Business logic separated
+Readability	Cleaner JSP code
+MVC Support	Works well with Servlets
+
+16. Disadvantages
+
+Disadvantage	Description
+
+More Files		Need separate bean classes
+Basic Logic Only	Complex logic should go to services
+Old Technology	Modern apps use frameworks like Spring Boot
+
+17. JavaBean vs POJO
+
+JavaBean			POJO
+
+Must follow rules		No strict rules
+Getter/Setter required		Optional
+No-arg constructor required	Optional
+Serializable often used	Not mandatory
+
+18. JavaBean in MVC Architecture
+
+Browser
+   ↓
+JSP Form
+   ↓
+Servlet Controller
+   ↓
+JavaBean
+   ↓
+Database
+   ↓
+Response JSP
+
+
+
+
+
+
+
+
+
+
+
+Complete Example of Using Servlet and JSP :
+
+
+1. Technologies Used
+Technology	Version
+Java	JDK 8+
+Maven	3.x
+Eclipse IDE	Latest
+Apache Tomcat	9.0
+MySQL	8.x
+Servlet API	4.0
+JSP	2.3
+2. Project Flow
+Browser
+   ↓
+JSP Pages
+   ↓
+Servlet Controller
+   ↓
+DAO Layer
+   ↓
+MySQL Database
+3. Maven Project Structure
+EmployeeCRUDApp
+│
+├── src/main/java
+│   ├── com/crud/controller
+│   │      EmployeeServlet.java
+│   │
+│   ├── com/crud/dao
+│   │      EmployeeDAO.java
+│   │
+│   ├── com/crud/model
+│   │      Employee.java
+│   │
+│   └── com/crud/util
+│          DBConnection.java
+│
+├── src/main/webapp
+│   ├── css
+│   │     style.css
+│   │
+│   ├── add-employee.jsp
+│   ├── edit-employee.jsp
+│   ├── employee-list.jsp
+│   └── index.jsp
+│
+├── pom.xml
+4. Create MySQL Database
+MySQL Script
+CREATE DATABASE employee_db;
+
+USE employee_db;
+
+CREATE TABLE employee (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    department VARCHAR(100),
+    salary DOUBLE
+);
+5. Create Maven Project in Eclipse
+Steps
+Open Eclipse
+File → New → Maven Project
+Select:
+maven-archetype-webapp
+
+Group Id:
+
+com.crud
+
+Artifact Id:
+
+EmployeeCRUDApp
+6. Add Dependencies in pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.crud</groupId>
+    <artifactId>EmployeeCRUDApp</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <dependencies>
+
+        <!-- Servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSP JSTL -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>EmployeeCRUDApp</finalName>
+    </build>
+
+</project>
+7. Employee Model Class
+Employee.java
+package com.crud.model;
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private String email;
+    private String department;
+    private double salary;
+
+    public Employee() {
+    }
+
+    public Employee(int id, String name, String email,
+                    String department, double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    public Employee(String name, String email,
+                    String department, double salary) {
+        this.name = name;
+        this.email = email;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+8. Database Connection Class
+DBConnection.java
+package com.crud.util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/employee_db";
+
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
+
+    public static Connection getConnection() {
+
+        Connection connection = null;
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            connection = DriverManager.getConnection(
+                    URL,
+                    USERNAME,
+                    PASSWORD);
+
+            System.out.println("Database Connected");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return connection;
+    }
+}
+9. DAO Layer
+EmployeeDAO.java
+package com.crud.dao;
+
+import com.crud.model.Employee;
+import com.crud.util.DBConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EmployeeDAO {
+
+    Connection connection;
+
+    public EmployeeDAO() {
+        connection = DBConnection.getConnection();
+    }
+
+    // INSERT
+    public void addEmployee(Employee employee) {
+
+        try {
+
+            String query =
+                    "INSERT INTO employee(name,email,department,salary) VALUES(?,?,?,?)";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setString(1, employee.getName());
+            ps.setString(2, employee.getEmail());
+            ps.setString(3, employee.getDepartment());
+            ps.setDouble(4, employee.getSalary());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // SELECT ALL
+    public List<Employee> getAllEmployees() {
+
+        List<Employee> employees = new ArrayList<>();
+
+        try {
+
+            String query = "SELECT * FROM employee";
+
+            Statement statement =
+                    connection.createStatement();
+
+            ResultSet rs =
+                    statement.executeQuery(query);
+
+            while (rs.next()) {
+
+                Employee employee = new Employee();
+
+                employee.setId(rs.getInt("id"));
+                employee.setName(rs.getString("name"));
+                employee.setEmail(rs.getString("email"));
+                employee.setDepartment(rs.getString("department"));
+                employee.setSalary(rs.getDouble("salary"));
+
+                employees.add(employee);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return employees;
+    }
+
+    // GET BY ID
+    public Employee getEmployeeById(int id) {
+
+        Employee employee = null;
+
+        try {
+
+            String query =
+                    "SELECT * FROM employee WHERE id=?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                employee = new Employee();
+
+                employee.setId(rs.getInt("id"));
+                employee.setName(rs.getString("name"));
+                employee.setEmail(rs.getString("email"));
+                employee.setDepartment(rs.getString("department"));
+                employee.setSalary(rs.getDouble("salary"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return employee;
+    }
+
+    // UPDATE
+    public void updateEmployee(Employee employee) {
+
+        try {
+
+            String query =
+                    "UPDATE employee SET name=?, email=?, department=?, salary=? WHERE id=?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setString(1, employee.getName());
+            ps.setString(2, employee.getEmail());
+            ps.setString(3, employee.getDepartment());
+            ps.setDouble(4, employee.getSalary());
+            ps.setInt(5, employee.getId());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE
+    public void deleteEmployee(int id) {
+
+        try {
+
+            String query =
+                    "DELETE FROM employee WHERE id=?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(query);
+
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+10. Servlet Controller
+EmployeeServlet.java
+package com.crud.controller;
+
+import com.crud.dao.EmployeeDAO;
+import com.crud.model.Employee;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/employee")
+public class EmployeeServlet extends HttpServlet {
+
+    EmployeeDAO dao;
+
+    public void init() {
+        dao = new EmployeeDAO();
+    }
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            action = "LIST";
+        }
+
+        switch (action) {
+
+            case "NEW":
+                request.getRequestDispatcher(
+                        "add-employee.jsp")
+                        .forward(request, response);
+                break;
+
+            case "INSERT":
+                insertEmployee(request, response);
+                break;
+
+            case "EDIT":
+                showEditForm(request, response);
+                break;
+
+            case "UPDATE":
+                updateEmployee(request, response);
+                break;
+
+            case "DELETE":
+                deleteEmployee(request, response);
+                break;
+
+            default:
+                listEmployees(request, response);
+                break;
+        }
+    }
+
+    private void listEmployees(HttpServletRequest request,
+                               HttpServletResponse response)
+            throws ServletException, IOException {
+
+        List<Employee> employees =
+                dao.getAllEmployees();
+
+        request.setAttribute("employeeList", employees);
+
+        request.getRequestDispatcher(
+                "employee-list.jsp")
+                .forward(request, response);
+    }
+
+    private void insertEmployee(HttpServletRequest request,
+                                HttpServletResponse response)
+            throws IOException {
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String department = request.getParameter("department");
+        double salary =
+                Double.parseDouble(request.getParameter("salary"));
+
+        Employee employee =
+                new Employee(name, email, department, salary);
+
+        dao.addEmployee(employee);
+
+        response.sendRedirect("employee");
+    }
+
+    private void showEditForm(HttpServletRequest request,
+                              HttpServletResponse response)
+            throws ServletException, IOException {
+
+        int id =
+                Integer.parseInt(request.getParameter("id"));
+
+        Employee employee =
+                dao.getEmployeeById(id);
+
+        request.setAttribute("employee", employee);
+
+        request.getRequestDispatcher(
+                "edit-employee.jsp")
+                .forward(request, response);
+    }
+
+    private void updateEmployee(HttpServletRequest request,
+                                HttpServletResponse response)
+            throws IOException {
+
+        int id =
+                Integer.parseInt(request.getParameter("id"));
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String department = request.getParameter("department");
+
+        double salary =
+                Double.parseDouble(request.getParameter("salary"));
+
+        Employee employee =
+                new Employee(id, name, email, department, salary);
+
+        dao.updateEmployee(employee);
+
+        response.sendRedirect("employee");
+    }
+
+    private void deleteEmployee(HttpServletRequest request,
+                                HttpServletResponse response)
+            throws IOException {
+
+        int id =
+                Integer.parseInt(request.getParameter("id"));
+
+        dao.deleteEmployee(id);
+
+        response.sendRedirect("employee");
+    }
+}
+11. JSP UI Pages
+index.jsp
+<%
+response.sendRedirect("employee");
+%>
+add-employee.jsp
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add Employee</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Add Employee</h2>
+
+<form action="employee" method="get">
+
+<input type="hidden" name="action" value="INSERT">
+
+<input type="text"
+       name="name"
+       placeholder="Enter Name"
+       required>
+
+<input type="email"
+       name="email"
+       placeholder="Enter Email"
+       required>
+
+<input type="text"
+       name="department"
+       placeholder="Department"
+       required>
+
+<input type="number"
+       step="0.01"
+       name="salary"
+       placeholder="Salary"
+       required>
+
+<button type="submit">Save Employee</button>
+
+</form>
+
+<a href="employee">Back</a>
+
+</div>
+
+</body>
+</html>
+edit-employee.jsp
+<%@ page import="com.crud.model.Employee" %>
+
+<%
+Employee employee =
+(Employee) request.getAttribute("employee");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edit Employee</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Edit Employee</h2>
+
+<form action="employee" method="get">
+
+<input type="hidden" name="action" value="UPDATE">
+
+<input type="hidden"
+       name="id"
+       value="<%= employee.getId() %>">
+
+<input type="text"
+       name="name"
+       value="<%= employee.getName() %>"
+       required>
+
+<input type="email"
+       name="email"
+       value="<%= employee.getEmail() %>"
+       required>
+
+<input type="text"
+       name="department"
+       value="<%= employee.getDepartment() %>"
+       required>
+
+<input type="number"
+       step="0.01"
+       name="salary"
+       value="<%= employee.getSalary() %>"
+       required>
+
+<button type="submit">Update Employee</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
+employee-list.jsp
+<%@ page import="java.util.List" %>
+<%@ page import="com.crud.model.Employee" %>
+
+<%
+List<Employee> employees =
+(List<Employee>) request.getAttribute("employeeList");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Employee List</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Employee Management System</h2>
+
+<a class="add-btn"
+   href="employee?action=NEW">
+   Add Employee
+</a>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Department</th>
+<th>Salary</th>
+<th>Actions</th>
+</tr>
+
+<%
+for(Employee employee : employees){
+%>
+
+<tr>
+
+<td><%= employee.getId() %></td>
+<td><%= employee.getName() %></td>
+<td><%= employee.getEmail() %></td>
+<td><%= employee.getDepartment() %></td>
+<td><%= employee.getSalary() %></td>
+
+<td>
+
+<a href="employee?action=EDIT&id=<%= employee.getId() %>">
+Edit
+</a>
+
+<a href="employee?action=DELETE&id=<%= employee.getId() %>"
+onclick="return confirm('Delete Employee?')">
+Delete
+</a>
+
+</td>
+
+</tr>
+
+<%
+}
+%>
+
+</table>
+
+</div>
+
+</body>
+</html>
+12. CSS UI Design
+style.css
+body {
+
+    font-family: Arial;
+    background: #f2f2f2;
+}
+
+.container {
+
+    width: 80%;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+h2 {
+
+    text-align: center;
+    color: #333;
+}
+
+table {
+
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+table th {
+
+    background: #007bff;
+    color: white;
+}
+
+a {
+
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.add-btn {
+
+    background: green;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+form {
+
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button {
+
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+13. Configure Tomcat 9 in Eclipse
+Steps
+Download Apache Tomcat 9
+Extract zip
+Eclipse → Servers
+Add New Server
+
+Select:
+
+Apache Tomcat v9.0
+Add Project
+Start Server
+14. Run Application
+URL
+http://localhost:8080/EmployeeCRUDApp
+15. Features Implemented
+CRUD Operations
+Operation	Functionality
+Create	Add Employee
+Read	View Employees
+Update	Edit Employee
+Delete	Remove Employee
+16. Expected UI
+Employee List Page
++------------------------------------------------+
+| Employee Management System                     |
++------------------------------------------------+
+| Add Employee Button                            |
++------------------------------------------------+
+| ID | Name | Email | Department | Salary       |
++------------------------------------------------+
+| 1  | John | abc@gmail.com | IT | 50000        |
++------------------------------------------------+
