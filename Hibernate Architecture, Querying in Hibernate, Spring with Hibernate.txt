@@ -1,0 +1,2440 @@
+Explain Hibernate Architecture, Learn the Hibernate API-Configuration :
+
+
+What is Hibernate?
+
+Hibernate ORM is an Object Relational Mapping (ORM) framework used in Java to simplify database operations.
+
+It maps:
+
+Java Classes ➜ Database Tables
+Java Objects ➜ Table Records
+Java Data Types ➜ SQL Data Types
+
+Hibernate removes the need to write most JDBC code manually.
+
+Why Hibernate?
+
+Problems with JDBC
+
+Using JDBC directly requires:
+
+Writing SQL queries manually
+Managing connections
+Handling ResultSet conversions
+Transaction management
+Boilerplate code
+
+Hibernate solves these problems by:
+
+Providing ORM support
+Automatic table mapping
+Caching
+Transaction management
+
+HQL (Hibernate Query Language)
+
+Hibernate Architecture Diagram
+
+Java Application
+       |
+       v
+Configuration Object
+       |
+       v
+SessionFactory
+       |
+       v
+Session
+       |
+       v
+Transaction
+       |
+       v
+Database
+
+Components of Hibernate Architecture
+
+1. Configuration Object
+
+The Configuration object is the first Hibernate object created.
+
+Responsibilities :
+
+Loads Hibernate configuration file
+Reads database properties
+Loads mapping information
+Creates SessionFactory
+Configuration File
+
+Usually:
+
+hibernate.cfg.xml
+
+Example
+
+Configuration cfg = new Configuration();
+cfg.configure("hibernate.cfg.xml");
+
+2. SessionFactory
+
+SessionFactory is a factory class used to create Session objects.
+
+Features :
+
+Heavyweight object
+Created only once
+Thread-safe
+Maintains second-level cache
+
+Example
+
+SessionFactory factory = cfg.buildSessionFactory();
+
+3. Session
+
+A Session object represents a connection between Java application and database.
+
+Responsibilities
+
+CRUD operations
+Execute queries
+Manage persistent objects
+
+Important Methods
+
+Method	Purpose
+
+save()	Insert record
+update()	Update record
+delete()	Delete record
+get()	Fetch single record
+createQuery()	Execute HQL
+
+Example
+
+Session session = factory.openSession();
+
+4. Transaction
+
+Transaction ensures:
+
+Data consistency
+Rollback support
+Commit support
+
+Example
+
+Transaction tx = session.beginTransaction();
+
+tx.commit();
+
+5. Persistent Objects (POJO Classes)
+
+POJO = Plain Old Java Object
+
+These are entity classes mapped to database tables.
+
+Example
+
+public class Student {
+    private int id;
+    private String name;
+    private String course;
+
+    // getters and setters
+}
+
+6. Dialect
+
+Dialect tells Hibernate which database is used.
+
+Examples:
+
+MySQLDialect
+OracleDialect
+PostgreSQLDialect
+
+Example
+
+<property name="hibernate.dialect">
+org.hibernate.dialect.MySQL8Dialect
+</property>
+
+Hibernate Internal Architecture
+
+Application
+    |
+    v
+Hibernate API
+    |
+    v
+JDBC API
+    |
+    v
+Database
+
+Hibernate internally uses:
+
+JDBC
+JTA Transaction
+JNDI update, insert, delete
+
+Hibernate Execution Flow
+
+Step-by-Step Flow
+
+Step 1
+
+Application loads Hibernate configuration.
+
+Configuration cfg = new Configuration().configure();
+
+Step 2
+
+Configuration creates SessionFactory.
+
+SessionFactory factory = cfg.buildSessionFactory();
+
+Step 3
+
+SessionFactory opens Session.
+
+Session session = factory.openSession();
+
+Step 4
+
+Begin Transaction.
+
+Transaction tx = session.beginTransaction();
+
+Step 5
+
+Perform database operation.
+
+session.save(student);
+
+Step 6
+
+Commit transaction.
+
+tx.commit();
+
+Step 7
+
+Close Session.
+
+session.close();
+
+Hibernate API (Important Classes & Interfaces) :
+
+Core 		Hibernate API
+
+API		Description
+
+Configuration	Loads configuration
+SessionFactory	Creates sessions
+Session		Database operations
+Transaction	Transaction management
+Query		HQL execution
+
+Criteria	Criteria queries
+
+Learn Hibernate API – Configuration
+
+1. hibernate.cfg.xml
+
+This file contains:
+
+Database URL
+Username
+Password
+Dialect
+Mapping classes
+
+Complete Example of hibernate.cfg.xml
+
+<?xml version='1.0' encoding='utf-8'?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Database Connection -->
+
+        <property name="hibernate.connection.driver_class">
+            com.mysql.cj.jdbc.Driver
+        </property>
+
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/testdb
+        </property>
+
+        <property name="hibernate.connection.username">
+            root
+        </property>
+
+        <property name="hibernate.connection.password">
+            root
+        </property>
+
+        <!-- SQL Dialect -->
+
+        <property name="hibernate.dialect">
+            org.hibernate.dialect.MySQL8Dialect
+        </property>
+
+        <!-- Show SQL -->
+
+        <property name="show_sql">
+            true
+        </property>
+
+        <!-- Auto Table Creation -->
+
+        <property name="hbm2ddl.auto">
+            update
+        </property>
+
+        <!-- Mapping Class -->
+
+        <mapping class="com.demo.Student"/>
+
+    </session-factory>
+
+</hibernate-configuration>
+
+2. Configuration Class Example
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateUtil {
+
+    private static SessionFactory factory;
+
+    static {
+
+        Configuration cfg = new Configuration();
+
+        cfg.configure("hibernate.cfg.xml");
+
+        factory = cfg.buildSessionFactory();
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return factory;
+    }
+}
+
+Entity Class Example
+
+package com.demo;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Student {
+
+    @Id
+    private int id;
+
+    private String name;
+    private String course;
+
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+}
+
+Insert Record Using Hibernate
+
+package com.demo;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        Session session =
+        HibernateUtil.getSessionFactory().openSession();
+
+        Transaction tx =
+        session.beginTransaction();
+
+        Student s = new Student();
+
+        s.setId(101);
+        s.setName("Amol");
+        s.setCourse("Java");
+
+        session.save(s);
+
+        tx.commit();
+
+        session.close();
+
+        System.out.println("Record Inserted Successfully");
+    }
+}
+
+Output
+
+Hibernate: insert into Student (course,name,id) values (?,?,?)
+
+Record Inserted Successfully
+
+Important Hibernate Interfaces
+
+Interface		Purpose
+
+Session		Persistence operations
+Transaction	Transaction handling
+Query		HQL queries
+CriteriaBuilder	Dynamic queries
+
+Advantages of Hibernate Architecture
+
+1. Database Independence
+
+Supports multiple databases.
+
+2. Reduced Boilerplate Code
+
+Less JDBC code.
+
+3. Automatic Table Mapping
+
+Maps Java objects automatically.
+
+4. Caching
+
+Improves performance.
+
+5. HQL Support
+
+Object-oriented query language.
+
+Disadvantages of Hibernate
+
+Disadvantage		Description
+
+Learning Curve		Complex for beginners
+Performance Overhead	Slightly slower than JDBC
+Complex Debugging		Generated SQL may confuse
+
+
+
+SessionFactory,Session, Describe the details of OR Mapping :
+
+
+Hibernate is an ORM (Object Relational Mapping) framework used in Java to map Java objects to database tables.
+
+Main components in Hibernate:
+
+Configuration
+SessionFactory
+Session
+Transaction
+Query
+ORM Mapping
+
+1. What is SessionFactory in Hibernate?
+
+Definition
+
+SessionFactory is a heavyweight object responsible for creating Session objects.
+
+It is created once for an application and reused throughout the application lifecycle.
+
+It reads:
+
+Hibernate configuration file
+Database configuration
+Mapping details
+Features of SessionFactory
+Feature	Description
+Heavyweight	Takes more memory and initialization time
+Thread-safe	Multiple threads can use it
+Singleton	Usually one SessionFactory per database
+Factory Object	Creates Session objects
+Immutable	Configuration cannot change after creation
+Architecture Flow
+
+Configuration File
+       ↓
+SessionFactory
+       ↓
+Session
+       ↓
+Database Operations
+
+Example of SessionFactory
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateUtil {
+
+    private static SessionFactory sessionFactory;
+
+    static {
+
+        sessionFactory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .buildSessionFactory();
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+}
+
+Real-Time Analogy
+
+Think of:
+
+SessionFactory = Factory Building
+Session = Worker inside factory
+Database = Warehouse
+
+The factory creates workers whenever required.
+
+2. What is Session in Hibernate?
+
+Definition
+
+Session is a lightweight object used to perform CRUD operations with the database.
+
+A Session:
+
+Opens connection with database
+Executes SQL queries
+Manages persistence objects
+
+Features of Session
+
+Feature	Description
+
+Lightweight	Fast creation
+Not Thread-safe	One thread should use one session
+Short-lived	Open and close quickly
+Performs CRUD	Insert, Update, Delete, Select
+Maintains Cache	First-level cache
+
+
+Important Methods of Session
+
+Method	Purpose
+
+save()	Insert record
+update()	Update record
+delete()	Delete record
+get()	Fetch record
+load()	Lazy loading
+createQuery()	HQL query
+beginTransaction()	Start transaction
+close()	Close session
+
+Example Program Using SessionFactory and Session
+
+Step 1: Entity Class
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+    private String course;
+
+    // Getters and Setters
+}
+
+Step 2: hibernate.cfg.xml
+
+<?xml version='1.0' encoding='utf-8'?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <property name="hibernate.connection.driver_class">
+            com.mysql.cj.jdbc.Driver
+        </property>
+
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/testdb
+        </property>
+
+        <property name="hibernate.connection.username">
+            root
+        </property>
+
+        <property name="hibernate.connection.password">
+            root
+        </property>
+
+        <property name="hibernate.dialect">
+            org.hibernate.dialect.MySQL8Dialect
+        </property>
+
+        <property name="hibernate.hbm2ddl.auto">
+            update
+        </property>
+
+        <property name="hibernate.show_sql">
+            true
+        </property>
+
+        <mapping class="Student"/>
+
+    </session-factory>
+
+</hibernate-configuration>
+
+Step 3: Insert Record
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+public class InsertDemo {
+
+    public static void main(String[] args) {
+
+        SessionFactory factory =
+                HibernateUtil.getSessionFactory();
+
+        Session session = factory.openSession();
+
+        Transaction tx = session.beginTransaction();
+
+        Student s = new Student();
+
+        s.setName("Amol");
+        s.setCourse("Java");
+
+        session.save(s);
+
+        tx.commit();
+
+        session.close();
+
+        System.out.println("Record Inserted");
+    }
+}
+
+Output
+
+Hibernate: insert into student (course,name) values (?,?)
+Record Inserted
+
+3. What is OR Mapping in Hibernate?
+
+OR Mapping Meaning
+
+ORM stands for:
+
+Object Relational Mapping
+
+It is a technique used to map:
+
+Java Class → Database Table
+Java Object → Row
+Variables → Columns
+
+Mapping Relationship
+
+Java Side	Database Side
+Class	Table
+Object	Row
+Attribute	Column
+
+Object ID	Primary Key
+
+Example
+
+Java Class
+public class Student {
+
+    private int id;
+    private String name;
+}
+Database Table
+CREATE TABLE student(
+   id INT PRIMARY KEY,
+   name VARCHAR(100)
+);
+
+Hibernate automatically maps:
+
+Student → student
+id → id
+name → name
+
+
+Types of ORM Mapping in Hibernate
+
+1. Basic Mapping
+
+Maps simple fields.
+
+@Column(name="student_name")
+private String name;
+
+2. Primary Key Mapping
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private int id;
+
+3. One-to-One Mapping
+
+One record related to one record.
+
+Example
+
+One Person → One Passport
+
+@OneToOne
+private Passport passport;
+
+4. One-to-Many Mapping
+
+One parent has many children.
+
+Example
+
+One Department → Many Employees
+
+@OneToMany
+private List<Employee> employees;
+
+5. Many-to-One Mapping
+
+Many records belong to one parent.
+
+Example
+Many Employees → One Department
+
+@ManyToOne
+private Department department;
+
+6. Many-to-Many Mapping
+
+Many records related to many records.
+
+Example
+Students ↔ Courses
+
+@ManyToMany
+private List<Course> courses;
+
+Complete Example of One-to-Many Mapping
+
+Department Entity
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int deptId;
+
+    private String deptName;
+
+    @OneToMany(mappedBy = "department")
+    private List<Employee> employees;
+}
+
+Employee Entity
+
+import jakarta.persistence.*;
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int empId;
+
+    private String empName;
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Department department;
+}
+Database Tables Created
+
+Department Table
+CREATE TABLE department(
+   dept_id INT PRIMARY KEY,
+   dept_name VARCHAR(100)
+);
+
+Employee Table
+
+CREATE TABLE employee(
+   emp_id INT PRIMARY KEY,
+   emp_name VARCHAR(100),
+   dept_id INT,
+   FOREIGN KEY(dept_id)
+   REFERENCES department(dept_id)
+);
+
+Advantages of Hibernate ORM
+
+Advantage			Description
+
+Reduces JDBC code		Less boilerplate
+Automatic table mapping	Easy development
+Database independent		Works with multiple DBs
+Caching support		Better performance
+Transaction management	Simplified handling
+HQL support		Object-oriented queries
+
+
+
+Explain the Hibernate Object States, Make Objects persistent, Retrieve a persistent object, Modify ,delete objects, CRUD operations :
+
+
+
+Introduction to Hibernate
+
+Hibernate ORM is an Object Relational Mapping (ORM) framework used in Java applications to map Java objects to database tables.
+
+Hibernate simplifies database operations such as:
+
+Insert
+Update
+Delete
+Select
+
+It removes the need for writing most SQL queries manually.
+
+Hibernate Architecture Flow
+
+Java Application
+       ↓
+SessionFactory
+       ↓
+Session
+       ↓
+Hibernate ORM
+       ↓
+Database
+
+Hibernate Object States :
+
+In Hibernate, every entity object goes through different states during its lifecycle.
+
+There are mainly 3 important object states:
+
+Transient State
+Persistent State
+Detached State
+
+1️. Transient State :
+
+Definition
+
+An object is in a Transient State when:
+
+It is created using new keyword
+It is NOT associated with Hibernate Session
+It is NOT stored in database
+
+Example
+
+Student s = new Student();
+
+s.setName("Amol");
+s.setCourse("Java");
+
+Explanation :
+
+Object exists only in JVM memory
+Hibernate does not track it
+No database record created
+
+Diagram
+
+new Object()
+     ↓
+Transient State
+
+2️. Persistent State
+
+Definition
+
+An object becomes Persistent when:
+
+It is associated with Hibernate Session
+Hibernate tracks changes automatically
+Data exists in database
+
+Example
+
+Session session = factory.openSession();
+
+Transaction tx = session.beginTransaction();
+
+Student s = new Student();
+s.setName("Rahul");
+s.setCourse("Spring");
+
+session.save(s);
+
+tx.commit();
+session.close();
+
+What Happens Internally?
+
+Object + Session Association
+            ↓
+Persistent State
+            ↓
+Hibernate tracks object
+            ↓
+INSERT query executed
+
+Important Points
+
+Changes are automatically synchronized to database
+Hibernate manages object lifecycle
+Object is attached to Session
+
+3️. Detached State
+
+Definition
+
+An object becomes Detached when:
+
+Session is closed
+Object was previously persistent
+Hibernate no longer tracks it
+
+Example
+
+Session session = factory.openSession();
+
+Student s = session.get(Student.class, 1);
+
+session.close(); // detached state
+
+Diagram
+
+Persistent Object
+       ↓
+Session Closed
+       ↓
+Detached Object
+
+Important Points
+
+Object still contains data
+Changes are NOT saved automatically
+Must reattach using update() or merge()
+
+Hibernate Object State Lifecycle
+
+new Object()
+    ↓
+Transient
+    ↓ save()
+Persistent
+    ↓ session.close()
+Detached
+    ↓ update()
+Persistent Again
+
+Making Objects Persistent :
+
+Hibernate provides methods to make objects persistent.
+
+Methods
+
+Method		Description
+
+save()		Saves object
+persist()		Makes object persistent
+saveOrUpdate()	Saves or updates
+merge()		Reattaches detached object
+
+Example: save()
+
+Session session = factory.openSession();
+Transaction tx = session.beginTransaction();
+
+Student s = new Student();
+s.setName("Amit");
+s.setCourse("Hibernate");
+
+session.save(s);
+
+tx.commit();
+session.close();
+
+Retrieve a Persistent Object :
+
+Hibernate provides methods to retrieve records from database.
+
+Retrieval Methods
+
+Method		Description
+
+get()		Fetches object immediately
+load()		Lazy loading
+createQuery()	HQL query
+createNativeQuery()	SQL query
+
+Using get()
+
+Session session = factory.openSession();
+
+Student s = session.get(Student.class, 1);
+
+System.out.println(s.getName());
+
+session.close();
+
+SQL Generated
+
+select * from student where id=1;
+
+Difference Between get() and load()
+
+Feature		get()		load()
+
+Returns		Actual Object	Proxy Object
+Database Hit	Immediate		Lazy
+If Record Missing	Returns null	Exception
+Performance	Slightly slower	Faster
+
+Modify Objects in Hibernate :
+
+Hibernate automatically detects changes in persistent objects.
+
+This feature is called:
+
+Dirty Checking
+
+Example: Update Object
+
+Session session = factory.openSession();
+Transaction tx = session.beginTransaction();
+
+Student s = session.get(Student.class, 1);
+
+s.setCourse("Spring Boot");
+
+tx.commit();
+
+session.close();
+
+What Happens?
+
+Hibernate detects modified field:
+
+Old Value → Java
+New Value → Spring Boot
+
+Then automatically executes:
+
+update student set course='Spring Boot' where id=1;
+
+Explicit Update Using update()
+
+Session session = factory.openSession();
+Transaction tx = session.beginTransaction();
+
+Student s = new Student();
+s.setId(1);
+s.setName("Rahul");
+s.setCourse("Microservices");
+
+session.update(s);
+
+tx.commit();
+session.close();
+
+Delete Objects in Hibernate :
+
+Hibernate provides delete() method.
+
+Example: delete()
+Session session = factory.openSession();
+Transaction tx = session.beginTransaction();
+
+Student s = session.get(Student.class, 1);
+
+session.delete(s);
+
+tx.commit();
+session.close();
+
+SQL Generated
+
+delete from student where id=1;
+
+CRUD Operations in Hibernate :
+
+CRUD means:
+
+Operation	Meaning
+C	Create
+R	Read
+U	Update
+D	Delete
+
+Complete CRUD Example
+
+Step 1: Entity Class
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+    private String course;
+
+    // getters and setters
+}
+Step 2: Hibernate Configuration
+
+hibernate.cfg.xml
+
+<?xml version='1.0' encoding='utf-8'?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+<session-factory>
+
+    <property name="hibernate.connection.driver_class">
+        com.mysql.cj.jdbc.Driver
+    </property>
+
+    <property name="hibernate.connection.url">
+        jdbc:mysql://localhost:3306/test
+    </property>
+
+    <property name="hibernate.connection.username">
+        root
+    </property>
+
+    <property name="hibernate.connection.password">
+        root
+    </property>
+
+    <property name="hibernate.dialect">
+        org.hibernate.dialect.MySQLDialect
+    </property>
+
+    <property name="hibernate.hbm2ddl.auto">
+        update
+    </property>
+
+    <property name="hibernate.show_sql">
+        true
+    </property>
+
+    <mapping class="Student"/>
+
+</session-factory>
+
+</hibernate-configuration>
+
+Step 3: Hibernate Utility Class
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateUtil {
+
+    private static SessionFactory factory;
+
+    static {
+
+        factory = new Configuration()
+                    .configure("hibernate.cfg.xml")
+                    .addAnnotatedClass(Student.class)
+                    .buildSessionFactory();
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return factory;
+    }
+}
+
+CREATE Operation
+
+Session session = HibernateUtil
+                    .getSessionFactory()
+                    .openSession();
+
+Transaction tx = session.beginTransaction();
+
+Student s = new Student();
+s.setName("Amol");
+s.setCourse("Java");
+
+session.save(s);
+
+tx.commit();
+session.close();
+
+READ Operation
+
+Session session = HibernateUtil
+                    .getSessionFactory()
+                    .openSession();
+
+Student s = session.get(Student.class, 1);
+
+System.out.println(s.getName());
+
+session.close();
+
+UPDATE Operation
+
+Session session = HibernateUtil
+                    .getSessionFactory()
+                    .openSession();
+
+Transaction tx = session.beginTransaction();
+
+Student s = session.get(Student.class, 1);
+
+s.setCourse("Spring Boot");
+
+tx.commit();
+
+session.close();
+
+DELETE Operation
+
+Session session = HibernateUtil
+                    .getSessionFactory()
+                    .openSession();
+
+Transaction tx = session.beginTransaction();
+
+Student s = session.get(Student.class, 1);
+
+session.delete(s);
+
+tx.commit();
+
+session.close();
+
+Hibernate CRUD Flow
+
+Create → session.save()
+
+Read   → session.get()
+
+Update → session.update()
+
+Delete → session.delete()
+
+Important Hibernate Interfaces
+
+Interface		Purpose
+SessionFactory	Creates Session objects
+Session		Performs CRUD
+Transaction	Transaction management
+Query		Executes HQL
+
+Advantages of Hibernate
+
+1. Reduces Boilerplate Code
+
+No need to write JDBC repeatedly.
+
+2️. Database Independent
+
+Hibernate generates SQL automatically.
+
+3️. Automatic Table Mapping
+
+Java Objects ↔ Database Tables
+
+4️. Caching Support
+
+Improves performance.
+
+5️. Lazy Loading
+
+Loads data only when needed.
+
+Real-Time Example
+
+Banking Application
+
+Operation	Hibernate Action
+
+Open Account	save()
+View Account	get()
+Update Address	update()
+Close Account	delete()
+
+Summary
+
+State	Description
+
+Transient	Object not linked to Session
+Persistent	Managed by Hibernate
+Detached	Session closed
+Common CRUD Methods
+Method	Purpose
+save()	Insert
+get()	Read
+update()	Update
+delete()	Delete
+merge()	Reattach detached object
+
+
+
+
+How to query with hibernate query language (HQL), How to query with Criteria API :
+
+
+Hibernate provides multiple ways to retrieve data from the database:
+
+HQL (Hibernate Query Language)
+
+Criteria API :
+
+Both are widely used in Java applications built using Hibernate ORM.
+
+1. Querying with Hibernate Query Language (HQL)
+
+What is HQL?
+
+HQL stands for Hibernate Query Language.
+
+It is similar to SQL.
+
+But HQL works with:
+
+Java Classes
+Object properties
+
+SQL works with:
+
+Tables
+Columns
+
+Important Difference Between SQL and HQL
+
+SQL		HQL
+
+Uses table name	Uses class name
+Uses column name	Uses variable/property name
+Database dependent	Database independent
+
+Example Entity Class
+
+package com.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+
+    private String course;
+
+    private double marks;
+
+    // Getters and Setters
+}
+
+Hibernate Configuration
+
+<hibernate-configuration>
+ <session-factory>
+
+  <property name="hibernate.connection.driver_class">
+      com.mysql.cj.jdbc.Driver
+  </property>
+
+  <property name="hibernate.connection.url">
+      jdbc:mysql://localhost:3306/test
+  </property>
+
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.connection.password">root</property>
+
+  <property name="hibernate.dialect">
+      org.hibernate.dialect.MySQLDialect
+  </property>
+
+  <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.show_sql">true</property>
+
+  <mapping class="com.entity.Student"/>
+
+ </session-factory>
+</hibernate-configuration>
+
+Insert Sample Data
+
+Session session = factory.openSession();
+Transaction tx = session.beginTransaction();
+
+Student s1 = new Student();
+s1.setName("Amol");
+s1.setCourse("Java");
+s1.setMarks(85);
+
+Student s2 = new Student();
+s2.setName("Rahul");
+s2.setCourse("Python");
+s2.setMarks(75);
+
+Student s3 = new Student();
+s3.setName("Sneha");
+s3.setCourse("Java");
+s3.setMarks(92);
+
+session.persist(s1);
+session.persist(s2);
+session.persist(s3);
+
+tx.commit();
+session.close();
+
+2️. Types of HQL Queries
+
+A) Fetch All Records
+
+HQL Query
+
+String hql = "from Student";
+
+Query<Student> query = session.createQuery(hql, Student.class);
+
+List<Student> students = query.list();
+
+for(Student s : students) {
+    System.out.println(
+        s.getId() + " " +
+        s.getName() + " " +
+        s.getCourse() + " " +
+        s.getMarks()
+    );
+}
+
+Generated SQL
+select * from student;
+
+B) Fetch Specific Columns
+
+String hql = "select name, course from Student";
+
+Query<Object[]> query = session.createQuery(hql, Object[].class);
+
+List<Object[]> list = query.list();
+
+for(Object[] obj : list) {
+    System.out.println(obj[0] + " " + obj[1]);
+}
+
+C) WHERE Clause Example
+
+String hql = "from Student where course='Java'";
+
+Query<Student> query = session.createQuery(hql, Student.class);
+
+List<Student> list = query.list();
+
+for(Student s : list) {
+    System.out.println(s.getName());
+}
+
+D) Named Parameters in HQL
+
+Named parameters improve readability and security.
+
+String hql = "from Student where marks > :m";
+
+Query<Student> query = session.createQuery(hql, Student.class);
+
+query.setParameter("m", 80.0);
+
+List<Student> list = query.list();
+
+for(Student s : list) {
+    System.out.println(s.getName());
+}
+
+E) ORDER BY Example
+
+String hql = "from Student order by marks desc";
+
+Query<Student> query = session.createQuery(hql, Student.class);
+
+List<Student> list = query.list();
+
+for(Student s : list) {
+    System.out.println(s.getName() + " " + s.getMarks());
+}
+
+F) Aggregate Functions
+
+Count
+String hql = "select count(*) from Student";
+
+Query<Long> query = session.createQuery(hql, Long.class);
+
+Long count = query.uniqueResult();
+
+System.out.println("Total Students: " + count);
+
+Maximum Marks
+
+String hql = "select max(marks) from Student";
+
+Query<Double> query = session.createQuery(hql, Double.class);
+
+Double maxMarks = query.uniqueResult();
+
+System.out.println(maxMarks);
+
+G) Update Query
+
+Transaction tx = session.beginTransaction();
+
+String hql = "update Student set course='Spring Boot' where id=1";
+
+Query query = session.createQuery(hql);
+
+int rows = query.executeUpdate();
+
+System.out.println("Updated Rows: " + rows);
+
+tx.commit();
+
+H) Delete Query
+
+Transaction tx = session.beginTransaction();
+
+String hql = "delete from Student where id=2";
+
+Query query = session.createQuery(hql);
+
+int rows = query.executeUpdate();
+
+System.out.println("Deleted Rows: " + rows);
+
+tx.commit();
+
+Advantages of HQL
+
+✅ Database independent
+✅ Object-oriented querying
+✅ Supports joins and aggregation
+✅ Easier than SQL for Java developers
+✅ Works with entity objects
+
+3️. Querying with Criteria API
+
+What is Criteria API?
+
+Criteria API is used to create queries dynamically using Java objects instead of writing HQL manually.
+
+It is:
+
+Type-safe
+Dynamic
+Flexible
+
+Used heavily in enterprise applications.
+
+Criteria API Flow :
+
+Session
+   ↓
+CriteriaBuilder
+   ↓
+CriteriaQuery
+   ↓
+Root
+   ↓
+Execute Query
+
+A) Fetch All Records using Criteria API
+
+Session session = factory.openSession();
+
+CriteriaBuilder cb = session.getCriteriaBuilder();
+
+CriteriaQuery<Student> cq =
+        cb.createQuery(Student.class);
+
+Root<Student> root = cq.from(Student.class);
+
+cq.select(root);
+
+Query<Student> query = session.createQuery(cq);
+
+List<Student> list = query.getResultList();
+
+for(Student s : list) {
+    System.out.println(s.getName());
+}
+
+B) WHERE Condition using Criteria API
+
+CriteriaBuilder cb = session.getCriteriaBuilder();
+
+CriteriaQuery<Student> cq =
+        cb.createQuery(Student.class);
+
+Root<Student> root = cq.from(Student.class);
+
+cq.select(root)
+  .where(cb.equal(root.get("course"), "Java"));
+
+Query<Student> query = session.createQuery(cq);
+
+List<Student> list = query.getResultList();
+
+for(Student s : list) {
+    System.out.println(s.getName());
+}
+
+C) Multiple Conditions
+
+cq.select(root)
+  .where(
+      cb.and(
+          cb.equal(root.get("course"), "Java"),
+          cb.gt(root.get("marks"), 80)
+      )
+  );
+
+D) ORDER BY using Criteria API
+
+cq.select(root)
+  .orderBy(cb.desc(root.get("marks")));
+
+E) LIKE Operator
+cq.select(root)
+  .where(cb.like(root.get("name"), "A%"));
+F) Aggregate Function using Criteria API
+Count Students
+CriteriaQuery<Long> cq =
+        cb.createQuery(Long.class);
+
+Root<Student> root = cq.from(Student.class);
+
+cq.select(cb.count(root));
+
+Long count = session.createQuery(cq)
+                    .getSingleResult();
+
+System.out.println(count);
+G) Pagination Example
+Query<Student> query = session.createQuery(cq);
+
+query.setFirstResult(0);
+query.setMaxResults(2);
+
+List<Student> list = query.getResultList();
+Criteria API Generated SQL Example
+select * from student where course='Java';
+HQL vs Criteria API
+Feature	HQL	Criteria API
+Query Style	String-based	Object-based
+Readability	Easy	Moderate
+Dynamic Query	Difficult	Excellent
+Compile-time Safety	No	Yes
+Best For	Static queries	Dynamic queries
+When to Use HQL?
+
+Use HQL when:
+
+Queries are fixed
+Simpler queries are required
+Faster development is needed
+
+Example:
+
+from Student where course='Java'
+When to Use Criteria API?
+
+Use Criteria API when:
+
+Queries are dynamic
+Search filters change frequently
+Enterprise-level applications
+Runtime conditions
+
+Example:
+
+if(course != null) {
+   predicates.add(
+      cb.equal(root.get("course"), course)
+   );
+}
+Real-Time Scenario Example
+
+Suppose a search screen has:
+
+name
+course
+marks
+city
+
+Some fields may be empty.
+
+Criteria API helps dynamically build queries based on available inputs.
+
+
+
+Creating queries with Native SQL, Integrating Spring with Hibernate :
+
+
+
+Creating Queries with Native SQL & Integrating Spring with Hibernate
+
+(Java + Spring + Hibernate + MySQL Complete Step-by-Step Project)
+
+We will build a complete project using:
+
+Java
+Spring Framework
+Hibernate ORM
+MySQL Database
+Maven
+Native SQL Queries
+1. What You Will Learn
+
+After completing this project, you will understand:
+
+What is Native SQL Query in Hibernate
+Difference between HQL and Native SQL
+Integrating Spring with Hibernate
+Configuring Hibernate in Spring
+CRUD operations
+Executing Native SQL Queries
+Fetching records using SQL
+Inserting data
+Updating data
+Deleting data
+2. Technologies Used
+Technology	Version
+Java	17
+Spring	5.x
+Hibernate	5.x
+MySQL	8.x
+Maven	Latest
+IDE	Eclipse / IntelliJ
+3. Project Structure
+SpringHibernateNativeSQL/
+│
+├── src/main/java
+│   └── com/example
+│       ├── config
+│       │     └── AppConfig.java
+│       │
+│       ├── entity
+│       │     └── Employee.java
+│       │
+│       ├── dao
+│       │     ├── EmployeeDAO.java
+│       │     └── EmployeeDAOImpl.java
+│       │
+│       ├── service
+│       │     ├── EmployeeService.java
+│       │     └── EmployeeServiceImpl.java
+│       │
+│       └── main
+│             └── MainApp.java
+│
+├── src/main/resources
+│       └── hibernate.properties
+│
+└── pom.xml
+4. Create MySQL Database
+
+Open MySQL and execute:
+
+CREATE DATABASE spring_hibernate_db;
+
+Use Database:
+
+USE spring_hibernate_db;
+
+Create Table:
+
+CREATE TABLE employee(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    department VARCHAR(100),
+    salary DOUBLE
+);
+5. Create Maven Project
+
+Create Maven project in IDE.
+
+6. Add Dependencies in pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>SpringHibernateNativeSQL</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- Spring Core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.30</version>
+        </dependency>
+
+        <!-- Spring ORM -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>5.3.30</version>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.15.Final</version>
+        </dependency>
+
+        <!-- MySQL Driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <!-- Transaction -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>5.3.30</version>
+        </dependency>
+
+        <!-- JPA -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
+7. Create Hibernate Properties File
+hibernate.properties
+hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+hibernate.show_sql=true
+hibernate.format_sql=true
+hibernate.hbm2ddl.auto=update
+8. Create Entity Class
+Employee.java
+package com.example.entity;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+
+    private String department;
+
+    private double salary;
+
+    public Employee() {
+    }
+
+    public Employee(String name, String department, double salary) {
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+}
+9. Spring Configuration Class
+AppConfig.java
+package com.example.config;
+
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.hibernate.SessionFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+@Configuration
+@EnableTransactionManagement
+@ComponentScan(basePackages = "com.example")
+public class AppConfig {
+
+    @Bean
+    public DataSource dataSource() {
+
+        DriverManagerDataSource ds =
+                new DriverManagerDataSource();
+
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/spring_hibernate_db");
+        ds.setUsername("root");
+        ds.setPassword("root");
+
+        return ds;
+    }
+
+    @Bean
+    public LocalSessionFactoryBean sessionFactory() {
+
+        LocalSessionFactoryBean factory =
+                new LocalSessionFactoryBean();
+
+        factory.setDataSource(dataSource());
+
+        factory.setPackagesToScan("com.example.entity");
+
+        factory.setHibernateProperties(hibernateProperties());
+
+        return factory;
+    }
+
+    private Properties hibernateProperties() {
+
+        Properties properties = new Properties();
+
+        properties.put("hibernate.dialect",
+                "org.hibernate.dialect.MySQL8Dialect");
+
+        properties.put("hibernate.show_sql", true);
+
+        properties.put("hibernate.format_sql", true);
+
+        properties.put("hibernate.hbm2ddl.auto", "update");
+
+        return properties;
+    }
+
+    @Bean
+    public HibernateTransactionManager transactionManager(
+            SessionFactory sessionFactory) {
+
+        HibernateTransactionManager tx =
+                new HibernateTransactionManager();
+
+        tx.setSessionFactory(sessionFactory);
+
+        return tx;
+    }
+}
+10. DAO Interface
+EmployeeDAO.java
+package com.example.dao;
+
+import java.util.List;
+
+import com.example.entity.Employee;
+
+public interface EmployeeDAO {
+
+    void saveEmployee(Employee employee);
+
+    List<Employee> getAllEmployees();
+
+    Employee getEmployeeById(int id);
+
+    void updateEmployee(Employee employee);
+
+    void deleteEmployee(int id);
+
+    List<Employee> getEmployeesUsingNativeSQL();
+}
+11. DAO Implementation
+EmployeeDAOImpl.java
+package com.example.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.entity.Employee;
+
+@Repository
+@Transactional
+public class EmployeeDAOImpl implements EmployeeDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Override
+    public void saveEmployee(Employee employee) {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        session.save(employee);
+
+        System.out.println("Employee Saved");
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        return session.createQuery(
+                "from Employee", Employee.class)
+                .list();
+    }
+
+    @Override
+    public Employee getEmployeeById(int id) {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        return session.get(Employee.class, id);
+    }
+
+    @Override
+    public void updateEmployee(Employee employee) {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        session.update(employee);
+
+        System.out.println("Employee Updated");
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        Employee emp =
+                session.get(Employee.class, id);
+
+        if(emp != null) {
+
+            session.delete(emp);
+
+            System.out.println("Employee Deleted");
+        }
+    }
+
+    @Override
+    public List<Employee> getEmployeesUsingNativeSQL() {
+
+        Session session =
+                sessionFactory.getCurrentSession();
+
+        String sql =
+                "SELECT * FROM employee";
+
+        NativeQuery<Employee> query =
+                session.createNativeQuery(
+                        sql,
+                        Employee.class);
+
+        return query.getResultList();
+    }
+}
+12. Service Interface
+EmployeeService.java
+package com.example.service;
+
+import java.util.List;
+
+import com.example.entity.Employee;
+
+public interface EmployeeService {
+
+    void saveEmployee(Employee employee);
+
+    List<Employee> getAllEmployees();
+
+    Employee getEmployeeById(int id);
+
+    void updateEmployee(Employee employee);
+
+    void deleteEmployee(int id);
+
+    List<Employee> getEmployeesUsingNativeSQL();
+}
+13. Service Implementation
+EmployeeServiceImpl.java
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.dao.EmployeeDAO;
+import com.example.entity.Employee;
+
+@Service
+public class EmployeeServiceImpl
+        implements EmployeeService {
+
+    @Autowired
+    private EmployeeDAO employeeDAO;
+
+    @Override
+    public void saveEmployee(Employee employee) {
+        employeeDAO.saveEmployee(employee);
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        return employeeDAO.getAllEmployees();
+    }
+
+    @Override
+    public Employee getEmployeeById(int id) {
+        return employeeDAO.getEmployeeById(id);
+    }
+
+    @Override
+    public void updateEmployee(Employee employee) {
+        employeeDAO.updateEmployee(employee);
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+        employeeDAO.deleteEmployee(id);
+    }
+
+    @Override
+    public List<Employee> getEmployeesUsingNativeSQL() {
+        return employeeDAO.getEmployeesUsingNativeSQL();
+    }
+}
+14. Main Class
+MainApp.java
+package com.example.main;
+
+import java.util.List;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.example.config.AppConfig;
+import com.example.entity.Employee;
+import com.example.service.EmployeeService;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(
+                        AppConfig.class);
+
+        EmployeeService service =
+                context.getBean(EmployeeService.class);
+
+        // INSERT
+        Employee e1 =
+                new Employee(
+                        "Amol",
+                        "Java",
+                        55000);
+
+        service.saveEmployee(e1);
+
+        Employee e2 =
+                new Employee(
+                        "Rahul",
+                        "Spring Boot",
+                        65000);
+
+        service.saveEmployee(e2);
+
+        // FETCH USING NATIVE SQL
+        List<Employee> employees =
+                service.getEmployeesUsingNativeSQL();
+
+        System.out.println("\nEmployees List:");
+
+        for(Employee emp : employees) {
+
+            System.out.println(emp);
+        }
+
+        // FETCH BY ID
+        Employee emp =
+                service.getEmployeeById(1);
+
+        System.out.println("\nEmployee By ID:");
+
+        System.out.println(emp);
+
+        // UPDATE
+        emp.setSalary(80000);
+
+        service.updateEmployee(emp);
+
+        // DELETE
+        service.deleteEmployee(2);
+
+        context.close();
+    }
+}
+15. Run the Application
+
+Run:
+
+MainApp.java
+16. Expected Console Output
+Hibernate:
+    insert
+    into
+        employee
+        (department, name, salary)
+    values
+        (?, ?, ?)
+
+Employee Saved
+
+Hibernate:
+    insert
+    into
+        employee
+        (department, name, salary)
+    values
+        (?, ?, ?)
+
+Employee Saved
+
+Hibernate:
+    SELECT
+        *
+    FROM
+        employee
+
+Employees List:
+
+Employee{id=1, name='Amol', department='Java', salary=55000.0}
+Employee{id=2, name='Rahul', department='Spring Boot', salary=65000.0}
+
+Employee By ID:
+
+Employee{id=1, name='Amol', department='Java', salary=55000.0}
+
+Employee Updated
+
+Employee Deleted
+17. What is Native SQL in Hibernate?
+
+Native SQL means:
+
+Writing actual database SQL queries
+Hibernate directly executes SQL
+
+Example:
+
+String sql = "SELECT * FROM employee";
+
+NativeQuery<Employee> query =
+        session.createNativeQuery(
+                sql,
+                Employee.class);
+18. Difference Between HQL and Native SQL
+HQL	Native SQL
+Database independent	Database dependent
+Uses Entity names	Uses table names
+Hibernate converts SQL	Direct SQL execution
+Portable	Faster in some cases
+19. Advantages of Spring + Hibernate Integration
+Advantage	Description
+Easy Transaction Management	Spring handles transactions
+Less Boilerplate Code	Reduced JDBC code
+Better ORM	Hibernate maps objects
+Loose Coupling	Easy maintenance
+Dependency Injection	Spring manages objects
+20. Common Errors and Solutions
+Error 1
+No suitable driver found
+Solution
+
+Add MySQL dependency correctly.
+
+Error 2
+Access denied for user
+Solution
+
+Check:
+
+ds.setUsername("root");
+ds.setPassword("root");
+Error 3
+Unknown database
+Solution
+
+Create database first:
+
+CREATE DATABASE spring_hibernate_db;
+Error 4
+Table doesn't exist
+Solution
+
+Use:
+
+hibernate.hbm2ddl.auto=update
+21. Advanced Native SQL Examples
+Fetch Employees by Department
+String sql =
+    "SELECT * FROM employee WHERE department='Java'";
+
+NativeQuery<Employee> query =
+    session.createNativeQuery(sql, Employee.class);
+
+List<Employee> list =
+    query.getResultList();
+Update Using Native SQL
+String sql =
+    "UPDATE employee SET salary=90000 WHERE id=1";
+
+session.createNativeQuery(sql)
+       .executeUpdate();
+Delete Using Native SQL
+String sql =
+    "DELETE FROM employee WHERE id=1";
+
+session.createNativeQuery(sql)
+       .executeUpdate();
+
+
+
