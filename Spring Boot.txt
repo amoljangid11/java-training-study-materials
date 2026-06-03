@@ -1,0 +1,3790 @@
+Spring boot and its benefits | Spring Boot Dependencies :
+
+
+What is Spring Boot? Automatically
+
+Spring Boot is an extension of the Spring Framework that simplifies the development of Java applications. It eliminates much of the boilerplate configuration required in traditional Spring applications and allows developers to build production-ready applications quickly.
+
+Spring Boot provides:
+
+Auto Configuration
+Embedded Web Servers Tomcat Server
+Starter Dependencies start the Spring Boot App
+Production-ready Features
+Simplified Configuration
+Rapid Application Development (RAD)
+
+Traditional Spring vs Spring Boot
+
+
+Traditional Spring			Spring Boot
+
+Requires extensive XML configuration	Minimal configuration
+Manual dependency management	Starter dependencies
+External server deployment required	Embedded server included
+More setup time			Faster development
+Complex project setup		Easy project creation
+
+Spring Boot Architecture
++--------------------+
+|   Spring Boot App  |
++--------------------+
+          |
+          v
++--------------------+
+| Auto Configuration |
++--------------------+
+          |
+          v
++--------------------+
+| Starter Dependencies|
++--------------------+
+          |
+          v
++--------------------+
+| Embedded Server    |
+| (Tomcat/Jetty)     |
++--------------------+
+          |
+          v
++--------------------+
+| Production Ready   |
+| Features (Actuator)|
++--------------------+
+
+Features of Spring Boot
+
+1. Auto Configuration
+
+Automatically configures Spring application based on dependencies present in the classpath.
+
+Example:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Spring Boot automatically configures:
+
+DispatcherServlet
+Tomcat Server
+Jackson JSON Parser
+REST Components
+
+No manual configuration required.
+
+2. Embedded Servers
+
+No need to install:
+
+Apache Tomcat
+Jetty
+Undertow
+
+Spring Boot contains an embedded server.
+
+Run application:
+
+mvn spring-boot:run
+
+or
+
+java -jar app.jar
+
+3. Starter Dependencies
+
+Spring Boot provides ready-made dependency packages called Starters.
+
+Examples:
+
+spring-boot-starter-web
+spring-boot-starter-data-jpa
+spring-boot-starter-security
+spring-boot-starter-test
+
+4. Production Ready
+
+Spring Boot Actuator provides:
+
+Health Check Spring Boot
+Metrics Spring Boot
+Monitoring
+Application Info
+Logging log files
+
+Example:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+Endpoints:
+
+/actuator/health
+/actuator/info
+/actuator/metrics
+
+5. Microservices Friendly
+
+Spring Boot is widely used for:
+
+REST APIs
+Cloud Applications
+Microservices
+Distributed Systems
+
+Benefits of Spring Boot
+
+1. Faster Development
+
+Traditional Spring:
+
+<bean id="employeeService"
+      class="com.demo.EmployeeService"/>
+
+Spring Boot:
+
+@Service
+public class EmployeeService {
+}
+
+Less configuration.
+
+2. Reduced Boilerplate Code
+
+Traditional Spring requires:
+
+XML files
+Bean configuration
+Web.xml
+
+Spring Boot removes most of these.
+
+3. Easy Dependency Management
+
+Managed through Maven or Gradle.
+
+Example:
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.0</version>
+</parent>
+
+Versions are managed automatically.
+
+4. Embedded Server Support
+
+No WAR deployment required.
+
+Run directly:
+
+java -jar application.jar
+
+5. Production Monitoring
+
+Actuator provides:
+
+Health monitoring
+JVM metrics
+HTTP metrics
+
+6. Easy Testing
+
+Supports:
+
+JUnit
+Mockito
+
+Spring Test
+
+Example:
+
+@SpringBootTest
+class EmployeeApplicationTests {
+
+    @Test
+    void contextLoads() {
+
+    }
+}
+
+7. Cloud Ready
+
+Works seamlessly with:
+
+Docker
+Kubernetes
+AWS
+Azure
+Google Cloud
+
+Spring Boot Dependencies :
+
+Dependencies are libraries required to add functionality to Spring Boot applications.
+
+Managed in:
+
+pom.xml
+
+Common Spring Boot Starter Dependencies
+
+1. Spring Boot Starter Web
+
+Used for:
+
+REST APIs
+Web Applications
+MVC Applications
+
+Dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Contains:
+
+Spring MVC
+Tomcat
+Jackson
+Validation APIs
+
+Example:
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Welcome to Spring Boot";
+    }
+}
+
+2. Spring Boot Starter Data JPA
+
+Used for database operations.
+
+Dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+Contains:
+
+Hibernate
+Spring Data JPA
+JPA APIs
+
+3. MySQL Driver
+
+Required for MySQL connectivity.
+
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+</dependency>
+
+Database configuration:
+
+spring.datasource.url=jdbc:mysql://localhost:3306/companydb
+spring.datasource.username=root
+spring.datasource.password=root
+
+4. Spring Boot Starter Security
+
+Provides:
+
+Authentication
+Authorization
+Security Filters
+
+Dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+5. Spring Boot Starter Test
+
+Used for:
+
+Unit Testing
+Integration Testing
+
+Dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+Contains:
+
+JUnit 5
+Mockito
+Spring Test
+AssertJ
+
+6. Spring Boot Starter Validation
+
+Used for validating request data.
+
+Dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+Example:
+
+public class Employee {
+
+    @NotBlank
+    private String name;
+
+    @Email
+    private String email;
+}
+
+7. Spring Boot Starter Thymeleaf ( JSP )
+
+Used for server-side rendering.
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+8. Spring Boot Starter Actuator
+
+Monitoring and management.
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+Complete Spring Boot REST API Dependencies
+
+<dependencies>
+
+    <!-- Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+    <!-- Validation -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <!-- Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- Actuator -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+
+Summary
+
+Spring Boot is a framework built on top of Spring that simplifies application development through auto-configuration, starter dependencies, and embedded servers.
+
+Major Benefits
+Rapid application development
+Minimal configuration
+Embedded Tomcat/Jetty
+Auto Configuration
+Easy Dependency Management
+Microservices support
+Production-ready monitoring
+Cloud and Docker friendly
+
+Most Frequently Used Dependencies
+
+spring-boot-starter-web
+spring-boot-starter-data-jpa
+mysql-connector-j
+spring-boot-starter-security
+spring-boot-starter-validation
+spring-boot-starter-actuator
+spring-boot-starter-test
+
+
+
+Auto-Configuration & Runtime | Actuators :
+
+1. What is Auto-Configuration in Spring Boot?
+
+Spring Boot Auto-Configuration is a feature that automatically configures Spring application components based on:
+
+Dependencies available in the classpath
+Existing bean definitions
+Configuration properties
+
+Instead of manually configuring beans, Spring Boot automatically creates them for you.
+
+Traditional Spring Configuration
+
+@Configuration
+public class DatabaseConfig {
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/testdb");
+        ds.setUsername("root");
+        ds.setPassword("root");
+        return ds;
+    }
+}
+
+Lots of manual configuration is required.
+
+Spring Boot Auto-Configuration
+
+Add dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+Configure properties:
+
+spring.datasource.url=jdbc:mysql://localhost:3306/testdb
+spring.datasource.username=root
+spring.datasource.password=root
+
+Spring Boot automatically creates:
+
+DataSource
+EntityManagerFactory
+TransactionManager
+JPA repositories
+
+No manual bean configuration required.
+
+How Auto-Configuration Works
+
+When application starts:
+
+@SpringBootApplication
+public class SpringBootDemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootDemoApplication.class, args);
+    }
+}
+
+@SpringBootApplication contains:
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+
+
+Tells Spring Boot:
+
+"Automatically configure beans based on dependencies available."
+
+Auto-Configuration Flow
+
+Application Start
+        |
+        v
+@EnableAutoConfiguration
+        |
+        v
+Read META-INF/spring.factories
+        |
+        v
+Load Auto Configuration Classes
+        |
+        v
+Check Conditions
+        |
+        v
+Create Required Beans
+
+Common Auto-Configurations :
+
+DataSource Auto-Configuration :
+
+Dependency:
+
+spring-boot-starter-data-jpa
+mysql-connector-j
+
+Properties: application.properties
+
+spring.datasource.url=jdbc:mysql://localhost:3306/company
+spring.datasource.username=root
+spring.datasource.password=root
+
+Automatically creates:
+
+DataSource
+MVC Auto-Configuration
+
+Dependency:
+
+spring-boot-starter-web
+
+Automatically configures:
+
+DispatcherServlet
+ViewResolver
+Jackson JSON Converter
+Tomcat Server
+JPA Auto-Configuration
+
+Dependency:
+
+spring-boot-starter-data-jpa
+
+Automatically creates:
+
+EntityManager
+Hibernate SessionFactory
+JpaRepository Beans
+
+Conditional Annotations Used
+
+@ConditionalOnClass
+
+Bean created only if class exists.
+
+@ConditionalOnClass(DataSource.class)
+@ConditionalOnMissingBean
+
+Create bean only if user hasn't created one.
+
+@ConditionalOnMissingBean
+@Bean
+
+public DataSource dataSource() {  <bean property = ""
+}
+@ConditionalOnProperty
+
+Bean created based on property value.
+
+@ConditionalOnProperty(
+    name="cache.enabled",
+    havingValue="true"
+)
+
+Viewing Auto-Configuration Report :
+
+application.properties
+
+debug=true
+
+Startup Log:
+
+=========================
+AUTO-CONFIGURATION REPORT
+=========================
+
+Positive Matches:
+DataSourceAutoConfiguration
+DispatcherServletAutoConfiguration
+
+Negative Matches:
+MongoAutoConfiguration
+Spring Boot Actuator
+
+What is Actuator? :
+
+Spring Boot Actuator provides production-ready monitoring and management features.
+
+It helps monitor:
+
+Application health
+Application metrics
+Memory usage
+Beans
+Configuration
+Environment variables
+HTTP requests
+Thread dumps
+
+Adding Actuator Dependency
+
+Maven:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+Exposing Endpoints
+
+application.properties
+
+management.endpoints.web.exposure.include=*
+
+Start Application:
+
+http://localhost:8080/actuator
+
+Output:
+
+{
+  "_links": {
+    "health": {},
+    "info": {},
+    "metrics": {},
+    "beans": {}
+  }
+}
+
+Important Runtime Actuator Endpoints
+
+1. Health Endpoint
+
+URL:
+
+http://localhost:8080/actuator/health
+
+Output:
+
+{
+   "status":"UP"
+}
+
+Purpose:
+
+Checks application health
+Database connectivity
+Disk space
+External services
+
+2. Info Endpoint
+
+Configuration:
+
+management.info.env.enabled=true
+
+info.app.name=Employee Management
+info.app.version=1.0
+info.app.description=Spring Boot Demo
+
+URL:
+
+/actuator/info
+
+Output:
+
+{
+  "app":{
+      "name":"Employee Management",
+      "version":"1.0"
+  }
+}
+
+3. Metrics Endpoint
+
+URL:
+
+/actuator/metrics
+
+Output:
+
+{
+   "names":[
+      "jvm.memory.used",
+      "system.cpu.usage",
+      "http.server.requests"
+   ]
+}
+
+Specific Metric:
+
+/actuator/metrics/jvm.memory.used
+
+Output:
+
+{
+   "name":"jvm.memory.used",
+   "measurements":[
+      {
+         "value":24567890
+      }
+   ]
+}
+
+4. Beans Endpoint
+
+URL:
+
+/actuator/beans
+
+Shows:
+
+All Spring Beans
+Bean Scope
+Dependencies
+
+Useful for debugging IoC Container.
+
+5. Environment Endpoint
+
+URL:
+
+/actuator/env
+
+Shows:
+
+Application Properties
+System Variables
+Environment Variables
+
+Example:
+
+{
+   "server.port":"8080"
+}
+
+6. Mappings Endpoint
+
+URL:
+
+/actuator/mappings
+
+Displays:
+
+All REST APIs
+Controller Methods
+Request Mapping Information
+
+Example:
+
+@GetMapping("/employees")
+public List<Employee> getEmployees()
+
+Visible in mappings endpoint.
+
+7. Loggers Endpoint
+
+View Logger:
+
+/actuator/loggers
+
+Change Log Level:
+
+POST /actuator/loggers/com.demo
+
+Body:
+
+{
+  "configuredLevel":"DEBUG"
+}
+
+Runtime log level changes without restart.
+
+8. Thread Dump Endpoint
+
+URL:
+
+/actuator/threaddump
+
+Displays:
+
+Running Threads
+Blocked Threads
+Deadlocks
+
+Useful for performance troubleshooting.
+
+9. Heap Dump Endpoint
+
+URL:
+
+/actuator/heapdump
+
+Downloads JVM heap memory dump.
+
+Used for:
+
+Memory leak analysis
+OutOfMemoryError investigation
+
+10. Shutdown Endpoint
+
+Enable:
+
+management.endpoint.shutdown.enabled=true
+
+Expose:
+
+management.endpoints.web.exposure.include=shutdown
+
+Request:
+
+POST /actuator/shutdown
+
+Response:
+
+{
+   "message":"Shutting down"
+}
+
+Complete Example :
+
+pom.xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+</dependencies>
+
+application.properties :
+
+server.port=8080
+
+management.endpoints.web.exposure.include=*
+
+info.app.name=Employee Management System
+info.app.version=1.0
+
+Controller
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping
+    public String getEmployees() {
+        return "Employee List";
+    }
+}
+
+Access URLs
+
+http://localhost:8080/actuator
+http://localhost:8080/actuator/health
+http://localhost:8080/actuator/info
+http://localhost:8080/actuator/metrics
+http://localhost:8080/actuator/beans
+http://localhost:8080/actuator/env
+http://localhost:8080/actuator/mappings
+http://localhost:8080/actuator/loggers
+http://localhost:8080/actuator/threaddump
+
+
+
+ DevTools | Spring Boot starters thymeleaf views, Spring REST introduction, advantages :
+
+
+1. Spring Boot DevTools
+
+What is Spring Boot DevTools?
+
+Spring Boot DevTools is a development-time tool that improves developer productivity by providing features like automatic restart, live reload, and enhanced development configurations.
+
+Dependency
+
+Maven
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+Gradle
+
+runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+
+Features of DevTools
+
+1. Automatic Restart
+
+Whenever you modify Java code and save it, the application automatically restarts.
+
+@RestController
+public class WelcomeController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Spring Boot";
+    }
+}
+
+Change:
+
+return "Welcome to Spring Boot";
+
+Save the file → Application automatically restarts.
+
+2. Live Reload
+
+Automatically refreshes browser when HTML, CSS, or JS files are modified.
+
+<h1>Welcome to Spring Boot Application</h1>
+
+Save file → Browser refreshes automatically.
+
+3. Disable Template Caching
+
+For Thymeleaf templates:
+
+spring.thymeleaf.cache=false
+
+Changes become visible immediately.
+
+Benefits of DevTools :
+
+Faster development
+Automatic restart
+Automatic browser refresh
+Reduced deployment time
+Better debugging experience
+
+2. Spring Boot Starters :
+
+What are Spring Boot Starters?
+
+Starters are predefined dependency bundles that simplify project setup.
+
+Instead of adding many dependencies manually, add one starter.
+
+Common Spring Boot Starters
+
+Starter			Purpose
+
+spring-boot-starter-web	Web Applications & REST APIs
+spring-boot-starter-data-jpa	Database Operations
+spring-boot-starter-security	Security
+spring-boot-starter-test	Unit Testing
+spring-boot-starter-thymeleaf	Thymeleaf Templates
+spring-boot-starter-mail	Email Services
+
+Example: Web Starter
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Includes:
+
+Spring MVC
+Tomcat
+Jackson JSON
+Validation API
+
+No need to configure separately.
+
+Example: JPA Starter
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+Provides:
+
+Hibernate
+JPA APIs
+Transaction Management
+
+Advantages of Starters
+
+Simplified dependency management
+Version compatibility
+Reduced configuration
+Faster project creation
+
+3. Thymeleaf Views in Spring Boot JSP Spring MVC
+
+What is Thymeleaf?
+
+Thymeleaf is a Java template engine used to create dynamic web pages.
+
+It integrates easily with Spring Boot MVC applications.
+
+Add Dependency
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+Project Structure
+
+src/main/resources/
+    templates/
+        home.html
+
+Controller
+
+package com.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String home(Model model) {
+
+        model.addAttribute("name", "John");
+
+        return "home";
+    }
+}
+
+Thymeleaf View
+
+home.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+</head>
+
+<body>
+
+<h1 th:text="'Welcome ' + ${name}">
+    Default Text
+</h1>
+
+</body>
+
+</html>
+
+Output
+Welcome John
+
+Display List Example
+
+Controller
+
+@GetMapping("/students")
+public String students(Model model) {
+
+    List<String> students =
+            Arrays.asList("John","David","Scott");
+
+    model.addAttribute("students", students);
+
+    return "students";
+}
+
+students.html
+<ul>
+    <li th:each="student : ${students}"
+        th:text="${student}">
+    </li>
+</ul>
+
+Output
+John
+David
+Scott
+
+Thymeleaf Attributes
+
+Attribute	Purpose
+
+th:text	Display text
+th:if	Conditional rendering
+th:each	Looping
+th:value	Set value
+th:href	Dynamic links
+th:src	Dynamic image source
+
+4. Spring REST Introduction
+
+What is REST?
+
+REST (Representational State Transfer) is an architectural style used to build web services.
+
+REST APIs exchange data using:
+
+JSON
+XML
+
+Most modern applications use JSON.
+
+REST Architecture
+
+Client
+   |
+HTTP Request Get P P D
+   |
+Spring REST API
+   |
+Database
+
+REST HTTP Methods
+
+Method	Operation
+
+GET	Read Data
+POST	Create Data
+PUT	Update Data
+DELETE	Delete Data
+
+Create First REST API
+
+Controller
+
+package com.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class WelcomeController {
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome to Spring REST API";
+    }
+}
+
+Output
+http://localhost:8080/welcome
+
+Welcome to Spring REST API
+
+REST API Returning JSON
+
+Employee Class In Spring MVC it is called Entity but in Spring Boot it is called Model
+
+package com.demo.model; 
+
+public class Employee {
+
+    private int id;
+    private String name;
+
+    public Employee(int id, String name) {
+        this.id=id;
+        this.name=name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+Controller
+
+@RestController
+public class EmployeeController {
+
+    @GetMapping("/employee")
+    public Employee getEmployee() {
+
+        return new Employee(101,
+                            "John");
+    }
+}
+
+JSON Response
+
+{
+  "id": 101,
+  "name": "John"
+}
+
+CRUD REST Example
+
+GET
+
+@GetMapping("/employees")
+public List<Employee> getEmployees() {
+    return employeeService.findAll();
+}
+
+POST
+@PostMapping("/employees")
+public Employee addEmployee(
+        @RequestBody Employee emp) {
+
+    return employeeService.save(emp);
+}
+
+PUT
+@PutMapping("/employees/{id}")
+public Employee updateEmployee(
+        @PathVariable int id,
+        @RequestBody Employee emp) {
+
+    return employeeService.update(id, emp);
+}
+
+DELETE
+@DeleteMapping("/employees/{id}")
+public String deleteEmployee(
+        @PathVariable int id) {
+
+    employeeService.delete(id);
+
+    return "Deleted Successfully";
+}
+
+5. Advantages of Spring Boot
+
+1. Rapid Application Development
+
+Create applications quickly with minimal configuration.
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            DemoApplication.class,
+            args);
+    }
+}
+
+2. Auto Configuration
+
+Spring Boot automatically configures beans based on dependencies.
+
+Example:
+
+spring-boot-starter-web
+
+Automatically configures:
+
+DispatcherServlet
+Tomcat
+Jackson
+
+3. Embedded Servers
+
+No need for external servers.
+
+Supported:
+
+Tomcat
+Jetty
+Undertow
+
+Run application directly:
+
+mvn spring-boot:run
+
+4. Starter Dependencies
+
+Simplified dependency management.
+
+spring-boot-starter-web
+
+instead of adding 20+ dependencies manually.
+
+5. Production Ready Features
+
+Spring Boot Actuator provides:
+
+Health Check
+Metrics
+Monitoring
+Logging
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+6. Microservices Friendly
+
+Spring Boot is widely used for:
+
+REST APIs
+Cloud Applications
+Microservices Architecture Combination of Multiple API
+
+Works well with:
+
+Spring Cloud
+Docker
+Kubernetes
+
+7. Easy Testing
+
+Supports:
+
+JUnit 5
+Mockito
+MockMvc
+
+@SpringBootTest
+class EmployeeServiceTest {
+
+}
+
+Summary
+
+Topic			Purpose
+
+DevTools			Auto restart and live reload during development
+Spring Boot Starters		Pre-configured dependency packages
+Thymeleaf Views		Dynamic HTML page rendering
+Spring REST		Create RESTful web services using JSON
+Spring Boot Advantages	Auto-configuration, embedded server, rapid development, microservices support
+
+
+
+implementing REST and HTTP methods, Case study demo with all methods :
+
+
+
+1. What is REST?
+
+REST (Representational State Transfer) is an architectural style used for developing web services.
+
+ REST APIs use HTTP methods to perform CRUD operations on resources.
+
+REST Principles
+
+Client-Server Architecture
+Stateless Communication API are independent request to the server
+Cacheable Responses
+Uniform Interface
+Layered System
+Resource-Based URLs
+
+Example Resource URL
+
+http://localhost:8080/api/employees
+
+Here, employees is a resource.
+
+2. HTTP Methods in REST API
+
+HTTP Method	Operation	Description
+
+GET	Read	Retrieve data
+POST	Create	Insert new data
+PUT	Update	Update complete record
+PATCH	Partial Update	Update specific fields
+DELETE	Delete	Remove data
+
+3. Case Study
+
+Employee Management System
+
+We will implement:
+
+APIs
+
+Method	URL	Description
+POST	/employees	Create Employee
+GET	/employees	Get All Employees
+GET	/employees/{id}	Get Employee By ID
+PUT	/employees/{id}	Update Employee
+PATCH	/employees/{id}/salary	Update Salary
+DELETE	/employees/{id}	Delete Employee
+
+4. Project Structure
+
+src/main/java
+
+com.company.employee
+
+├── controller
+│      EmployeeController.java
+│
+├── service
+│      EmployeeService.java
+│
+├── repository
+│      EmployeeRepository.java
+│
+├── entity
+│      Employee.java
+│
+└── EmployeeApplication.java
+
+5. Maven Dependencies
+
+pom.xml
+
+<dependencies>
+
+    <!-- Spring Boot Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+    </dependency>
+
+</dependencies>
+
+6. MySQL Configuration
+
+application.properties
+
+spring.datasource.url=jdbc:mysql://localhost:3306/companydb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+7. Entity Class
+
+Employee.java
+
+package com.company.employee.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employees")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String department;
+    private double salary;
+
+    public Employee() {}
+
+    public Employee(Long id, String name,
+                    String department,
+                    double salary) {
+        this.id=id;
+        this.name=name;
+        this.department=department;
+        this.salary=salary;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id=id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department=department;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary=salary;
+    }
+}
+
+8. Repository Layer
+
+EmployeeRepository.java
+
+package com.company.employee.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.company.employee.entity.Employee;
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee, Long> {
+
+}
+
+9. Service Layer
+
+EmployeeService.java
+
+package com.company.employee.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.company.employee.entity.Employee;
+import com.company.employee.repository.EmployeeRepository;
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepository repository;
+
+    // CREATE
+    public Employee save(Employee employee) {
+        return repository.save(employee);
+    }
+
+    // GET ALL
+    public List<Employee> getAllEmployees() {
+        return repository.findAll();
+    }
+
+    // GET BY ID
+    public Employee getEmployee(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    // UPDATE
+    public Employee updateEmployee(Long id,
+                                   Employee employee) {
+
+        Optional<Employee> optional =
+                repository.findById(id);
+
+        if(optional.isPresent()) {
+
+            Employee dbEmployee = optional.get();
+
+            dbEmployee.setName(employee.getName());
+            dbEmployee.setDepartment(
+                    employee.getDepartment());
+            dbEmployee.setSalary(
+                    employee.getSalary());
+
+            return repository.save(dbEmployee);
+        }
+
+        return null;
+    }
+
+    // PATCH
+    public Employee updateSalary(Long id,
+                                 double salary) {
+
+        Employee emp =
+                repository.findById(id).orElse(null);
+
+        if(emp != null) {
+            emp.setSalary(salary);
+            return repository.save(emp);
+        }
+
+        return null;
+    }
+
+    // DELETE
+    public void deleteEmployee(Long id) {
+        repository.deleteById(id);
+    }
+}
+
+10. Controller Layer
+
+EmployeeController.java
+
+package com.company.employee.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.company.employee.entity.Employee;
+import com.company.employee.service.EmployeeService;
+
+@RestController
+@RequestMapping("/api/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService service;
+
+    // POST
+    @PostMapping
+    public Employee createEmployee(
+            @RequestBody Employee employee) {
+
+        return service.save(employee);
+    }
+
+    // GET ALL
+    @GetMapping
+    public List<Employee> getEmployees() {
+
+        return service.getAllEmployees();
+    }
+
+    // GET BY ID
+    @GetMapping("/{id}")
+    public Employee getEmployee(
+            @PathVariable Long id) {
+
+        return service.getEmployee(id);
+    }
+
+    // PUT
+    @PutMapping("/{id}")
+    public Employee updateEmployee(
+            @PathVariable Long id,
+            @RequestBody Employee employee) {
+
+        return service.updateEmployee(id, employee);
+    }
+
+    // PATCH
+    @PatchMapping("/{id}/salary")
+    public Employee updateSalary(
+            @PathVariable Long id,
+            @RequestBody Map<String, Double> request) {
+
+        return service.updateSalary(
+                id,
+                request.get("salary"));
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(
+            @PathVariable Long id) {
+
+        service.deleteEmployee(id);
+
+        return "Employee Deleted Successfully";
+    }
+}
+
+11. Running the Application
+
+Main Class
+
+package com.company.employee;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EmployeeApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(
+                EmployeeApplication.class,
+                args);
+    }
+}
+
+12. Testing REST APIs
+
+1. POST Request
+URL
+POST http://localhost:8080/api/employees
+
+Request Body
+
+{
+  "name":"John",
+  "department":"IT",
+  "salary":50000
+}
+
+Response
+{
+  "id":1,
+  "name":"John",
+  "department":"IT",
+  "salary":50000
+}
+
+13. GET All Employees
+
+GET http://localhost:8080/api/employees
+
+Response
+
+[
+ {
+   "id":1,
+   "name":"John",
+   "department":"IT",
+   "salary":50000
+ }
+]
+
+14. GET Employee By ID
+
+GET http://localhost:8080/api/employees/1
+
+Response
+
+{
+   "id":1,
+   "name":"John",
+   "department":"IT",
+   "salary":50000
+}
+15. PUT Method
+Complete Record Update
+PUT http://localhost:8080/api/employees/1
+
+Body
+
+{
+  "name":"John Smith",
+  "department":"Development",
+  "salary":80000
+}
+
+Response
+
+{
+  "id":1,
+  "name":"John Smith",
+  "department":"Development",
+  "salary":80000
+}
+16. PATCH Method
+
+Partial Update
+
+PATCH http://localhost:8080/api/employees/1/salary
+
+Body
+
+{
+   "salary":90000
+}
+
+Response
+
+{
+  "id":1,
+  "name":"John Smith",
+  "department":"Development",
+  "salary":90000
+}
+17. DELETE Method
+DELETE http://localhost:8080/api/employees/1
+
+Response
+
+Employee Deleted Successfully
+
+18. REST API Flow Diagram
+
+Client
+  |
+  | HTTP Request
+  |
+  V
+
+Controller
+  |
+  V
+
+Service Layer
+  |
+  V
+
+Repository Layer
+  |
+  V
+
+MySQL Database
+
+  ^
+  |
+Response
+
+19. HTTP Status Codes Best Practice
+
+@PostMapping
+public ResponseEntity<Employee> saveEmployee(
+        @RequestBody Employee employee){
+
+    Employee savedEmployee =
+            service.save(employee);
+
+    return new ResponseEntity<>(
+            savedEmployee,
+            HttpStatus.CREATED);
+}
+
+Common Status Codes
+
+Code	Meaning
+
+200	Success
+201	Created
+204	No Content
+400	Bad Request
+401	Unauthorized
+403	Forbidden
+404	Not Found
+500	Internal Server Error
+
+
+Maven Dependency | Auto Generated credentials :
+
+
+1. What is Maven Dependency?
+
+Definition
+
+A Maven Dependency is an external library (JAR file) that a project requires to compile, run, test, or package an application.
+
+Instead of manually downloading JAR files, Maven automatically downloads them from repositories and manages versions.
+
+Why Use Maven Dependencies?
+
+Reduces manual work
+Manages library versions
+Downloads required JARs automatically
+Handles transitive dependencies
+Simplifies project management
+
+Maven Project Structure :
+
+SpringBootProject
+│
+├── src/main/java
+├── src/main/resources
+├── src/test/java
+└── pom.xml
+
+The pom.xml file contains all project dependencies.
+
+Example: Spring Boot Maven Dependency
+
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version>
+    </parent>
+
+    <groupId>com.demo</groupId>
+    <artifactId>springboot-demo</artifactId>
+    <version>1.0</version>
+
+    <dependencies>
+
+        <!-- Web Dependency -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
+
+Understanding Dependency Components
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+
+</dependency>
+
+groupId
+
+Organization name
+
+org.springframework.boot
+
+artifactId
+
+Library name
+
+spring-boot-starter-web
+version
+
+Specific version
+
+<version>3.3.0</version>
+
+Spring Boot Parent automatically manages versions.
+
+Common Spring Boot Dependencies
+
+Spring Web
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Used for:
+
+REST APIs
+MVC Applications
+Embedded Tomcat
+
+Spring Data JPA
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+Used for:
+
+Database Operations
+Hibernate ORM
+
+MySQL Driver
+
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+</dependency>
+
+Used for:
+
+Connecting MySQL Database
+
+Spring Security
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+Used for:
+
+Authentication
+Authorization
+
+What are Spring Boot Starters?
+
+Starters are predefined dependency bundles.
+
+Example:
+
+spring-boot-starter-web
+
+Automatically includes:
+
+Spring MVC
+Jackson
+Validation
+Embedded Tomcat
+Logging
+
+Without starters, you would need dozens of individual JARs.
+
+Auto Generated Credentials in Spring Boot :
+
+What are Auto Generated Credentials?
+
+When Spring Security dependency is added:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+Spring Boot automatically secures the application.
+
+During startup, it generates:
+
+Username
+Password
+
+Example
+
+Controller
+@RestController
+public class HelloController {
+
+    @GetMapping("/")
+    public String hello() {
+        return "Welcome to Spring Security";
+    }
+}
+
+Run Application
+
+mvn spring-boot:run
+
+Console Output:
+
+Using generated security password: 
+7ab3c7b9-87e8-4b29-89c2-6e55f5f57a52
+Default Username
+user
+Generated Password
+7ab3c7b9-87e8-4b29-89c2-6e55f5f57a52
+
+(Changes every restart)
+
+Login Screen
+
+When accessing:
+
+http://localhost:8080
+
+Spring Security automatically displays:
+
+Username : user
+Password : Generated Password
+
+How Spring Boot Generates Credentials
+
+Internally Spring Security creates:
+
+UserDetails user =
+    User.withDefaultPasswordEncoder()
+        .username("user")
+        .password(UUID.randomUUID().toString())
+        .roles("USER")
+        .build();
+
+Generated password is logged in the console.
+
+Setting Custom Username and Password
+
+Instead of generated credentials, define your own.
+
+application.properties
+
+spring.security.user.name=admin
+spring.security.user.password=admin123
+
+Run Application
+
+Now login with:
+
+Username : admin
+Password : admin123
+
+No random password will be generated.
+
+Complete Example
+
+pom.xml
+
+<dependencies>
+
+    <!-- Spring Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+</dependencies>
+
+application.properties
+
+spring.security.user.name=admin
+spring.security.user.password=admin123
+
+Controller
+
+@RestController
+public class WelcomeController {
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome to Spring Security";
+    }
+}
+
+Access URL
+
+http://localhost:8080/welcome
+
+Login Screen:
+
+Username : admin
+Password : admin123
+
+Output:
+
+Welcome to Spring Security
+
+
+Spring Security Filter | Spring Security Configuration :
+
+
+1. What is Spring Security?
+
+Spring Security is a powerful authentication and authorization framework used to secure Java and Spring Boot applications.
+
+It provides:
+
+Authentication (Who are you?)
+Authorization (What can you access?)
+Protection against CSRF attacks
+Session management
+Password encryption
+JWT/OAuth2 support
+Secure REST APIs
+
+2. What is a Filter in Spring Security?
+
+A Filter intercepts every HTTP request before it reaches the controller.
+
+Request Flow
+
+Client Request
+      |
+      V
++----------------------+
+| Security Filter Chain|
++----------------------+
+      |
+      V
+ DispatcherServlet
+      |
+      V
+ Controller
+      |
+      V
+ Response
+
+Spring Security uses a collection of filters called:
+
+SecurityFilterChain
+
+Each filter performs a specific security task.
+
+3. Important Spring Security Filters
+
+A. UsernamePasswordAuthenticationFilter
+
+Responsible for:
+
+Login Authentication
+
+Example:
+
+POST /login
+
+User submits:
+
+{
+   "username":"admin",
+   "password":"admin123"
+}
+
+Filter:
+
+1. Reads credentials
+2. Validates user
+3. Creates Authentication object
+4. Stores in SecurityContext
+
+B. BasicAuthenticationFilter
+
+Used for:
+
+HTTP Basic Authentication
+
+Example Header:
+
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+
+C. SecurityContextHolderFilter
+
+Loads user information from:
+
+SecurityContext
+
+Stores authentication details.
+
+Example:
+
+Authentication auth =
+SecurityContextHolder.getContext().getAuthentication();
+
+D. AnonymousAuthenticationFilter
+
+If user is not logged in:
+
+Creates anonymous user
+
+Example:
+
+ROLE_ANONYMOUS
+
+E. ExceptionTranslationFilter
+
+Handles:
+
+AuthenticationException
+AccessDeniedException
+
+Example:
+
+403 Forbidden
+401 Unauthorized
+
+F. AuthorizationFilter  RBAC
+
+Checks whether the user has permission.
+
+Example:
+
+.hasRole("ADMIN")
+
+4. Spring Security Filter Chain
+
+Spring Security executes filters in sequence.
+
+SecurityContextHolderFilter
+       |
+       V
+CsrfFilter
+       |
+       V
+LogoutFilter
+       |
+       V
+UsernamePasswordAuthenticationFilter
+       |
+       V
+BasicAuthenticationFilter
+       |
+       V
+AnonymousAuthenticationFilter
+       |
+       V
+ExceptionTranslationFilter
+       |
+       V
+AuthorizationFilter
+
+5. SecurityFilterChain in Spring Boot
+
+Since Spring Security 6:
+
+WebSecurityConfigurerAdapter
+
+is removed.
+
+Now we use:
+
+SecurityFilterChain Bean
+
+Example Project
+
+src
+ ├── main
+ │    ├── java
+ │    │     ├── config
+ │    │     │      └── SecurityConfig.java
+ │    │     ├── controller
+ │    │     │      └── HomeController.java
+ │    │     └── SpringSecurityDemoApplication.java
+
+6. Add Dependency
+
+Maven
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+7. Controller Example
+
+package com.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HomeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "Public Home Page";
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "User Page";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "Admin Page";
+    }
+}
+
+8. Spring Security Configuration
+
+SecurityConfig.java
+
+package com.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(
+                    HttpSecurity http)
+                    throws Exception {
+
+        http
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/")
+                    .permitAll()
+
+                    .requestMatchers("/user")
+                    .hasRole("USER")
+
+                    .requestMatchers("/admin")
+                    .hasRole("ADMIN")
+
+                    .anyRequest()
+                    .authenticated()
+            )
+
+            .formLogin(Customizer.withDefaults())
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+}
+
+9. In-Memory User Configuration
+
+@Bean
+public UserDetailsService userDetailsService() {
+
+    UserDetails user =
+            User.builder()
+                .username("user")
+                .password(passwordEncoder()
+                .encode("user123"))
+                .roles("USER")
+                .build();
+
+    UserDetails admin =
+            User.builder()
+                .username("admin")
+                .password(passwordEncoder()
+                .encode("admin123"))
+                .roles("ADMIN")
+                .build();
+
+    return new InMemoryUserDetailsManager(
+            user, admin);
+}
+10. Password Encoder Configuration
+@Bean
+PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+
+Example:
+
+String encoded =
+passwordEncoder().encode("admin123");
+
+Output:
+
+$2a$10$Xv4Abc....
+
+11. Authentication Flow
+
+User Login
+     |
+     V
+UsernamePasswordAuthenticationFilter
+     |
+     V
+AuthenticationManager
+     |
+     V
+UserDetailsService
+     |
+     V
+PasswordEncoder
+     |
+     V
+Authentication Success
+     |
+     V
+SecurityContextHolder
+
+12. Creating Custom Security Filter
+
+Sometimes we need:
+
+JWT validation
+API key validation
+Logging
+Request tracking
+
+For this we create a custom filter.
+
+Custom Filter
+
+package com.demo.filter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+public class CustomFilter
+        extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
+
+        System.out.println(
+            "Request URL : " +
+            request.getRequestURI());
+
+        filterChain.doFilter(
+                request,
+                response);
+    }
+}
+
+13. Register Custom Filter
+
+@Bean
+
+SecurityFilterChain securityFilterChain(
+                HttpSecurity http)
+                throws Exception {
+
+    http
+        .addFilterBefore(
+             new CustomFilter(),
+             UsernamePasswordAuthenticationFilter.class
+        )
+
+        .authorizeHttpRequests(auth -> auth
+                .anyRequest()
+                .authenticated())
+        .formLogin(Customizer.withDefaults());
+
+    return http.build();
+}
+
+Filter Execution
+
+CustomFilter
+      |
+      V
+UsernamePasswordAuthenticationFilter
+      |
+      V
+AuthorizationFilter
+      |
+      V
+Controller
+
+14. JWT Authentication Filter Example
+
+public class JwtAuthenticationFilter
+             extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String authHeader =
+            request.getHeader("Authorization");
+
+        if(authHeader != null &&
+           authHeader.startsWith("Bearer ")) {
+
+            String token =
+                authHeader.substring(7);
+
+            // Validate JWT Token
+
+            System.out.println(token);
+        }
+
+        filterChain.doFilter(
+                request,
+                response);
+    }
+}
+
+Register:
+
+http.addFilterBefore(
+        jwtAuthenticationFilter,
+        UsernamePasswordAuthenticationFilter.class
+);
+
+15. Complete Security Configuration Example
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
+            throws Exception {
+
+        http
+
+            .csrf(csrf -> csrf.disable())
+
+            .authorizeHttpRequests(auth -> auth
+
+                .requestMatchers(
+                    "/",
+                    "/login",
+                    "/register")
+                .permitAll()
+
+                .requestMatchers("/admin/**")
+                .hasRole("ADMIN")
+
+                .requestMatchers("/user/**")
+                .hasAnyRole("USER","ADMIN")
+
+                .anyRequest()
+                .authenticated()
+            )
+
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard")
+                .permitAll()
+            )
+
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+            )
+
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+
+Ant Matchers | Basic Auth Token | JWT :
+
+1. Ant Matchers in Spring Security   /api/data
+
+What are Ant Matchers?
+
+Ant Matchers are used to define URL access rules in Spring Security.
+
+They determine:
+
+Which URLs are public
+Which URLs require authentication
+Which URLs require specific roles
+
+Common Patterns
+
+Pattern	Description
+
+/admin/**	All URLs under admin
+/user/*	One level under user
+/**	All URLs
+/api/**	All API endpoints all the api
+/login	Exact URL
+
+Example
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin();
+
+        return http.build();
+    }
+}
+
+URL Authorization Flow
+
+Request URL
+      |
+      V
+Check Ant Matcher Rules
+      |
+      +---- /public/** ---> Permit
+      |
+      +---- /admin/** ---> ADMIN Role
+      |
+      +---- /user/** ---> USER Role
+      |
+      +---- Others ---> Authenticated
+
+Real-Time Example
+
+Controller
+
+@RestController
+public class TestController {
+
+    @GetMapping("/public/home")
+    public String home() {
+        return "Public Home";
+    }
+
+    @GetMapping("/user/profile")
+    public String profile() {
+        return "User Profile";
+    }
+
+    @GetMapping("/admin/dashboard")
+    public String dashboard() {
+        return "Admin Dashboard";
+    }
+}
+Access
+/public/home
+
+Accessible by everyone.
+
+/user/profile
+
+Requires USER role.
+
+/admin/dashboard
+
+Requires ADMIN role.
+
+2. Basic Authentication Token
+
+What is Basic Authentication?
+
+Basic Authentication sends:
+
+username:password
+
+encoded using Base64.
+
+Flow
+
+Client
+   |
+   | username:password
+   V
+Base64 Encoding
+   |
+   V
+Authorization Header
+   |
+   V
+Server Validation
+
+Example :
+
+Username
+
+admin
+
+Password
+
+password
+
+Combined
+
+admin:password admin123
+
+Base64 Encoded
+
+YWRtaW46cGFzc3dvcmQ=
+
+HTTP Header
+
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
+
+Spring Boot Configuration
+
+Security Config
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http
+            .authorizeHttpRequests(auth ->
+                auth.anyRequest().authenticated()
+            )
+            .httpBasic();
+
+        return http.build();
+    }
+}
+
+User Configuration
+
+@Bean
+public UserDetailsService userDetailsService() {
+
+    UserDetails user =
+        User.withUsername("admin")
+            .password(passwordEncoder().encode("password"))
+            .roles("ADMIN")
+            .build();
+
+    return new InMemoryUserDetailsManager(user);
+}
+
+Testing in Postman
+
+Authorization
+    Type → Basic Auth
+
+Enter:
+
+Username = admin
+Password = password
+
+Postman automatically generates:
+
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
+
+Drawbacks of Basic Authentication
+
+❌ Credentials sent with every request
+
+❌ Easy to decode
+
+❌ No expiration
+
+❌ Not suitable for modern microservices
+
+
+3. JWT (JSON Web Token) register JSON WT Login ==> Access Token  ==> Refresh Token
+
+JWT is the most commonly used authentication mechanism in modern Spring Boot REST APIs.
+
+What is JWT?
+
+JWT is a self-contained token containing:
+
+User information
+Roles
+Expiration time 1 hr
+
+No need to send username/password after login.
+
+JWT Structure
+
+xxxxx.yyyyy.zzzzz
+
+Three parts:
+
+Header.Payload.Signature
+
+Header
+{
+  "alg":"HS256",
+  "typ":"JWT"
+}
+Payload
+{
+  "sub":"admin",
+  "role":"ADMIN",
+  "exp":1712345678
+}
+Signature
+
+HMACSHA256(
+  base64UrlEncode(header) +
+  "." +
+  base64UrlEncode(payload),
+  secret
+)
+
+JWT Flow
+
+User Login
+    |
+    V
+Username + Password
+    |
+    V
+Authentication Manager
+    |
+    V
+JWT Generated  always generate from backend
+    |
+    V
+Client Stores Token  localStorage
+    |
+    V
+Authorization Header
+    |
+    V
+Server Validates JWT
+    |
+    V
+Access Granted
+
+JWT Authentication Architecture
++------------+
+|   Client   |
++------------+
+      |
+      | Login
+      V
++------------+
+| Spring API | Filters
++------------+
+      |
+      | Generate JWT
+      V
++------------+
+| JWT Token  |
++------------+
+
+Subsequent Requests
+
+Authorization: Bearer JWT_TOKEN
+
+Maven Dependency
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.5</version>
+</dependency>
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.5</version>
+    <scope>runtime</scope>
+</dependency>
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.5</version>
+    <scope>runtime</scope>
+</dependency>
+
+JWT Utility Class
+
+@Component
+public class JwtUtil {
+
+    private final String SECRET =
+            "mysecretkeymysecretkeymysecretkey";
+
+    public String generateToken(String username) {
+
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(
+                    new Date(System.currentTimeMillis()
+                    + 3600000))
+                .signWith(
+                    Keys.hmacShaKeyFor(
+                      SECRET.getBytes()),
+                    Jwts.SIG.HS256)
+                .compact();
+    }
+
+    public String extractUsername(String token) {
+
+        return Jwts.parser()
+                .verifyWith(
+                    Keys.hmacShaKeyFor(
+                      SECRET.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+}
+
+Login API
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping("/login")
+    public String login() {
+
+        return jwtUtil.generateToken("admin");
+    }
+}
+JWT Header Example
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Security Configuration
+@Bean
+SecurityFilterChain securityFilterChain(
+        HttpSecurity http) throws Exception {
+
+    http
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(auth ->
+            auth
+                .requestMatchers("/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+      );
+
+    return http.build();
+}
+Basic Auth vs JWT
+Feature	Basic Auth	JWT
+Credentials Sent Every Request	Yes	No
+Stateless	No	Yes
+Expiration	No	Yes
+Secure	Less	More
+Scalable	No	Yes
+Microservices	Poor	Excellent
+Mobile Apps	Poor	Excellent
+Modern REST APIs	Rarely Used	Standard
+
+
+
+
+Complete Code Example :
+
+
+Spring Boot + Spring Security + JWT + Thymeleaf + MySQL Complete Project
+
+This project demonstrates:
+
+Maven Dependencies
+Auto Generated Spring Security Credentials
+Spring Security Filter Chain
+Spring Security Configuration
+Request Matchers (Ant Matchers equivalent)
+Basic Authentication
+JWT Authentication
+Login Page (Thymeleaf)
+Registration Page (Thymeleaf)
+MySQL Database
+User Registration
+User Login
+Role Based Authorization
+
+1. Project Architecture
+
+spring-security-jwt-demo   JSON  ==> parse and stringify
+│
+├── controller
+│     ├── AuthController
+│     ├── HomeController
+│
+├── entity
+│     ├── User
+│
+├── repository
+│     ├── UserRepository
+│
+├── service
+│     ├── UserService
+│     ├── CustomUserDetailsService
+│
+├── security
+│     ├── JwtUtil
+│     ├── JwtAuthenticationFilter
+│     ├── SecurityConfig
+│
+├── dto
+│     ├── LoginRequest
+│     ├── RegisterRequest
+│
+├── templates
+│     ├── login.html
+│     ├── register.html
+│     ├── home.html
+│
+└── SpringSecurityJwtApplication.java
+
+2. pom.xml
+
+<dependencies>
+
+    <!-- Spring Boot Starter Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Thymeleaf -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- Spring Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+    <!-- JWT -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.11.5</version>
+    </dependency>
+
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+
+</dependencies>
+
+3. application.properties
+
+spring.datasource.url=jdbc:mysql://localhost:3306/securitydb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+server.port=8080
+
+4. User Entity
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+
+    private String password;
+
+    private String role;
+
+    public User() {
+    }
+
+    public User(String username,String password,String role) {
+        this.username=username;
+        this.password=password;
+        this.role=role;
+    }
+
+    // Getters and Setters
+}
+5. Repository
+
+package com.demo.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.demo.entity.User;
+
+public interface UserRepository
+       extends JpaRepository<User,Long>{
+
+    Optional<User> findByUsername(String username);
+}
+
+6. Register DTO
+
+package com.demo.dto;
+
+public class RegisterRequest {
+
+    private String username;
+    private String password;
+
+    // Getters and Setters
+}
+7. Login DTO
+
+package com.demo.dto;
+
+public class LoginRequest {
+
+    private String username;
+    private String password;
+
+    // Getters and Setters
+}
+
+8. User Service
+
+package com.demo.service;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.demo.entity.User;
+import com.demo.repository.UserRepository;
+
+@Service
+public class UserService {
+
+    private UserRepository repo;
+    private PasswordEncoder encoder;
+
+    public UserService(UserRepository repo,
+                       PasswordEncoder encoder) {
+
+        this.repo=repo;
+        this.encoder=encoder;
+    }
+
+    public void register(String username,
+                         String password){
+
+        User user=new User();
+
+        user.setUsername(username);
+        user.setPassword(
+                encoder.encode(password));
+
+        user.setRole("ROLE_USER");
+
+        repo.save(user);
+    }
+}
+
+9. Custom UserDetailsService
+
+package com.demo.service;
+
+import java.util.Collections;
+
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
+
+import com.demo.entity.User;
+import com.demo.repository.UserRepository;
+
+@Service
+public class CustomUserDetailsService
+        implements UserDetailsService {
+
+    private UserRepository repo;
+
+    public CustomUserDetailsService(
+            UserRepository repo){
+
+        this.repo=repo;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(
+            String username)
+            throws UsernameNotFoundException {
+
+        User user=repo.findByUsername(username)
+                .orElseThrow(() ->
+                  new UsernameNotFoundException(
+                  "User not found"));
+
+        return new org.springframework.security
+                .core.userdetails.User(
+                        user.getUsername(),
+                        user.getPassword(),
+                        Collections.emptyList());
+    }
+}
+
+10. JWT Utility Class
+
+package com.demo.security;
+
+import java.util.Date;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
+
+public class JwtUtil {
+
+    private static final SecretKey SECRET_KEY =
+            Keys.hmacShaKeyFor(
+             "mysecretkeymysecretkeymysecretkey12"
+             .getBytes());
+
+    public String generateToken(
+            String username){
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                   new Date(
+                    System.currentTimeMillis()
+                    +86400000))
+                .signWith(SECRET_KEY)
+                .compact();
+    }
+
+    public String extractUsername(
+            String token){
+
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+}
+11. JWT Authentication Filter
+
+Spring Security Filter intercepts every request.
+
+package com.demo.security;
+
+import java.io.IOException;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+
+import org.springframework.security.authentication.
+UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.
+SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.
+OncePerRequestFilter;
+
+@Component
+public class JwtAuthenticationFilter
+       extends OncePerRequestFilter {
+
+    private JwtUtil jwtUtil=new JwtUtil();
+
+    @Override
+    protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain)
+        throws ServletException, IOException {
+
+        String authHeader=
+              request.getHeader("Authorization");
+
+        if(authHeader!=null &&
+           authHeader.startsWith("Bearer ")) {
+
+            String token=
+                authHeader.substring(7);
+
+            String username=
+               jwtUtil.extractUsername(token);
+
+            UsernamePasswordAuthenticationToken auth=
+             new UsernamePasswordAuthenticationToken(
+                     username,
+                     null,
+                     null);
+
+            SecurityContextHolder
+             .getContext()
+             .setAuthentication(auth);
+        }
+
+        chain.doFilter(request,response);
+    }
+}
+12. Security Configuration
+
+Auto Generated Credentials
+
+Without configuration:
+
+spring.security.user.name=admin
+spring.security.user.password=admin123
+
+or
+
+@Bean
+public UserDetailsService users() {
+
+    UserDetails user =
+      User.builder()
+      .username("admin")
+      .password(passwordEncoder()
+      .encode("admin123"))
+      .roles("ADMIN")
+      .build();
+
+    return new InMemoryUserDetailsManager(user);
+}
+
+Spring Security Configuration
+
+package com.demo.security;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private JwtAuthenticationFilter jwtFilter;
+
+    public SecurityConfig(
+          JwtAuthenticationFilter jwtFilter){
+        this.jwtFilter=jwtFilter;
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
+            throws Exception {
+
+        http
+        .csrf(csrf->csrf.disable())
+
+        .authorizeHttpRequests(auth->auth
+
+            .requestMatchers(
+              "/login",
+              "/register",
+              "/css/**",
+              "/js/**")
+            .permitAll()
+
+            .requestMatchers("/admin/**")
+            .hasRole("ADMIN")
+
+            .requestMatchers("/user/**")
+            .hasRole("USER")
+
+            .anyRequest()
+            .authenticated()
+        )
+
+        .formLogin(form->form
+           .loginPage("/login")
+           .defaultSuccessUrl("/home",true)
+           .permitAll()
+        )
+
+        .logout(logout->logout
+           .logoutSuccessUrl("/login")
+        );
+
+        http.addFilterBefore(
+             jwtFilter,
+             UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+}
+
+13. Authentication Controller
+
+@Controller
+
+public class AuthController {
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    AuthenticationManager authManager;
+
+    private JwtUtil jwtUtil=new JwtUtil();
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(RegisterRequest request){
+
+        userService.register(
+                request.getUsername(),
+                request.getPassword());
+
+        return "redirect:/login";
+    }
+
+    @ResponseBody
+    @PostMapping("/api/login")
+    public String login(
+            @RequestBody LoginRequest request){
+
+        Authentication auth=
+           authManager.authenticate(
+           new UsernamePasswordAuthenticationToken(
+             request.getUsername(),
+             request.getPassword()));
+
+        return jwtUtil.generateToken(
+                request.getUsername());
+    }
+}
+
+14. Home Controller
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
+}
+
+15. login.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Login</title>
+</head>
+
+<body>
+
+<h2>Login</h2>
+
+<form th:action="@{/login}" method="post">
+
+Username:
+<input type="text" name="username">
+
+<br><br>
+
+Password:
+<input type="password" name="password">
+
+<br><br>
+
+<button type="submit">
+Login
+</button>
+
+</form>
+
+<a href="/register">
+Register
+</a>
+
+</body>
+</html>
+
+16. register.html
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Register</title>
+</head>
+
+<body>
+
+<h2>Register</h2>
+
+<form th:action="@{/register}"
+      method="post">
+
+Username:
+<input type="text"
+       name="username">
+
+<br><br>
+
+Password:
+<input type="password"
+       name="password">
+
+<br><br>
+
+<button type="submit">
+Register
+</button>
+
+</form>
+
+</body>
+</html>
+
+17. home.html
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<title>Home</title>
+</head>
+
+<body>
+
+<h1>
+Welcome to Spring Security JWT
+</h1>
+
+<a href="/logout">
+Logout
+</a>
+
+</body>
+
+</html>
+
+18. MySQL Table
+
+CREATE DATABASE securitydb;
+
+USE securitydb;
+
+CREATE TABLE users(
+
+id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+username VARCHAR(100),
+
+password VARCHAR(255),
+
+role VARCHAR(50)
+
+);
+
+Request Flow
+
+Register Page
+      |
+      V
+Store User in MySQL
+      |
+      V
+BCrypt Encrypt Password
+      |
+      V
+Login
+      |
+      V
+AuthenticationManager
+      |
+      V
+Generate JWT Token
+      |
+      V
+Authorization Header
+
+Bearer eyJhbGciOiJIUzI1Ni...
+
+      |
+      V
+JWT Filter
+      |
+      V
+Validate Token
+      |
+      V
+SecurityContextHolder
+      |
+      V
+Protected Resource
+Important Concepts Covered
+Maven Dependency
+spring-boot-starter-security
+spring-boot-starter-thymeleaf
+spring-boot-starter-data-jpa
+mysql-connector-j
+jjwt
+Auto Generated Credentials
+Using Spring Security default user
+or custom InMemoryUserDetailsManager
+Security Filter
+JwtAuthenticationFilter
+extends OncePerRequestFilter
+Security Configuration
+SecurityFilterChain
+Ant Matchers / Request Matchers
+.requestMatchers("/admin/**")
+.requestMatchers("/user/**")
+Basic Authentication Header
+Authorization: Basic
+YWRtaW46YWRtaW4xMjM=
+JWT Authentication Header
+Authorization:
+Bearer eyJhbGciOiJIUzI1Ni...
+
+Thi
+
+
+

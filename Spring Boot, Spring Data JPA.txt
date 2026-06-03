@@ -1,0 +1,1262 @@
+Exception Handling on REST end point, "Overview | JDBC template API | Data Source Configuration | RowMapper Interface | JdbcTemplate Example" :
+
+
+
+1. Exception Handling on REST Endpoint :   API endpoint /data  /register /login
+
+Overview
+
+Exception Handling is the mechanism of handling runtime errors gracefully and returning meaningful responses to API consumers instead of exposing application errors.
+
+Without Exception Handling
+
+If an exception occurs:
+
+@GetMapping("/employee/{id}")
+public Employee getEmployee(@PathVariable int id) {
+    return employeeService.findById(id);
+}
+
+Output:
+
+{
+  "timestamp": "2026-06-03T10:00:00",
+  "status": 500,
+  "error": "Internal Server Error"
+}
+
+This is not user-friendly.
+
+Why Exception Handling?
+
+✔ Better Error Messages
+
+✔ Consistent API Responses
+
+✔ Hide Internal System Details
+
+✔ Improve Debugging
+
+✔ Better Client Experience
+
+Types of Exceptions :
+
+Checked Exception
+
+Handled at compile time.
+
+IOException
+SQLException
+
+Unchecked Exception
+
+Handled at runtime.
+
+NullPointerException
+ArithmeticException
+ArrayIndexOutOfBoundsException
+
+Creating Custom Exception
+
+ResourceNotFoundException
+
+package com.example.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+
+Service Layer
+
+@Service
+public class EmployeeService {
+
+    public Employee getEmployee(int id) {
+
+        if(id != 1) {
+            throw new ResourceNotFoundException(
+                    "Employee Not Found : " + id);
+        }
+
+        return new Employee(1,"John");
+    }
+}
+
+Controller
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService service;
+
+    @GetMapping("/{id}")
+    public Employee getEmployee(@PathVariable int id) {
+        return service.getEmployee(id);
+    }
+}
+
+Using @ExceptionHandler
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleException(
+            ResourceNotFoundException ex){
+
+        return new ResponseEntity<>(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND);
+    }
+}
+
+Output:
+
+Employee Not Found : 100
+
+Custom Error Response :
+
+ErrorResponse Class
+
+public class ErrorResponse {
+
+    private String message;
+    private int status;
+    private LocalDateTime timeStamp;
+
+    public ErrorResponse() {
+    }
+
+    public ErrorResponse(String message,
+                         int status,
+                         LocalDateTime timeStamp) {
+        this.message = message;
+        this.status = status;
+        this.timeStamp = timeStamp;
+    }
+
+    // getters setters
+}
+
+Global Exception Handler
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse>
+    handleResourceNotFound(ResourceNotFoundException ex){
+
+        ErrorResponse response =
+                new ErrorResponse(
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value(),
+                        LocalDateTime.now());
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.NOT_FOUND);
+    }
+}
+
+Output
+
+{
+   "message":"Employee Not Found : 100",
+   "status":404,
+   "timeStamp":"2026-06-03T10:00:00"
+}
+
+Handle Generic Exceptions :
+
+@ExceptionHandler(Exception.class)
+
+public ResponseEntity<ErrorResponse>
+handleException(Exception ex){
+
+    ErrorResponse response =
+            new ErrorResponse(
+                    ex.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    LocalDateTime.now());
+
+    return new ResponseEntity<>(
+            response,
+            HttpStatus.INTERNAL_SERVER_ERROR);
+}
+
+Exception Handling Flow
+
+Client Request
+      |
+      v
+ Controller
+      |
+      v
+ Service Layer
+      |
+ Exception Occurs
+      |
+      v
+@RestControllerAdvice
+      |
+      v
+JSON Error Response
+      |
+      v
+Client
+
+2. JDBC Template API
+
+What is JDBC Template?
+
+JdbcTemplate is a Spring Framework class that simplifies JDBC operations.
+
+It removes:
+
+Boilerplate code
+Connection management
+Statement creation
+ResultSet processing
+Exception handling
+
+Traditional JDBC :
+
+Connection con = null;
+PreparedStatement ps = null;
+ResultSet rs = null;
+
+try {
+    con = DriverManager.getConnection(...);
+    ps = con.prepareStatement(...);
+    rs = ps.executeQuery();
+
+} finally {
+    rs.close();
+    ps.close();
+    con.close();
+}
+
+Many lines of code.
+
+JdbcTemplate :
+
+List<Employee> employees =
+        jdbcTemplate.query(sql,
+                new EmployeeRowMapper());
+
+Very simple.
+
+JDBC Template Architecture :
+
+Application
+      |
+      v
+ JdbcTemplate
+      |
+      v
+ DataSource
+      |
+      v
+ Database
+
+Advantages
+
+✔ Less Code
+
+✔ Better Readability
+
+✔ Automatic Resource Management
+
+✔ Better Exception Handling
+
+✔ Faster Development
+
+Common JdbcTemplate Methods
+
+Method		Description
+
+query()		Multiple Records
+queryForObject()	Single Record
+update()		Insert/Update/Delete
+batchUpdate()	Bulk Operations
+execute()		Execute SQL
+
+3. Data Source Configuration
+
+What is DataSource?
+
+DataSource provides database connection information.
+
+Spring Boot automatically creates DataSource Bean.
+
+Maven Dependency
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>
+        spring-boot-starter-jdbc
+    </artifactId>
+</dependency>
+
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+</dependency>
+
+application.properties
+
+spring.datasource.url=
+jdbc:mysql://localhost:3306/companydb
+
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.datasource.driver-class-name=
+com.mysql.cj.jdbc.Driver
+
+Auto Configuration :
+
+Spring Boot internally creates:
+
+@Bean
+public DataSource dataSource() {
+   return new HikariDataSource();
+}
+
+Default Connection Pool:
+
+HikariCP
+Custom DataSource Bean
+
+@Configuration
+public class DatabaseConfig {
+
+    @Bean
+    public DataSource dataSource() {
+
+        DriverManagerDataSource ds =
+                new DriverManagerDataSource();
+
+        ds.setDriverClassName(
+                "com.mysql.cj.jdbc.Driver");
+
+        ds.setUrl(
+                "jdbc:mysql://localhost:3306/companydb");
+
+        ds.setUsername("root");
+        ds.setPassword("root");
+
+        return ds;
+    }
+}
+
+4. RowMapper Interface
+
+What is RowMapper?
+
+RowMapper maps each database row to a Java Object.
+
+Database Table :
+
+CREATE TABLE employee(
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    salary DOUBLE
+);
+
+Data
+
+1 John 50000
+2 David 60000
+3 Smith 70000
+
+Employee Entity
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private double salary;
+
+    // getters setters
+}
+
+EmployeeRowMapper
+
+package com.example.mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+public class EmployeeRowMapper
+implements RowMapper<Employee> {
+
+    @Override
+    public Employee mapRow(
+            ResultSet rs,
+            int rowNum)
+            throws SQLException {
+
+        Employee emp = new Employee();
+
+        emp.setId(rs.getInt("id"));
+        emp.setName(rs.getString("name"));
+        emp.setSalary(rs.getDouble("salary"));
+
+        return emp;
+    }
+}
+
+RowMapper Flow :
+
+ResultSet
+     |
+     v
+RowMapper
+     |
+     v
+Employee Object
+     |
+     v
+List<Employee>
+
+5. Complete JdbcTemplate Example in Spring Boot
+
+Project Structure
+
+com.example
+|
+├── controller
+├── service
+├── repository
+├── mapper
+├── entity
+└── application.properties
+
+Employee Entity
+
+public class Employee {
+
+    private int id;
+    private String name;
+    private double salary;
+
+    public Employee() {
+    }
+
+    public Employee(int id,
+                    String name,
+                    double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    // getters setters
+}
+
+EmployeeRowMapper
+
+@Component
+public class EmployeeRowMapper
+implements RowMapper<Employee> {
+
+    @Override
+    public Employee mapRow(
+            ResultSet rs,
+            int rowNum)
+            throws SQLException {
+
+        Employee emp = new Employee();
+
+        emp.setId(rs.getInt("id"));
+        emp.setName(rs.getString("name"));
+        emp.setSalary(rs.getDouble("salary"));
+
+        return emp;
+    }
+}
+
+Repository Layer
+
+@Repository
+public class EmployeeRepository {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private EmployeeRowMapper rowMapper;
+
+    public List<Employee> findAll() {
+
+        String sql =
+                "SELECT * FROM employee";
+
+        return jdbcTemplate.query(
+                sql,
+                rowMapper);
+    }
+
+    public Employee findById(int id) {
+
+        String sql =
+                "SELECT * FROM employee WHERE id=?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                rowMapper,
+                id);
+    }
+
+    public int save(Employee employee) {
+
+        String sql =
+                "INSERT INTO employee(id,name,salary) VALUES(?,?,?)";
+
+        return jdbcTemplate.update(
+                sql,
+                employee.getId(),
+                employee.getName(),
+                employee.getSalary());
+    }
+
+    public int update(Employee employee) {
+
+        String sql =
+                "UPDATE employee SET name=?,salary=? WHERE id=?";
+
+        return jdbcTemplate.update(
+                sql,
+                employee.getName(),
+                employee.getSalary(),
+                employee.getId());
+    }
+
+    public int delete(int id) {
+
+        String sql =
+                "DELETE FROM employee WHERE id=?";
+
+        return jdbcTemplate.update(sql,id);
+    }
+}
+
+Service Layer
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepository repository;
+
+    public List<Employee> getAllEmployees() {
+        return repository.findAll();
+    }
+
+    public Employee getEmployee(int id) {
+        return repository.findById(id);
+    }
+
+    public void addEmployee(Employee emp) {
+        repository.save(emp);
+    }
+
+    public void updateEmployee(Employee emp) {
+        repository.update(emp);
+    }
+
+    public void deleteEmployee(int id) {
+        repository.delete(id);
+    }
+}
+
+REST Controller
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService service;
+
+    @GetMapping
+    public List<Employee> getAll() {
+        return service.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getById(
+            @PathVariable int id) {
+
+        return service.getEmployee(id);
+    }
+
+    @PostMapping
+    public String save(
+            @RequestBody Employee employee){
+
+        service.addEmployee(employee);
+
+        return "Employee Saved";
+    }
+
+    @PutMapping
+    public String update(
+            @RequestBody Employee employee){
+
+        service.updateEmployee(employee);
+
+        return "Employee Updated";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(
+            @PathVariable int id){
+
+        service.deleteEmployee(id);
+
+        return "Employee Deleted";
+    }
+}
+
+End-to-End Architecture
+
+REST Client (Postman)
+        |
+        v
+EmployeeController
+        |
+        v
+EmployeeService
+        |
+        v
+EmployeeRepository
+        |
+        v
+JdbcTemplate
+        |
+        v
+DataSource
+        |
+        v
+MySQL Database
+
+
+Complete Project :
+
+
+
+Spring Boot JDBC Template + REST API + Exception Handling Complete Project (From Scratch)
+
+This project demonstrates:
+
+Spring Boot REST API
+JDBC Template API
+DataSource Configuration
+MySQL Database Connection
+RowMapper Interface
+CRUD Operations
+Global Exception Handling
+Custom Exceptions
+REST Endpoints
+Layered Architecture
+
+1. Project Architecture
+
+springboot-jdbc-demo
+|
+├── controller
+│      EmployeeController.java
+|
+├── service
+│      EmployeeService.java
+│      EmployeeServiceImpl.java
+|
+├── repository
+│      EmployeeRepository.java
+│      EmployeeRepositoryImpl.java
+|
+├── entity
+│      Employee.java
+|
+├── mapper
+│      EmployeeRowMapper.java
+|
+├── exception
+│      ResourceNotFoundException.java
+│      GlobalExceptionHandler.java
+|
+├── SpringJdbcDemoApplication.java
+|
+└── resources
+       application.properties
+
+2. Create MySQL Database
+
+CREATE DATABASE employee_db;
+
+USE employee_db;
+
+CREATE TABLE employee
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    salary DOUBLE
+);
+
+3. Create Spring Boot Project
+
+Dependencies:
+
+<dependencies>
+
+    <!-- Spring Boot Starter Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- JDBC -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+</dependencies>
+
+4. Configure Data Source
+
+application.properties
+
+spring.datasource.url=jdbc:mysql://localhost:3306/employee_db
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+server.port=8080
+
+5. Entity Class
+
+Employee.java
+
+package com.example.entity;
+
+public class Employee {
+
+    private Integer id;
+    private String name;
+    private String email;
+    private Double salary;
+
+    public Employee() {
+    }
+
+    public Employee(Integer id,
+                    String name,
+                    String email,
+                    Double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+}
+
+6. RowMapper Interface
+
+What is RowMapper?
+
+RowMapper converts database rows into Java Objects.
+
+Without RowMapper
+ResultSet rs
+
+You manually extract data.
+
+With RowMapper
+
+Employee employee = rowMapper.mapRow(rs, rowNum);
+
+Spring automatically maps records.
+
+EmployeeRowMapper.java
+
+package com.example.mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+import com.example.entity.Employee;
+
+public class EmployeeRowMapper
+        implements RowMapper<Employee> {
+
+    @Override
+    public Employee mapRow(ResultSet rs,
+                           int rowNum)
+            throws SQLException {
+
+        Employee employee = new Employee();
+
+        employee.setId(rs.getInt("id"));
+        employee.setName(rs.getString("name"));
+        employee.setEmail(rs.getString("email"));
+        employee.setSalary(rs.getDouble("salary"));
+
+        return employee;
+    }
+}
+
+7. Repository Layer
+
+EmployeeRepository.java
+
+package com.example.repository;
+
+import java.util.List;
+
+import com.example.entity.Employee;
+
+public interface EmployeeRepository {
+
+    int save(Employee employee);
+
+    List<Employee> findAll();
+
+    Employee findById(Integer id);
+
+    int update(Employee employee);
+
+    int delete(Integer id);
+}
+
+8. JdbcTemplate Implementation
+
+EmployeeRepositoryImpl.java
+
+package com.example.repository;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.example.entity.Employee;
+import com.example.mapper.EmployeeRowMapper;
+
+@Repository
+public class EmployeeRepositoryImpl
+        implements EmployeeRepository {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public int save(Employee employee) {
+
+        String sql =
+                "INSERT INTO employee(name,email,salary) VALUES(?,?,?)";
+
+        return jdbcTemplate.update(
+                sql,
+                employee.getName(),
+                employee.getEmail(),
+                employee.getSalary());
+    }
+
+    @Override
+    public List<Employee> findAll() {
+
+        String sql = "SELECT * FROM employee";
+
+        return jdbcTemplate.query(
+                sql,
+                new EmployeeRowMapper());
+    }
+
+    @Override
+    public Employee findById(Integer id) {
+
+        String sql =
+                "SELECT * FROM employee WHERE id=?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new EmployeeRowMapper(),
+                id);
+    }
+
+    @Override
+    public int update(Employee employee) {
+
+        String sql =
+                "UPDATE employee SET name=?,email=?,salary=? WHERE id=?";
+
+        return jdbcTemplate.update(
+                sql,
+                employee.getName(),
+                employee.getEmail(),
+                employee.getSalary(),
+                employee.getId());
+    }
+
+    @Override
+    public int delete(Integer id) {
+
+        String sql =
+                "DELETE FROM employee WHERE id=?";
+
+        return jdbcTemplate.update(sql, id);
+    }
+}
+9. Custom Exception
+
+ResourceNotFoundException.java
+
+package com.example.exception;
+
+public class ResourceNotFoundException
+        extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+
+10. Service Layer
+
+EmployeeService.java
+package com.example.service;
+
+import java.util.List;
+
+import com.example.entity.Employee;
+
+public interface EmployeeService {
+
+    Employee save(Employee employee);
+
+    List<Employee> getAllEmployees();
+
+    Employee getEmployeeById(Integer id);
+
+    Employee updateEmployee(Integer id,
+                            Employee employee);
+
+    void deleteEmployee(Integer id);
+}
+
+EmployeeServiceImpl.java
+
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.entity.Employee;
+import com.example.exception.ResourceNotFoundException;
+import com.example.repository.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl
+        implements EmployeeService {
+
+    @Autowired
+    private EmployeeRepository repository;
+
+    @Override
+    public Employee save(Employee employee) {
+
+        repository.save(employee);
+
+        return employee;
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+
+        return repository.findAll();
+    }
+
+    @Override
+    public Employee getEmployeeById(Integer id) {
+
+        try {
+            return repository.findById(id);
+        }
+        catch (Exception e) {
+
+            throw new ResourceNotFoundException(
+                    "Employee Not Found : " + id);
+        }
+    }
+
+    @Override
+    public Employee updateEmployee(Integer id,
+                                   Employee employee) {
+
+        Employee existing =
+                getEmployeeById(id);
+
+        existing.setName(employee.getName());
+        existing.setEmail(employee.getEmail());
+        existing.setSalary(employee.getSalary());
+
+        repository.update(existing);
+
+        return existing;
+    }
+
+    @Override
+    public void deleteEmployee(Integer id) {
+
+        getEmployeeById(id);
+
+        repository.delete(id);
+    }
+}
+
+11. Global Exception Handling
+
+GlobalExceptionHandler.java
+
+package com.example.exception;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(
+            ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFound(
+            ResourceNotFoundException ex) {
+
+        Map<String, Object> map =
+                new HashMap<>();
+
+        map.put("timestamp",
+                LocalDateTime.now());
+
+        map.put("status", 404);
+
+        map.put("message",
+                ex.getMessage());
+
+        return new ResponseEntity<>(
+                map,
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(
+            Exception ex) {
+
+        Map<String, Object> map =
+                new HashMap<>();
+
+        map.put("timestamp",
+                LocalDateTime.now());
+
+        map.put("status", 500);
+
+        map.put("message",
+                ex.getMessage());
+
+        return new ResponseEntity<>(
+                map,
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+12. REST Controller
+EmployeeController.java
+package com.example.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.entity.Employee;
+import com.example.service.EmployeeService;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService service;
+
+    @PostMapping
+    public Employee saveEmployee(
+            @RequestBody Employee employee) {
+
+        return service.save(employee);
+    }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+
+        return service.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getEmployee(
+            @PathVariable Integer id) {
+
+        return service.getEmployeeById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployee(
+            @PathVariable Integer id,
+            @RequestBody Employee employee) {
+
+        return service.updateEmployee(id,
+                employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(
+            @PathVariable Integer id) {
+
+        service.deleteEmployee(id);
+
+        return "Employee Deleted Successfully";
+    }
+}
+13. Main Class
+SpringJdbcDemoApplication.java
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringJdbcDemoApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(
+                SpringJdbcDemoApplication.class,
+                args);
+    }
+}
+14. Testing REST APIs
+Create Employee
+POST
+http://localhost:8080/employees
+
+Request Body
+
+{
+  "name":"Amol",
+  "email":"amol@gmail.com",
+  "salary":50000
+}
+Get All Employees
+GET
+http://localhost:8080/employees
+Get Employee By Id
+GET
+http://localhost:8080/employees/1
+Update Employee
+PUT
+http://localhost:8080/employees/1
+{
+  "name":"Amol Kumar",
+  "email":"amol@gmail.com",
+  "salary":70000
+}
+Delete Employee
+DELETE
+http://localhost:8080/employees/1
+Exception Handling Output Example
+
+Request:
+
+GET /employees/100
+
+Response:
+
+{
+   "timestamp":"2026-06-03T10:30:20",
+   "status":404,
+   "message":"Employee Not Found : 100"
+}
+JDBC Template Methods Frequently Used in Real Projects
+Method	Purpose
+update()	Insert, Update, Delete
+query()	Multiple Records
+queryForObject()	Single Record
+queryForList()	List of Values
+queryForMap()	Single Row as Map
+batchUpdate()	Bulk Insert/Update
+execute()	Execute SQL Statement
+
+
+
+
+
+
