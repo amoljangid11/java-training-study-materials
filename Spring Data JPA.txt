@@ -1,0 +1,3513 @@
+Entity Mapping, Id Mapping, Columns Mapping | Inheritence Mapping | Embeded (Composition) Mapping, Association Mapping | JPQL :
+
+
+
+1. What is JPA?
+
+JPA (Java Persistence API) is a specification used to map Java Objects to Relational Database Tables.
+
+JPA implementation providers:
+
+Hibernate (Most Popular)
+EclipseLink
+OpenJPA
+
+Without JPA
+
+Connection con = DriverManager.getConnection(...);
+PreparedStatement ps = con.prepareStatement(
+        "INSERT INTO employee VALUES (?,?)");
+
+With JPA
+
+employeeRepository.save(employee);
+
+JPA automatically converts Java Objects into Database Records.
+
+2. Entity Mapping
+
+What is Entity?
+
+An Entity is a Java class that represents a database table.
+
+Employee Table
+
+id	name	salary
+1	John	50000
+
+Entity Class
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "employee")
+public class Employee {
+
+    @Id
+    private Long id;
+
+    private String name;
+
+    private Double salary;
+
+    // Getter Setter
+}
+
+Important Annotations
+
+Annotation	Purpose
+
+@Entity		Marks class as Entity
+@Table		Maps class to table
+@Id		Primary Key
+@Column		Maps field to column
+
+3. ID Mapping
+
+Primary Key Mapping.
+
+Strategy 1: AUTO
+
+@Id
+@GeneratedValue(strategy = GenerationType.AUTO)
+private Long id;
+
+Hibernate decides generation strategy.
+
+Strategy 2: IDENTITY
+
+Used with MySQL Auto Increment.
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+Generated SQL:
+
+CREATE TABLE employee(
+id BIGINT AUTO_INCREMENT PRIMARY KEY
+);
+
+Strategy 3: SEQUENCE
+
+Mostly Oracle/PostgreSQL.
+
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE)
+private Long id;
+
+Custom Sequence :
+
+@SequenceGenerator(
+        name="emp_seq",
+        sequenceName="emp_sequence",
+        allocationSize=1)
+
+@Id
+@GeneratedValue(
+        strategy=GenerationType.SEQUENCE,
+        generator="emp_seq")
+private Long id;
+
+Strategy 4: TABLE
+
+Uses separate table for IDs.
+
+@Id
+@GeneratedValue(strategy = GenerationType.TABLE)
+private Long id;
+
+Complete Example
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+}
+
+4. Column Mapping
+
+Maps Java fields to database columns.
+
+Default Mapping
+
+private String employeeName;
+
+Column:
+
+employee_name
+
+Custom Column Name :
+
+@Column(name = "emp_name")
+private String employeeName;
+
+Nullable Column :
+
+@Column(nullable = false)
+
+private String name;
+
+Generated SQL:
+
+name varchar(255) not null
+
+Unique Column :
+
+@Column(unique = true)
+private String email;
+
+Length
+
+@Column(length = 100)
+private String name;
+
+Precision and Scale :
+
+@Column(
+precision = 10,
+scale = 2)
+private BigDecimal salary;
+
+Generated SQL:
+
+salary decimal(10,2)
+
+Full Example
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name="emp_name",
+            nullable=false,
+            length=50)
+    private String name;
+
+    @Column(unique=true)
+    private String email;
+}
+
+5. Inheritance Mapping
+
+Used when multiple entities share common properties.
+
+Example
+
+Parent
+
+public class Person {
+
+    private Long id;
+    private String name;
+}
+
+Child
+
+public class Employee extends Person
+public class Customer extends Person
+
+JPA supports 3 inheritance strategies.
+
+Strategy 1: SINGLE_TABLE
+
+One table for all classes.
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Person {
+
+    @Id
+    private Long id;
+
+    private String name;
+}
+
+Child
+
+@Entity
+public class Employee extends Person {
+
+    private Double salary;
+}
+
+@Entity
+public class Customer extends Person {
+
+    private String city;
+}
+
+Generated Table:
+
+id	dtype	name	salary	city
+
+Advantages
+
+Fast queries
+No joins
+
+Disadvantages
+Many null values
+
+Strategy 2: JOINED
+
+Separate table for parent and child.
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Person
+
+Tables:
+
+Person
+
+| id | name |
+
+Employee
+
+| id | salary |
+
+Customer
+
+| id | city |
+
+Advantages :
+
+Normalized
+
+Disadvantages
+
+Joins required
+
+Strategy 3: TABLE_PER_CLASS
+
+Each class gets its own table.
+
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Person
+
+Tables:
+
+Employee
+
+| id | name | salary |
+
+Customer
+
+| id | name | city |
+
+6. Embedded (Composition) Mapping
+
+Used when an object belongs completely to another object.
+
+Example:
+
+Employee HAS-A Address
+
+Address Class
+
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public class Address {
+
+    private String city;
+
+    private String state;
+
+    private String country;
+}
+
+Employee Class
+
+@Entity
+public class Employee {
+
+    @Id
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    private Address address;
+}
+
+Generated Table
+
+| id | name | city | state | country |
+
+Multiple Embedded Objects :
+
+@Embedded
+private Address permanentAddress;
+
+@Embedded
+private Address currentAddress;
+
+Use:
+
+@AttributeOverrides({
+ @AttributeOverride(
+  name="city",
+  column=@Column(name="perm_city"))
+})
+
+7. Association Mapping
+
+Represents relationships between entities.
+
+Types:
+
+OneToOne
+OneToMany
+ManyToOne
+ManyToMany
+
+One-To-One Mapping
+
+Person ↔ Passport
+
+Passport
+
+@Entity
+public class Passport {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String passportNumber;
+}
+
+Person
+@Entity
+public class Person {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @OneToOne
+    @JoinColumn(name="passport_id")
+    private Passport passport;
+}
+
+Tables:
+
+person
+------
+id
+name
+passport_id
+
+One-To-Many Mapping
+
+Department → Employees
+
+Department
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @OneToMany(mappedBy="department")
+    private List<Employee> employees;
+}
+
+
+Employee
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name="dept_id")
+    private Department department;
+}
+
+Generated Table
+
+Employee
+
+| id | name | dept_id |
+
+Many-To-One Mapping :
+
+Many Employees belong to One Department.
+
+@ManyToOne
+@JoinColumn(name="dept_id")
+private Department department;
+
+Many-To-Many Mapping :
+
+Student ↔ Course
+
+Student
+
+@Entity
+public class Student {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @ManyToMany
+    @JoinTable(
+      name="student_course",
+      joinColumns=@JoinColumn(name="student_id"),
+      inverseJoinColumns=@JoinColumn(name="course_id")
+    )
+    private List<Course> courses;
+}
+
+Course
+
+@Entity
+public class Course {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String title;
+
+    @ManyToMany(mappedBy="courses")
+    private List<Student> students;
+}
+
+Join Table
+
+| student_id | course_id |
+
+Cascade Types :
+
+@OneToMany(cascade = CascadeType.ALL)
+
+Options:
+
+CascadeType.PERSIST
+CascadeType.MERGE
+CascadeType.REMOVE
+CascadeType.REFRESH
+CascadeType.ALL
+
+Fetch Types :
+
+EAGER
+
+Load immediately.
+
+@OneToOne(fetch = FetchType.EAGER)
+
+LAZY
+
+Load on demand.
+
+@OneToMany(fetch = FetchType.LAZY)
+
+8. JPQL (Java Persistence Query Language)
+
+JPQL works with Entity Objects, not table names.
+
+SQL
+SELECT * FROM employee
+
+JPQL
+
+SELECT e FROM Employee e
+
+Notice:
+
+Employee = Entity Class
+Not table name
+
+Repository Example
+
+@Repository
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee,Long> {
+}
+
+Custom JPQL Query :
+
+@Query("SELECT e FROM Employee e")
+List<Employee> getAllEmployees();
+
+Find Employee By Name
+
+@Query("SELECT e FROM Employee e WHERE e.name=:name")
+List<Employee> findByName(
+        @Param("name") String name);
+
+Find Employees Salary Greater Than
+
+@Query("""
+SELECT e
+FROM Employee e
+WHERE e.salary > :salary
+""")
+List<Employee> findSalaryGreaterThan(
+        @Param("salary") Double salary);
+
+LIKE Query
+
+@Query("""				R%  %R   %R%
+SELECT e
+FROM Employee e
+WHERE e.name LIKE %:name%
+""")
+List<Employee> searchByName(
+        @Param("name") String name);
+
+ORDER BY
+
+@Query("""
+SELECT e
+FROM Employee e
+ORDER BY e.salary DESC
+""")
+List<Employee> sortBySalary();
+
+Aggregate Functions
+
+Count
+@Query("SELECT COUNT(e) FROM Employee e")
+Long countEmployees();
+
+Sum
+@Query("SELECT SUM(e.salary) FROM Employee e")
+Double totalSalary();
+
+Average
+@Query("SELECT AVG(e.salary) FROM Employee e")
+Double averageSalary();
+
+JOIN Query
+
+@Query("""
+SELECT e
+FROM Employee e
+JOIN e.department d
+WHERE d.name=:dept
+""")
+List<Employee> findByDepartment(
+        @Param("dept") String dept);
+
+Named Query :
+
+Entity:
+
+@Entity
+@NamedQuery(
+name="Employee.findAll",
+query="SELECT e FROM Employee e"
+)
+
+public class Employee {
+}
+
+Repository:
+
+@Query(name="Employee.findAll")
+List<Employee> findAllEmployees();
+
+Spring Data JPA Derived Query Methods :
+
+No JPQL required.
+
+List<Employee> findByName(String name);
+
+List<Employee> findBySalaryGreaterThan(
+       Double salary);
+
+List<Employee> findByDepartmentName(
+       String departmentName);
+
+Spring automatically generates JPQL.
+
+
+
+Embedded H2 and Embedded MongoDb :
+
+
+1. What is Embedded H2 Database?
+
+H2 is a lightweight, in-memory relational database written in Java.
+
+It can run:
+
+In Memory
+Embedded Mode
+Server Mode
+
+Most Spring Boot developers use H2 for:
+
+Learning JPA
+Unit Testing
+Integration Testing
+
+Architecture
+
+
+Spring Boot Application
+          │
+          ▼
+     Spring Data JPA
+          │
+          ▼
+       Hibernate
+          │
+          ▼
+       H2 Database
+    (Memory or File)
+
+Advantages of H2 :
+
+Fast
+
+Runs inside JVM.
+
+No Installation
+
+No MySQL installation required.
+
+Lightweight
+
+Consumes very little memory.
+
+Easy Testing
+
+Ideal for automated testing.
+
+H2 Console :
+
+Provides browser-based database console.
+
+Maven Dependency
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+Spring Data JPA Dependency
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+Project Structure
+
+src/main/java
+|
++-- entity
+|     Employee.java
+|
++-- repository
+|     EmployeeRepository.java
+|
++-- controller
+|     EmployeeController.java
+|
++-- SpringBootApplication.java
+
+Step 1: Create Entity
+
+Employee.java
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private double salary;
+
+    public Employee() {
+    }
+
+    public Employee(String name, double salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+
+Step 2: Create Repository
+
+package com.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.demo.entity.Employee;
+
+public interface EmployeeRepository
+       extends JpaRepository<Employee, Long> {
+}
+
+Step 3: Configuration
+
+application.properties
+
+spring.datasource.url=jdbc:h2:mem:testdb
+
+spring.datasource.driverClassName=org.h2.Driver
+
+spring.datasource.username=sa
+
+spring.datasource.password=
+
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+spring.jpa.hibernate.ddl-auto=update
+
+spring.h2.console.enabled=true
+
+spring.h2.console.path=/h2-console
+
+Step 4: REST Controller
+
+package com.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.demo.entity.Employee;
+import com.demo.repository.EmployeeRepository;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    EmployeeRepository repository;
+
+    @PostMapping
+    public Employee saveEmployee(
+             @RequestBody Employee employee) {
+
+        return repository.save(employee);
+    }
+
+    @GetMapping
+    public List<Employee> getAll() {
+
+        return repository.findAll();
+    }
+}
+
+Run Application
+
+http://localhost:8080
+
+H2 Console
+
+Open browser:
+
+http://localhost:8080/h2-console
+
+Database URL:
+
+jdbc:h2:mem:testdb
+
+User:
+
+sa
+
+Password:
+
+(blank)
+
+Sample SQL Query
+
+SELECT * FROM EMPLOYEE;
+
+H2 Modes
+
+1. In-Memory Database
+
+spring.datasource.url=jdbc:h2:mem:testdb
+
+Data lost when application stops.
+
+2. File-Based Database
+
+spring.datasource.url=jdbc:h2:file:C:/data/testdb
+
+Data persists after restart.
+
+Embedded MongoDB : NoSQL UD and SD Table rows and columns schemaless design no structure
+
+What is Embedded MongoDB?
+
+Embedded MongoDB is a MongoDB instance that runs inside your Spring Boot application during testing.
+
+Most commonly implemented using:
+
+Flapdoodle Embedded MongoDB :
+
+It automatically:
+
+Downloads MongoDB binaries
+Starts MongoDB
+Runs tests
+Stops MongoDB
+
+Architecture
+
+Spring Boot Application
+          │
+          ▼
+   Spring Data MongoDB
+          │
+          ▼
+ Embedded MongoDB
+ (Flapdoodle)
+
+Why Embedded MongoDB? :
+
+No Mongo Installation
+
+No local MongoDB required.
+
+Automated Testing
+
+Perfect for Integration Tests.
+
+Fast Execution
+
+Runs in memory. JVM
+
+CI/CD Friendly
+
+Works in Jenkins, GitHub Actions, Azure DevOps. CI/CD tools
+
+Maven Dependencies
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>de.flapdoodle.embed</groupId>
+    <artifactId>de.flapdoodle.embed.mongo</artifactId>
+    <scope>test</scope>
+</dependency>
+
+Project Structure
+
+src/main/java
+|
++-- document
+|     Product.java
+|
++-- repository
+|     ProductRepository.java
+|
++-- controller
+|     ProductController.java
+
+Step 1: Create Document
+
+Product.java
+
+package com.demo.document;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="products")
+public class Product {
+
+    @Id
+    private String id;
+
+    private String name;
+
+    private double price;
+
+    public Product() {
+    }
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+}
+Step 2: Repository
+package com.demo.repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import com.demo.document.Product;
+
+public interface ProductRepository
+        extends MongoRepository<Product, String> {
+}
+
+Step 3: Controller
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @Autowired
+    ProductRepository repository;
+
+    @PostMapping
+    public Product save(
+              @RequestBody Product product) {
+
+        return repository.save(product);
+    }
+
+    @GetMapping
+    public List<Product> getAll() {
+
+        return repository.findAll();
+    }
+}
+Integration Test with Embedded MongoDB
+
+@SpringBootTest
+public class ProductRepositoryTest {
+
+    @Autowired
+    private ProductRepository repository;
+
+    @Test
+    void testSaveProduct() {
+
+        Product product =
+             new Product("Laptop", 75000);
+
+        Product saved =
+             repository.save(product);
+
+        assertNotNull(saved.getId());
+    }
+}
+
+application-test.properties
+
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=testdb
+
+H2 vs Embedded MongoDB
+
+Feature	H2	Embedded MongoDB
+Database Type	Relational	NoSQL
+Data Format	Tables	Documents
+Query Language	SQL	Mongo Query
+JPA Support	Yes	No
+Spring Data JPA	Yes	No
+Spring Data MongoDB	No	Yes
+Transactions	Yes	Limited
+Testing Support	Excellent	Excellent
+Real-Time Usage
+H2
+
+Used for:
+
+Spring Boot Learning
+JPA Practice
+Unit Testing
+Integration Testing
+CI/CD Pipeline Testing
+
+Examples:
+
+Employee Management
+Banking Applications
+E-Commerce Projects
+Embedded MongoDB
+
+Used for:
+
+MongoDB Repository Testing
+Integration Testing
+CI/CD Automation
+Microservices Testing
+
+Examples:
+
+Product Catalog Service
+Order Service
+Inventory Service
+Customer Profile Service
+
+
+
+
+Complete Project :
+
+
+
+1. Project Overview
+
+We will implement:
+
+Mapping Types
+Entity Mapping
+ID Mapping
+Column Mapping
+Embedded (Composition) Mapping
+Inheritance Mapping
+Association Mapping
+One-To-One
+One-To-Many
+Many-To-One
+Many-To-Many
+JPQL Queries
+
+
+Domain Model :
+
+Person (Inheritance Parent)
+   |
+   +---- Employee
+   |
+   +---- Manager
+
+Employee
+   |
+   +---- Address (Embedded)
+
+Employee
+   |
+   +---- Passport (One-To-One)
+
+Department
+   |
+   +---- Employees (One-To-Many)
+
+Project
+   |
+   +---- Employees (Many-To-Many)
+
+2. Create Spring Boot Project
+
+Dependencies:
+
+<dependencies>
+
+    <!-- Spring Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+    <!-- Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+</dependencies>
+
+3. application.properties
+
+spring.datasource.url=jdbc:mysql://localhost:3306/jpa_demo
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+4. Embedded Mapping
+
+Address.java
+
+package com.demo.entity;
+
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public class Address {
+
+    private String city;
+    private String state;
+    private String country;
+
+    public Address() {}
+
+    public Address(String city,
+                   String state,
+                   String country) {
+        this.city = city;
+        this.state = state;
+        this.country = country;
+    }
+
+    // getters setters
+}
+
+5. Inheritance Mapping
+
+Parent Entity
+
+Person.java
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    public Person() {}
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    // getters setters
+}
+
+6. Employee Entity
+
+Entity Mapping + ID Mapping + Column Mapping
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employee")
+public class Employee extends Person {
+
+    @Column(name="email_id",
+            nullable=false,
+            unique=true,
+            length=100)
+    private String email;
+
+    @Column(name="salary")
+    private double salary;
+
+    @Embedded
+    private Address address;
+
+    public Employee() {}
+
+    public Employee(String name,
+                    String email,
+                    double salary,
+                    Address address) {
+
+        super(name);
+        this.email=email;
+        this.salary=salary;
+        this.address=address;
+    }
+
+    // getters setters
+}
+
+7. Manager Entity
+
+package com.demo.entity;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Manager extends Person {
+
+    private String departmentName;
+
+    public Manager() {}
+
+    public Manager(String name,
+                   String departmentName) {
+        super(name);
+        this.departmentName=departmentName;
+    }
+
+    // getters setters
+}
+
+8. One-To-One Mapping
+
+Passport.java
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Passport {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long passportId;
+
+    private String passportNumber;
+
+    @OneToOne(mappedBy="passport")
+    private EmployeeDetails employeeDetails;
+
+    public Passport() {}
+
+    public Passport(String passportNumber) {
+        this.passportNumber=passportNumber;
+    }
+
+    // getters setters
+}
+
+EmployeeDetails.java
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+public class EmployeeDetails {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    private String mobile;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="passport_id")
+    private Passport passport;
+
+    public EmployeeDetails() {}
+
+    // getters setters
+}
+
+9. Department Entity
+
+One-To-Many Mapping
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+import java.util.*;
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long departmentId;
+
+    private String departmentName;
+
+    @OneToMany(mappedBy="department",
+               cascade=CascadeType.ALL)
+    private List<EmployeeEntity> employees =
+            new ArrayList<>();
+
+    public Department() {}
+
+    public Department(String departmentName) {
+        this.departmentName=departmentName;
+    }
+
+    // getters setters
+}
+
+10. EmployeeEntity.java
+
+Many-To-One Mapping
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+import java.util.*;
+
+@Entity
+public class EmployeeEntity {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long empId;
+
+    private String empName;
+
+    @ManyToOne
+    @JoinColumn(name="dept_id")
+    private Department department;
+
+    @ManyToMany
+    @JoinTable(
+            name="employee_project",
+            joinColumns=
+            @JoinColumn(name="employee_id"),
+            inverseJoinColumns=
+            @JoinColumn(name="project_id")
+    )
+    private Set<Project> projects =
+            new HashSet<>();
+
+    public EmployeeEntity() {}
+
+    public EmployeeEntity(String empName) {
+        this.empName=empName;
+    }
+
+    // getters setters
+}
+11. Project Entity
+
+Many-To-Many Mapping
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+import java.util.*;
+
+@Entity
+public class Project {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long projectId;
+
+    private String projectName;
+
+    @ManyToMany(mappedBy="projects")
+    private Set<EmployeeEntity> employees =
+            new HashSet<>();
+
+    public Project() {}
+
+    public Project(String projectName) {
+        this.projectName=projectName;
+    }
+
+    // getters setters
+}
+
+12. Repository Layer
+
+Employee Repository
+
+package com.demo.repository;
+
+import com.demo.entity.Employee;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee,Long> {
+
+    @Query("SELECT e FROM Employee e")
+    List<Employee> findAllEmployees();
+
+    @Query("""
+           SELECT e
+           FROM Employee e
+           WHERE e.salary > :salary
+           """)
+    List<Employee> findEmployeesBySalary(
+            @Param("salary")
+            double salary);
+
+    @Query("""
+           SELECT e.name
+           FROM Employee e
+           """)
+    List<String> findEmployeeNames();
+
+}
+
+Department Repository
+
+package com.demo.repository;
+
+import com.demo.entity.Department;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DepartmentRepository
+        extends JpaRepository<Department,Long> {
+}
+
+Project Repository
+
+package com.demo.repository;
+
+import com.demo.entity.Project;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProjectRepository
+        extends JpaRepository<Project,Long> {
+}
+
+13. Service Layer
+
+package com.demo.service;
+
+import com.demo.entity.*;
+import com.demo.repository.EmployeeRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmployeeService {
+
+    private EmployeeRepository employeeRepository;
+
+    public EmployeeService(
+            EmployeeRepository employeeRepository) {
+        this.employeeRepository=employeeRepository;
+    }
+
+    public void saveEmployee() {
+
+        Address address =
+                new Address(
+                        "Pune",
+                        "Maharashtra",
+                        "India");
+
+        Employee employee =
+                new Employee(
+                        "Amol",
+                        "amol@gmail.com",
+                        80000,
+                        address);
+
+        employeeRepository.save(employee);
+    }
+}
+
+14. CommandLineRunner
+
+package com.demo;
+
+import com.demo.entity.*;
+import com.demo.repository.*;
+import org.springframework.boot.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class DataLoader {
+
+    @Bean
+    CommandLineRunner loadData(
+            EmployeeRepository employeeRepo) {
+
+        return args -> {
+
+            Address address =
+                    new Address(
+                            "Mumbai",
+                            "Maharashtra",
+                            "India");
+
+            Employee emp1 =
+                    new Employee(
+                            "John",
+                            "john@gmail.com",
+                            50000,
+                            address);
+
+            Employee emp2 =
+                    new Employee(
+                            "David",
+                            "david@gmail.com",
+                            70000,
+                            address);
+
+            employeeRepo.save(emp1);
+            employeeRepo.save(emp2);
+
+            System.out.println(
+                employeeRepo.findAllEmployees());
+
+            System.out.println(
+                employeeRepo.findEmployeesBySalary(
+                        60000));
+
+            System.out.println(
+                employeeRepo.findEmployeeNames());
+        };
+    }
+}
+
+15. JPQL Examples
+
+Select All
+
+@Query("SELECT e FROM Employee e")
+List<Employee> getAllEmployees();
+
+By Salary
+
+@Query("""
+SELECT e
+FROM Employee e
+WHERE e.salary > :salary
+""")
+List<Employee> getEmployees(
+        @Param("salary")
+        double salary);
+
+Multiple Conditions
+
+@Query("""
+SELECT e
+FROM Employee e
+WHERE e.salary > :salary
+AND e.email = :email
+""")
+List<Employee> findBySalaryAndEmail(
+        @Param("salary") double salary,
+        @Param("email") String email);
+
+Order By
+
+@Query("""
+SELECT e
+FROM Employee e
+ORDER BY e.salary DESC
+""")
+List<Employee> sortBySalary();
+
+Aggregate Functions
+
+Count
+@Query("SELECT COUNT(e) FROM Employee e")
+Long countEmployees();
+Max Salary
+@Query("SELECT MAX(e.salary) FROM Employee e")
+Double maxSalary();
+Average Salary
+@Query("SELECT AVG(e.salary) FROM Employee e")
+Double averageSalary();
+
+Tables Generated
+
+person
+------
+id
+name
+
+employee
+--------
+id
+email_id
+salary
+city
+state
+country
+
+manager
+-------
+id
+department_name
+
+passport
+--------
+passport_id
+passport_number
+
+employee_details
+----------------
+id
+mobile
+passport_id
+
+department
+----------
+department_id
+department_name
+
+employee_entity
+---------------
+emp_id
+emp_name
+dept_id
+
+project
+-------
+project_id
+project_name
+
+employee_project
+----------------
+employee_id
+project_id
+
+What You Learned
+
+✔ Entity Mapping (@Entity, @Table)
+✔ ID Mapping (@Id, @GeneratedValue)
+✔ Column Mapping (@Column)
+✔ Embedded Mapping (@Embeddable, @Embedded)
+✔ Inheritance Mapping (@Inheritance, JOINED)
+✔ One-To-One Mapping (@OneToOne)
+✔ One-To-Many Mapping (@OneToMany)
+✔ Many-To-One Mapping (@ManyToOne)
+✔ Many-To-Many Mapping (@ManyToMany)
+✔ JPQL Queries (@Query)
+✔ Spring Data JPA Repository Integration
+✔ Complete End-to-End Spring Boot JPA Project from Scratch
+
+
+
+Complete Example :
+
+
+
+
+Spring Boot Complete Example: Embedded H2 Database and Embedded MongoDB with H2 Console
+
+This tutorial demonstrates how to create a Spring Boot application using:
+
+Embedded H2 Database
+Embedded MongoDB
+Spring Data JPA
+Spring Data MongoDB
+H2 Console
+REST APIs
+Project Structure
+springboot-h2-mongodb-demo
+│
+├── src/main/java
+│   └── com.example.demo
+│
+│       ├── DemoApplication.java
+│
+│       ├── h2
+│       │   ├── entity
+│       │   │   └── Employee.java
+│       │   ├── repository
+│       │   │   └── EmployeeRepository.java
+│       │   ├── controller
+│       │   │   └── EmployeeController.java
+│
+│       ├── mongo
+│       │   ├── document
+│       │   │   └── Product.java
+│       │   ├── repository
+│       │   │   └── ProductRepository.java
+│       │   ├── controller
+│       │   │   └── ProductController.java
+│
+└── src/main/resources
+    ├── application.properties
+Step 1: Create Spring Boot Project
+
+Dependencies:
+
+Spring Web
+Spring Data JPA
+Spring Data MongoDB
+H2 Database
+Lombok
+Flapdoodle Embedded MongoDB
+Step 2: pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>springboot-h2-mongodb-demo</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- MongoDB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
+        <!-- Embedded Mongo -->
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
+            <version>4.11.0</version>
+        </dependency>
+
+        <!-- H2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
+Step 3: application.properties
+server.port=8080
+
+###################################################
+# H2 DATABASE
+###################################################
+
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+###################################################
+# MONGODB
+###################################################
+
+spring.data.mongodb.database=testdb
+spring.data.mongodb.port=27017
+
+logging.level.org.springframework=INFO
+
+Step 4: Main Class
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+H2 DATABASE IMPLEMENTATION
+Step 5: Employee Entity
+package com.example.demo.h2.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employees")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private double salary;
+
+    public Employee() {}
+
+    public Employee(String name, double salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id=id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary=salary;
+    }
+}
+Step 6: Repository
+package com.example.demo.h2.repository;
+
+import com.example.demo.h2.entity.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee, Long> {
+}
+Step 7: Controller
+package com.example.demo.h2.controller;
+
+import com.example.demo.h2.entity.Employee;
+import com.example.demo.h2.repository.EmployeeRepository;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    private final EmployeeRepository repository;
+
+    public EmployeeController(EmployeeRepository repository) {
+        this.repository = repository;
+    }
+
+    @PostMapping
+    public Employee save(@RequestBody Employee employee) {
+        return repository.save(employee);
+    }
+
+    @GetMapping
+    public List<Employee> getAll() {
+        return repository.findAll();
+    }
+}
+MONGODB IMPLEMENTATION
+Step 8: Product Document
+package com.example.demo.mongo.document;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="products")
+public class Product {
+
+    @Id
+    private String id;
+
+    private String name;
+
+    private double price;
+
+    public Product() {}
+
+    public Product(String name,double price) {
+        this.name=name;
+        this.price=price;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id=id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price=price;
+    }
+}
+Step 9: Repository
+package com.example.demo.mongo.repository;
+
+import com.example.demo.mongo.document.Product;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface ProductRepository
+        extends MongoRepository<Product,String> {
+}
+Step 10: Controller
+package com.example.demo.mongo.controller;
+
+import com.example.demo.mongo.document.Product;
+import com.example.demo.mongo.repository.ProductRepository;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    private final ProductRepository repository;
+
+    public ProductController(ProductRepository repository) {
+        this.repository = repository;
+    }
+
+    @PostMapping
+    public Product save(@RequestBody Product product) {
+        return repository.save(product);
+    }
+
+    @GetMapping
+    public List<Product> getAll() {
+        return repository.findAll();
+    }
+}
+Step 11: Run Application
+mvn spring-boot:run
+
+OR
+
+Run As → Spring Boot App
+Step 12: Access H2 Console
+
+Open Browser
+
+http://localhost:8080/h2-console
+
+Database Settings
+
+Driver Class:
+org.h2.Driver
+
+JDBC URL:
+jdbc:h2:mem:testdb
+
+User Name:
+sa
+
+Password:
+(blank)
+
+Click
+
+Connect
+Step 13: Insert Employee Data
+
+POST
+
+POST http://localhost:8080/employees
+
+Request Body
+
+{
+   "name":"John",
+   "salary":50000
+}
+
+Response
+
+{
+   "id":1,
+   "name":"John",
+   "salary":50000
+}
+Step 14: Fetch Employee Data
+GET http://localhost:8080/employees
+
+Response
+
+[
+   {
+      "id":1,
+      "name":"John",
+      "salary":50000
+   }
+]
+Verify H2 Table
+
+Execute SQL in H2 Console:
+
+SELECT * FROM EMPLOYEES;
+
+Output:
+
+ID  NAME   SALARY
+1   John   50000
+Step 15: Insert Product Data
+
+POST
+
+POST http://localhost:8080/products
+
+Request Body
+
+{
+   "name":"Laptop",
+   "price":65000
+}
+Step 16: Fetch Product Data
+GET http://localhost:8080/products
+
+Response
+
+[
+   {
+      "id":"6652cfd82c4b9f75f",
+      "name":"Laptop",
+      "price":65000
+   }
+]
+Common H2 Console Errors and Solutions
+Error
+404 Whitelabel Error Page
+
+Solution
+
+spring.h2.console.enabled=true
+Error
+Database not found
+
+Use:
+
+spring.datasource.url=jdbc:h2:mem:testdb
+
+and
+
+JDBC URL = jdbc:h2:mem:testdb
+Error
+Access denied to H2 console
+
+Create Security Configuration:
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http.csrf(csrf -> csrf.disable());
+
+        http.headers(headers ->
+                headers.frameOptions(
+                        frame -> frame.disable()));
+
+        http.authorizeHttpRequests(auth ->
+                auth.anyRequest().permitAll());
+
+        return http.build();
+    }
+}
+Final Output
+
+You will have:
+
+✓ Embedded H2 Database
+✓ Embedded MongoDB (Flapdoodle)
+✓ Spring Data JPA
+✓ Spring Data MongoDB
+✓ REST APIs
+✓ H2 Console
+✓ No External Database Installation
+✓ Spring Boot 3.x Compatible
+✓ Production-ready Project Structure
+
+
+
+
+
+
+
+CRUD/JPA/MONGO Repository and custom implementation, Spring Test – unit testing (repository, API, Service), Spring Test Mocking, Introduction to API documentation Swagger :
+
+
+
+
+1. What is CRUD?
+
+CRUD stands for:
+
+Operation	HTTP Method	SQL Equivalent
+
+Create	POST		INSERT
+Read	GET		SELECT
+Update	PUT		UPDATE
+Delete	DELETE		DELETE
+
+Example Employee API:
+
+POST    /employees
+GET     /employees
+GET     /employees/{id}
+PUT     /employees/{id}
+DELETE  /employees/{id}
+
+2. Spring Data Repository Hierarchy
+
+Repository
+      |
+CrudRepository
+      |
+PagingAndSortingRepository Pagination and Sorting
+      |
+JpaRepository
+
+Repository
+
+Marker interface.
+
+public interface Repository<T, ID> {
+}
+
+Rarely used directly.
+
+CrudRepository :
+
+Provides basic CRUD methods.
+
+public interface EmployeeRepository
+        extends CrudRepository<Employee, Long> {
+}
+
+Methods available:
+
+save()
+
+findById()
+
+findAll()
+
+deleteById()
+
+count()
+
+Example:
+
+employeeRepository.save(employee);
+
+employeeRepository.findById(1L);
+
+employeeRepository.deleteById(1L);
+
+3. JPA Repository
+
+Most commonly used repository.
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee, Long> {
+}
+
+Additional features:
+
+findAll()
+
+saveAndFlush()
+
+flush()
+
+deleteInBatch()
+
+pagination
+
+sorting
+
+Example:
+
+List<Employee> employees =
+employeeRepository.findAll();
+
+4. Complete JPA CRUD Example
+
+Entity
+
+@Entity
+@Table(name="employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private Double salary;
+
+    // getters setters
+}
+
+Repository
+
+@Repository
+
+public interface EmployeeRepository
+extends JpaRepository<Employee, Long> {
+
+}
+
+Service
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    EmployeeRepository repository;
+
+    public Employee save(Employee employee) {
+        return repository.save(employee);
+    }
+
+    public List<Employee> getAll() {
+        return repository.findAll();
+    }
+
+    public Employee getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow();
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+}
+
+Controller
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    EmployeeService service;
+
+    @PostMapping
+    public Employee save(
+            @RequestBody Employee employee) {
+        return service.save(employee);
+    }
+
+    @GetMapping
+    public List<Employee> getAll() {
+        return service.getAll();
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(
+            @PathVariable Long id) {
+
+        service.delete(id);
+
+        return "Deleted";
+    }
+}
+
+5. Custom Repository Methods
+
+Spring automatically generates queries.
+
+Find By Name
+
+public interface EmployeeRepository
+extends JpaRepository<Employee, Long> {
+
+    Employee findByName(String name);
+
+}
+
+Usage:
+
+Employee employee =
+repository.findByName("John");
+
+Generated Query:
+
+select * from employee
+where name='John'
+
+Find By Salary
+
+List<Employee>
+findBySalary(Double salary);
+
+Find By Name And Salary
+
+Employee findByNameAndSalary(
+        String name,
+        Double salary);
+
+6. JPQL Query
+
+@Query("SELECT e FROM Employee e WHERE e.salary > :salary")
+
+List<Employee> getEmployees(
+        @Param("salary") Double salary);
+
+7. Native Query
+
+@Query(
+ value="select * from employee where salary > ?1",
+ nativeQuery=true)
+List<Employee> getEmployees(Double salary);
+
+8. Custom Repository Implementation
+
+Suppose we need complex query logic.
+
+Custom Interface :
+
+public interface EmployeeCustomRepository {
+
+    List<Employee> getHighSalaryEmployees();
+}
+
+Implementation :
+
+Naming Convention:
+
+RepositoryName + Impl
+
+@Repository
+public class EmployeeCustomRepositoryImpl
+implements EmployeeCustomRepository {
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    @Override
+    public List<Employee> getHighSalaryEmployees() {
+
+        String jpql =
+            "SELECT e FROM Employee e " +
+            "WHERE e.salary > 50000";
+
+        return entityManager
+                .createQuery(jpql,
+                        Employee.class)
+                .getResultList();
+    }
+}
+
+Main Repository
+
+public interface EmployeeRepository
+extends JpaRepository<Employee, Long>,
+        EmployeeCustomRepository {
+
+}
+
+Usage:
+
+repository.getHighSalaryEmployees();
+
+9. Mongo Repository
+
+MongoDB is NoSQL.
+
+Document Example:
+
+{
+  "_id":"1",
+  "name":"John",
+  "salary":50000
+}
+
+Dependency
+
+<dependency>
+ <groupId>
+   org.springframework.boot
+ </groupId>
+ <artifactId>
+   spring-boot-starter-data-mongodb
+ </artifactId>
+</dependency>
+
+Mongo Document :
+
+@Document(collection="employees")
+public class Employee {
+
+    @Id
+    private String id;
+
+    private String name;
+
+    private Double salary;
+
+}
+
+Mongo Repository
+
+public interface EmployeeRepository
+extends MongoRepository<Employee,String> {
+
+    Employee findByName(String name);
+
+}
+
+Usage:
+
+repository.save(employee);
+
+repository.findByName("John");
+
+repository.deleteById("1");
+
+10. Difference Between JPA Repository and Mongo Repository
+
+Feature	JPA		Mongo
+
+Database	MySQL/Oracle	MongoDB
+Storage	Tables		Collections
+Data	Rows		Documents
+Language	SQL		BSON
+Annotation@Entity		@Document
+Repository	JpaRepository	MongoRepository
+
+11. Spring Test Framework
+
+Spring Boot provides testing support.
+
+Dependencies:
+
+<dependency>
+ <groupId>
+  org.springframework.boot
+ </groupId>
+ <artifactId>
+  spring-boot-starter-test
+ </artifactId>
+ <scope>test</scope>
+</dependency>
+
+Contains:
+
+JUnit 5
+Mockito
+Hamcrest
+AssertJ
+Spring Test
+MockMvc
+
+12. Unit Testing Service Layer
+
+Service
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    EmployeeRepository repository;
+
+    public Employee save(Employee employee){
+        return repository.save(employee);
+    }
+}
+
+Test Class
+
+@ExtendWith(MockitoExtension.class)
+public class EmployeeServiceTest {
+
+    @Mock
+    EmployeeRepository repository;
+
+    @InjectMocks
+    EmployeeService service;
+
+    @Test
+    void saveEmployeeTest() {
+
+        Employee employee =
+                new Employee();
+
+        employee.setName("John");
+
+        when(repository.save(any()))
+                .thenReturn(employee);
+
+        Employee result =
+                service.save(employee);
+
+        assertEquals(
+                "John",
+                result.getName());
+    }
+}
+
+13. Mocking in Spring Boot
+
+Mocking means creating fake objects.
+
+Real Object:
+
+EmployeeRepository repository
+
+Mock Object:
+
+@Mock
+EmployeeRepository repository;
+
+Mockito Methods:
+
+when()
+
+thenReturn()
+
+verify()
+
+times()
+
+any()
+
+Example:
+
+verify(repository,
+       times(1))
+       .save(any());
+
+14. Repository Testing
+
+Repository testing checks database interaction.
+
+@DataJpaTest
+
+public class EmployeeRepositoryTest {
+
+    @Autowired
+    EmployeeRepository repository;
+
+    @Test
+    void saveEmployee() {
+
+        Employee employee =
+                new Employee();
+
+        employee.setName("John");
+
+        Employee saved =
+                repository.save(employee);
+
+        assertNotNull(saved.getId());
+    }
+}
+
+Uses H2 in-memory database.
+
+15. API Testing Using MockMvc
+
+Controller:
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping
+    public String getEmployees() {
+        return "Employees";
+    }
+}
+
+Test
+
+@WebMvcTest(EmployeeController.class)
+public class EmployeeControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Test
+    void getEmployeesTest()
+            throws Exception {
+
+        mockMvc.perform(
+                get("/employees"))
+                .andExpect(
+                        status().isOk())
+                .andExpect(
+                        content()
+                        .string("Employees"));
+    }
+}
+
+16. Integration Testing
+
+Tests complete flow.
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class EmployeeIntegrationTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Test
+    void testApi()
+            throws Exception {
+
+        mockMvc.perform(
+                get("/employees"))
+                .andExpect(
+                        status().isOk());
+    }
+}
+
+17. Swagger/OpenAPI Introduction API Testing
+
+Swagger provides:
+
+API Documentation
+API Testing
+API Visualization
+
+Without Swagger:
+
+Developer reads code
+
+With Swagger:
+
+Developer opens browser /employee /products
+and tests API
+
+18. Swagger Dependency
+
+For Spring Boot 3.x
+
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>
+      springdoc-openapi-starter-webmvc-ui
+    </artifactId>
+    <version>2.5.0</version>
+</dependency>
+
+19. Access Swagger UI
+
+Start application:
+
+http://localhost:8080/swagger-ui.html
+
+or
+
+http://localhost:8080/swagger-ui/index.html
+
+20. Configure Swagger
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+
+        return new OpenAPI()
+                .info(
+                        new Info()
+                                .title(
+                                  "Employee API")
+                                .version(
+                                  "1.0")
+                                .description(
+                                  "Employee CRUD APIs"));
+    }
+}
+
+21. Swagger Annotations
+
+Controller
+
+@RestController
+@RequestMapping("/employees")
+@Tag(name="Employee APIs")
+public class EmployeeController {
+}
+
+Operation
+@Operation(
+ summary="Get Employee By Id",
+ description="Returns employee details")
+@GetMapping("/{id}")
+public Employee getEmployee(
+        @PathVariable Long id){
+
+    return service.getById(id);
+}
+
+API Response
+
+@ApiResponses({
+    @ApiResponse(
+        responseCode="200",
+        description="Success"),
+
+    @ApiResponse(
+        responseCode="404",
+        description="Not Found")
+})
+
+Real-Time Enterprise Testing Strategy :
+
+Controller Layer
+        |
+        V
+MockMvc Testing
+        |
+        V
+Service Layer
+        |
+        V
+Mockito Unit Testing
+        |
+        V
+Repository Layer
+        |
+        V
+@DataJpaTest
+        |
+        V
+Database
+
+
+
+Complete Spring Boot CRUD Application using Spring Data JPA, MongoDB Repository, Custom Repository Implementation, Unit Testing, Mocking, and Swagger/OpenAPI
+
+This tutorial covers:
+
+Spring Boot Project Setup
+MySQL + Spring Data JPA CRUD
+MongoDB CRUD Repository
+Custom Repository Implementation
+Service Layer
+REST APIs
+Swagger/OpenAPI Documentation
+JUnit 5 Testing
+Mockito Mocking
+Repository Testing
+Service Testing
+Controller/API Testing
+
+Step 1: Create Spring Boot Project
+
+Dependencies
+Maven pom.xml
+<dependencies>
+
+    <!-- Spring Boot -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+    <!-- MongoDB -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+
+    <!-- Swagger -->
+    <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.8.8</version>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+    </dependency>
+
+</dependencies>
+
+Step 2: Configure Database
+
+application.properties
+
+MySQL
+
+spring.datasource.url=jdbc:mysql://localhost:3306/companydb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+MongoDB
+
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=companydb
+
+Step 3: JPA Entity
+
+Employee.java
+
+package com.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employees")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String department;
+    private Double salary;
+
+    public Employee() {
+    }
+
+    public Employee(Long id, String name,
+                    String department,
+                    Double salary) {
+        this.id=id;
+        this.name=name;
+        this.department=department;
+        this.salary=salary;
+    }
+
+    // getters setters
+}
+Step 4: Mongo Document
+
+EmployeeDocument.java
+
+package com.demo.mongo;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="employees")
+public class EmployeeDocument {
+
+    @Id
+    private String id;
+
+    private String name;
+    private String department;
+    private Double salary;
+
+    // getters setters
+}
+Step 5: JPA Repository
+
+EmployeeRepository.java
+
+package com.demo.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.demo.entity.Employee;
+
+public interface EmployeeRepository
+        extends JpaRepository<Employee, Long>,
+        EmployeeCustomRepository {
+
+    List<Employee> findByDepartment(String department);
+}
+
+Step 6: Mongo Repository
+
+EmployeeMongoRepository.java
+package com.demo.mongo;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface EmployeeMongoRepository
+        extends MongoRepository<EmployeeDocument, String> {
+
+    List<EmployeeDocument> findByDepartment(String department);
+}
+
+Step 7: Custom Repository
+
+EmployeeCustomRepository.java
+package com.demo.repository;
+
+import java.util.List;
+import com.demo.entity.Employee;
+
+public interface EmployeeCustomRepository {
+
+    List<Employee> findEmployeesWithSalaryGreaterThan(
+            Double salary);
+}
+
+Step 8: Custom Repository Implementation
+
+EmployeeCustomRepositoryImpl.java
+
+package com.demo.repository;
+
+import java.util.List;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+
+import com.demo.entity.Employee;
+
+@Repository
+public class EmployeeCustomRepositoryImpl
+        implements EmployeeCustomRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<Employee>
+        findEmployeesWithSalaryGreaterThan(Double salary) {
+
+        String jpql=
+                "FROM Employee e WHERE e.salary > :salary";
+
+        return entityManager.createQuery(
+                jpql,
+                Employee.class)
+                .setParameter("salary", salary)
+                .getResultList();
+    }
+}
+Step 9: Service Layer
+
+EmployeeService.java
+
+package com.demo.service;
+
+import java.util.List;
+
+import com.demo.entity.Employee;
+
+public interface EmployeeService {
+
+    Employee save(Employee employee);
+
+    List<Employee> getAll();
+
+    Employee getById(Long id);
+
+    Employee update(Long id,
+                    Employee employee);
+
+    void delete(Long id);
+
+    List<Employee> getHighSalaryEmployees(
+            Double salary);
+}
+
+Step 10: Service Implementation
+
+EmployeeServiceImpl.java
+
+package com.demo.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.demo.entity.Employee;
+import com.demo.repository.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl
+        implements EmployeeService {
+
+    private final EmployeeRepository repository;
+
+    public EmployeeServiceImpl(
+            EmployeeRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public Employee save(Employee employee) {
+        return repository.save(employee);
+    }
+
+    @Override
+    public List<Employee> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Employee getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                new RuntimeException("Employee not found"));
+    }
+
+    @Override
+    public Employee update(Long id,
+                           Employee employee) {
+
+        Employee dbEmployee =
+                repository.findById(id)
+                .orElseThrow(() ->
+                new RuntimeException("Employee not found"));
+
+        dbEmployee.setName(employee.getName());
+        dbEmployee.setDepartment(
+                employee.getDepartment());
+        dbEmployee.setSalary(employee.getSalary());
+
+        return repository.save(dbEmployee);
+    }
+
+    @Override
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public List<Employee>
+          getHighSalaryEmployees(Double salary) {
+
+        return repository
+                .findEmployeesWithSalaryGreaterThan(
+                        salary);
+    }
+}
+Step 11: REST Controller
+
+EmployeeController.java
+
+package com.demo.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.demo.entity.Employee;
+import com.demo.service.EmployeeService;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    private final EmployeeService service;
+
+    public EmployeeController(
+            EmployeeService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public Employee create(
+            @RequestBody Employee employee) {
+
+        return service.save(employee);
+    }
+
+    @GetMapping
+    public List<Employee> getAll() {
+        return service.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getById(
+            @PathVariable Long id) {
+
+        return service.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Employee update(
+            @PathVariable Long id,
+            @RequestBody Employee employee) {
+
+        return service.update(id, employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(
+            @PathVariable Long id) {
+
+        service.delete(id);
+
+        return "Deleted Successfully";
+    }
+}
+
+Step 12: Swagger Configuration
+
+No additional configuration required.
+
+Run application.
+
+Swagger URL:
+
+http://localhost:8080/swagger-ui.html
+
+OpenAPI JSON:
+
+http://localhost:8080/v3/api-docs
+
+Step 13: Repository Testing
+
+EmployeeRepositoryTest.java
+
+package com.demo.repository;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
+import com.demo.entity.Employee;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+@DataJpaTest
+public class EmployeeRepositoryTest {
+
+    @Autowired
+    private EmployeeRepository repository;
+
+    @Test
+    void saveEmployeeTest() {
+
+        Employee emp =
+                new Employee(null,
+                        "John",
+                        "IT",
+                        70000.0);
+
+        Employee saved =
+                repository.save(emp);
+
+        assertNotNull(saved.getId());
+    }
+
+    @Test
+    void findByDepartmentTest() {
+
+        Employee emp =
+                new Employee(null,
+                        "Mike",
+                        "HR",
+                        50000.0);
+
+        repository.save(emp);
+
+        List<Employee> employees =
+                repository.findByDepartment("HR");
+
+        assertEquals(1,
+                employees.size());
+    }
+}
+Step 14: Service Layer Unit Testing
+
+EmployeeServiceTest.java
+
+package com.demo.service;
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+
+import com.demo.entity.Employee;
+import com.demo.repository.EmployeeRepository;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class EmployeeServiceTest {
+
+    @Mock
+    EmployeeRepository repository;
+
+    @InjectMocks
+    EmployeeServiceImpl service;
+
+    @Test
+    void testGetEmployeeById() {
+
+        Employee employee =
+                new Employee(1L,
+                        "John",
+                        "IT",
+                        70000.0);
+
+        when(repository.findById(1L))
+                .thenReturn(
+                        Optional.of(employee));
+
+        Employee result =
+                service.getById(1L);
+
+        assertEquals(
+                "John",
+                result.getName());
+    }
+}
+
+Step 15: Controller Testing
+
+EmployeeControllerTest.java
+
+package com.demo.controller;
+
+import static org.mockito.Mockito.when;
+
+import com.demo.entity.Employee;
+import com.demo.service.EmployeeService;
+
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(EmployeeController.class)
+public class EmployeeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private EmployeeService service;
+
+    @Test
+    void getEmployeeTest()
+            throws Exception {
+
+        Employee employee =
+                new Employee(1L,
+                        "John",
+                        "IT",
+                        70000.0);
+
+        when(service.getById(1L))
+                .thenReturn(employee);
+
+        mockMvc.perform(
+                get("/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(
+                  jsonPath("$.name")
+                  .value("John"));
+    }
+}
+Step 16: Mockito Verification Example
+@Test
+void deleteEmployeeTest() {
+
+    doNothing()
+            .when(repository)
+            .deleteById(1L);
+
+    service.delete(1L);
+
+    verify(repository,
+            times(1))
+            .deleteById(1L);
+}
+Step 17: Sample API Requests
+Create Employee
+POST /employees
+
+{
+    "name":"John",
+    "department":"IT",
+    "salary":75000
+}
+Get Employee
+GET /employees/1
+Update Employee
+PUT /employees/1
+
+{
+    "name":"John Updated",
+    "department":"IT",
+    "salary":90000
+}
+Delete Employee
+DELETE /employees/1
+
+Final Project Structure
+
+src/main/java
+|
++-- controller
+|     EmployeeController
+|
++-- entity
+|     Employee
+|
++-- mongo
+|     EmployeeDocument
+|     EmployeeMongoRepository
+|
++-- repository
+|     EmployeeRepository
+|     EmployeeCustomRepository
+|     EmployeeCustomRepositoryImpl
+|
++-- service
+|     EmployeeService
+|     EmployeeServiceImpl
+|
++-- SpringCrudJpaMongoApplication
+|
+src/test/java
+|
++-- repository
+|     EmployeeRepositoryTest
+|
++-- service
+|     EmployeeServiceTest
+|
++-- controller
+      EmployeeControllerTest
+
