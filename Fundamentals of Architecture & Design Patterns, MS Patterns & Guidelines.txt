@@ -1,0 +1,1976 @@
+Kind of Applications, SOA based solutions Microservices Architecture, Important attributes of Microservices :
+
+
+1. What are Applications?
+
+An application is a software program developed to perform specific business functions for users or organizations.
+
+Types of Applications
+
+1. Standalone/Desktop Applications
+
+Applications installed and executed on a local machine.
+
+Examples:
+
+Microsoft Word
+Notepad
+Calculator
+
+Characteristics:
+
+Runs on a single computer
+No internet required
+Limited scalability
+
+2. Client-Server Applications
+
+A client sends requests to a centralized server.
+
+Architecture:
+
+Client Application
+       |
+       |
+    Server
+       |
+    Database
+
+Examples:
+
+Banking Software
+ERP Systems
+
+3. Web Applications
+
+Applications accessed through web browsers.
+
+Examples:
+
+Gmail
+Facebook
+Amazon
+
+Architecture:
+
+Browser
+   |
+Web Server
+   |
+Application Server
+   |
+Database
+
+4. Enterprise Applications
+
+Large-scale applications supporting organizational processes.
+
+Examples:
+
+Banking Systems
+Hospital Management
+Insurance Systems
+
+Characteristics:
+
+Multi-user
+Distributed
+Secure
+Scalable
+
+5. Cloud-Native Applications
+
+Designed specifically for cloud environments.
+
+Examples:
+
+Netflix
+Uber
+Spotify
+
+Features:
+
+Auto Scaling
+Containerized
+Resilient
+
+2. Monolithic Application Architecture Microservices
+
+Before Microservices, most applications followed Monolithic Architecture.
+
+Structure
++--------------------------------+
+|         Application            |
+|--------------------------------|
+| UI Layer                       |
+| Business Logic                 |
+| Data Access Layer              |
+| Security                       |
++--------------------------------+
+              |
+          Database
+
+Example
+
+Online Shopping Application:
+
+Shopping App
+    |
+    |-- Product Module
+    |-- User Module
+    |-- Payment Module
+    |-- Order Module
+
+Everything is packaged into one deployment.
+
+Advantages :
+
+Easy development
+Easy testing
+Single deployment
+
+Disadvantages :
+
+Difficult scaling
+Large codebase
+Technology lock-in
+Difficult maintenance
+
+3. Service-Oriented Architecture (SOA)
+
+What is SOA?
+
+SOA (Service-Oriented Architecture) is an architectural style where business functionalities are exposed as reusable services.
+
+A service can be consumed by multiple applications.
+
+SOA Architecture
+
+          Service Consumer
+                  |
+          Enterprise Service Bus
+                  |
+    -----------------------------
+    |            |             |
+Customer     Payment      Inventory
+Service      Service       Service
+
+Components of SOA
+
+1. Service Provider
+
+Provides services.
+
+Example:
+
+Payment Service
+Customer Service
+
+2. Service Consumer
+
+Uses services.
+
+Example:
+
+Order Service
+
+3. Service Registry
+
+Stores service information.
+
+4. Enterprise Service Bus (ESB)
+
+Acts as middleware between services.
+
+Responsibilities:
+
+Routing
+Transformation
+Security
+Monitoring
+
+SOA Example
+
+Banking System :
+
+ATM
+Internet Banking
+Mobile Banking
+       |
+       |
+      ESB
+       |
+-------------------------
+|         |             |
+Account  Loan      Payment
+Service Service    Service
+
+Advantages of SOA
+
+Reusability
+
+Same service used by multiple systems.
+
+Integration:
+
+Different systems can communicate.
+
+Interoperability :
+
+Supports different technologies.
+
+Flexibility :
+
+Easy integration of new applications.
+
+Disadvantages of SOA :
+
+Single Point of Failure
+
+ESB failure affects entire system.
+
+Complex Infrastructure
+
+Requires middleware.
+
+High Cost
+
+ESB tools can be expensive.
+
+Performance Overhead
+
+Extra communication layers.
+
+4. What are Microservices?
+
+Microservices are a software architecture where an application is divided into small independent services.
+
+Each service:
+
+Has its own business responsibility
+Has its own database
+Can be deployed independently
+Can scale independently
+
+Monolithic vs Microservices
+
+Monolithic
++--------------------------------+
+| Product Module                 |
+| User Module                    |
+| Payment Module                 |
+| Order Module                   |
++--------------------------------+
+
+Single deployment.
+
+Microservices
+
+Product Service
+      |
+Order Service
+      |
+Payment Service
+      |
+Customer Service
+
+Independent deployment.
+
+Real-World Example
+
+Amazon E-Commerce
+
+User Service
+Catalog Service
+Cart Service
+Order Service
+Payment Service
+Notification Service
+Shipping Service
+
+Each service is independent.
+
+5. Microservices Architecture
+
+Architecture Diagram
+
+                   API Gateway
+                        |
+ ------------------------------------------------
+ |             |             |                  |
+User       Product       Order             Payment
+Service    Service       Service            Service
+ |             |             |                  |
+DB1           DB2           DB3               DB4
+
+Components :
+
+API Gateway     /order-service    /payment-service   /cart-service
+
+Single entry point.
+
+Responsibilities:
+
+Authentication  user should be authorized
+Routing             it route the different services using the API Gateway
+Rate Limiting     Limit the rate of the incoming data   1000 request per minutes
+Load Balancing  Distributing the load on different server
+
+Examples:
+
+Spring Cloud Gateway
+Kong
+NGINX
+Service Discovery
+
+Services discover each other dynamically.
+
+Examples:
+
+Netflix Eureka
+Consul
+Configuration Server
+
+Centralized configuration.
+
+Example:
+
+application.yml
+
+Managed through:
+
+Spring Cloud Config
+
+Load Balancer
+
+Distributes traffic.
+
+Example:
+
+Spring Cloud LoadBalancer
+
+Circuit Breaker Pattern use to balance the load accross multiple server
+
+Handles service failures gracefully.
+
+Example:
+
+Resilience4j :
+
+Distributed Logging
+
+Tracks requests across services.
+
+Examples:
+
+ELK Stack :
+
+Splunk    it is use to analyse the data using the data pipeline data analysis
+
+Monitoring :
+
+Examples:
+
+Prometheus
+Grafana
+
+6. Important Attributes of Microservices
+
+1. Single Responsibility
+
+One service should perform one business function.
+
+Example:
+
+User Service
+Payment Service
+Order Service
+
+2. Independently Deployable
+
+Each service can be deployed without affecting others.
+
+Deploy Payment Service
+Without stopping User Service
+
+3. Loosely Coupled
+
+Services communicate through APIs.
+
+@RestController
+@RequestMapping("/payment")
+public class PaymentController {
+}
+
+4. Highly Cohesive
+
+All functionalities inside a service should belong to the same business domain.
+
+5. Autonomous
+
+Service owns:
+
+Code
+Database
+Deployment
+
+Example:
+
+Order Service
+      |
+Order Database
+
+6. Scalability
+
+Scale only required services.
+
+10 instances
+
+Product Service
+
+2 instances
+Payment Service
+
+7. Fault Isolation
+
+Failure of one service should not affect others.
+
+Example:
+
+Payment Service Down
+
+Order Service Still Running
+
+8. Decentralized Data Management Monolithic
+
+Each service owns its database.
+
+Customer Service → Customer DB
+
+Order Service → Order DB
+
+9. Technology Diversity
+
+Different services can use different technologies.
+
+User Service      → Java
+
+Recommendation    → Python
+
+Analytics         → NodeJS
+
+10. Continuous Delivery
+
+Services can be deployed frequently.
+
+Git
+ ↓
+Jenkins
+ ↓
+Docker
+ ↓
+Kubernetes
+ ↓
+Production
+
+11. API-Based Communication
+
+Communication methods:
+
+REST API
+GET /orders/101
+
+gRPC
+
+High Performance Communication
+Messaging
+Kafka
+RabbitMQ
+
+12. Resilience
+
+System remains available despite failures.
+
+Example:
+
+@CircuitBreaker(name="payment")
+public String makePayment() {
+}
+
+13. Observability
+
+Provides visibility into system behavior.
+
+Includes:
+
+Logs
+Metrics
+Traces
+
+Tools:
+
+ELK
+Grafana
+Prometheus
+Zipkin
+
+7. Java Technologies Used for Microservices
+
+Component		Technology
+
+Microservice Development	Spring Boot
+API Gateway		Spring Cloud Gateway
+Service Discovery		Netflix Eureka
+Config Management		Spring Cloud Config
+Circuit Breaker		Resilience4j
+Messaging			Kafka, RabbitMQ
+Security			Spring Security, JWT
+Containerization		Docker
+Orchestration		Kubernetes
+Monitoring		Prometheus, Grafana
+Logging			ELK Stack
+
+8. Sample Microservice Using Spring Boot
+
+REST Controller
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @GetMapping("/{id}")
+    public String getProduct(@PathVariable int id) {
+        return "Product Id : " + id;
+    }
+}
+
+Application Class
+
+@SpringBootApplication
+public class ProductServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            ProductServiceApplication.class,
+            args
+        );
+    }
+}
+
+
+
+Thought behind Microservices, Monolith features and challenges, Advantages and Disadvantages of Microservices, Microservices Frameworks, Best Practices :
+
+
+
+1. Evolution of Software Architecture
+
+Software architecture has evolved through different stages:
+
+Phase 1: Monolithic Applications
+
+All functionalities are developed and deployed as a single unit.
+
+Example:
+
+E-Commerce Application
+
+---------------------------------
+| UI Layer                      |
+| Product Module                |
+| Customer Module               |
+| Order Module                  |
+| Payment Module                |
+| Inventory Module              |
+---------------------------------
+        Single Deployment
+
+Problems Faced
+
+As applications grow:
+
+Code becomes huge
+Difficult to maintain
+Slow deployment
+Technology lock-in
+Scaling entire application even if only one module needs scaling
+
+This led to the concept of Microservices Architecture.
+
+2. Thought Behind Microservices
+
+Definition
+
+Microservices is an architectural style where an application is broken into small independent services.
+
+Each service:
+
+Has a single responsibility
+Runs independently
+Has its own database
+Can be deployed independently
+Communicates via REST APIs, Messaging, or Events
+
+Real-Life Example
+
+Amazon
+
+Instead of one giant application:
+
+Amazon divides functionalities into:
+
+User Service
+Product Service
+Cart Service
+Payment Service
+Delivery Service
+Notification Service
+
+Each team owns one service.
+
+Client
+   |
+API Gateway
+   |
+------------------------------------------------
+| User | Product | Cart | Payment | Delivery |
+------------------------------------------------
+
+3. Monolithic Architecture
+
+Definition
+
+A monolithic application is built as a single deployable unit.
+
+Structure
+------------------------------------
+| Presentation Layer               |
+------------------------------------
+| Business Layer                   |
+------------------------------------
+| Data Access Layer                |
+------------------------------------
+| Database                         |
+------------------------------------
+
+Features of Monolithic Architecture
+
+1. Single Codebase
+
+All modules exist in one project.
+
+2. Single Deployment
+
+Entire application deployed together.
+
+3. Shared Database
+
+All modules use one database.
+
+4. Tight Coupling
+
+Modules are dependent on each other.
+
+5. Easier Initial Development
+
+Good for small projects.
+
+Example
+
+Banking Application
+
+Account Module
+Customer Module
+Loan Module
+Payment Module
+
+All inside one WAR/JAR
+
+4. Challenges of Monolithic Architecture
+
+Challenge 1: Large Codebase
+
+5 Million Lines of Code
+
+Understanding becomes difficult.
+
+Challenge 2: Slow Deployment
+
+Even a small change requires redeployment.
+
+Example:
+
+Changed Login Screen
+
+Deploy Entire Application
+
+Challenge 3: Scaling Issues
+
+Need to scale whole application.
+
+Example:
+
+Payment Module Busy
+
+Must scale:
+
+Login + Product + Payment
+
+Waste of resources.
+
+Challenge 4: Technology Lock-In
+
+Cannot use different technologies.
+
+Example:
+
+Entire Application in Java
+
+Cannot easily introduce:
+
+Python
+NodeJS
+Go
+
+Challenge 5: Longer Build Time
+
+mvn clean install
+
+may take several minutes.
+
+Challenge 6: Single Point of Failure
+
+One issue may crash entire application.
+
+5. Microservices Architecture
+
+Definition
+
+Application is divided into multiple small independent services.
+
+Example:
+
+Customer Service
+Order Service
+Product Service
+Payment Service
+Inventory Service
+
+Each service:
+
+Independent
+Own deployment
+Own database
+
+Architecture
+
+                API Gateway
+                      |
+------------------------------------------------
+| User | Product | Order | Payment | Inventory |
+------------------------------------------------
+      |        |       |         |
+     DB       DB      DB        DB
+
+6. Characteristics of Microservices
+
+Single Responsibility Principle
+
+One service = One business capability.
+
+Example:
+
+Order Service
+
+Only handles orders
+
+Independent Deployment
+
+Deploy without affecting others.
+
+Decentralized Database :
+
+Order DB
+Customer DB
+Product DB
+
+No shared database.
+
+Technology Diversity :
+
+Different services can use different technologies.
+
+Order Service → Java
+
+AI Service → Python
+
+Realtime Service → NodeJS
+
+Fault Isolation
+
+Failure in one service doesn't stop others.
+
+7. Advantages of Microservices
+
+1. Independent Development
+
+Different teams work independently.
+
+Example:
+
+Team A → User Service
+
+Team B → Product Service
+
+2. Faster Deployment
+
+Deploy only modified service.
+
+Payment Service Updated
+
+Deploy Payment Service Only
+
+3. Independent Scaling
+
+Scale specific service.
+
+1000 Payment Requests
+
+Scale Payment Service Only
+
+4. Fault Tolerance
+
+One service failure doesn't affect entire application.
+
+5. Technology Flexibility
+
+Choose best technology for each service.
+
+6. Better Maintainability
+
+Small codebase.
+
+Easy debugging.
+
+7. Continuous Delivery Support
+
+Ideal for DevOps pipelines.
+
+8. Disadvantages of Microservices
+
+1. Distributed System Complexity
+
+Managing multiple services is difficult.
+
+2. Network Latency
+
+Services communicate over network.
+
+Order → Payment → Inventory
+
+Additional delay.
+
+3. Distributed Transactions
+
+Complex transactions.
+
+Example:
+
+Order Created
+
+Payment Failed
+
+Rollback becomes difficult.
+
+4. Monitoring Complexity
+
+Need centralized monitoring.
+
+5. Testing Complexity
+
+Integration testing becomes harder.
+
+6. Infrastructure Cost
+
+Requires:
+
+Docker
+Kubernetes
+Monitoring
+API Gateway
+
+7. Data Consistency Issues
+
+Different databases create synchronization challenges.
+
+9. Monolith vs Microservices
+
+Feature		Monolith		Microservices
+
+Deployment	Single		Independent
+Scalability		Entire App		Individual Service
+Database		Shared		Separate
+Technology	One		Multiple
+Fault Isolation	Low		High
+Maintenance	Difficult		Easier
+Development Speed	Slow		Faster
+Complexity	Low		High
+Best For		Small Apps	Large Enterprise Apps
+
+10. Popular Java Microservices Frameworks
+
+1. Spring Boot
+
+Most popular framework.
+
+Features:
+
+Embedded Tomcat
+REST APIs
+Auto Configuration
+Dependency Injection
+
+Example:
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @GetMapping
+    public String getProducts() {
+        return "Product List";
+    }
+}
+
+2. Spring Cloud
+
+Provides:
+
+Service Discovery
+API Gateway
+Load Balancing
+Distributed Configuration
+
+Modules:
+
+Eureka
+Gateway
+Config Server
+OpenFeign
+
+3. Quarkus
+
+Cloud-native Java framework.
+
+Advantages:
+
+Fast startup
+Low memory
+Kubernetes-friendly
+
+4. Micronaut
+
+Modern microservice framework.
+
+Features:
+
+Fast startup
+Compile-time dependency injection
+
+5. Dropwizard
+
+Lightweight framework.
+
+Suitable for REST services.
+
+6. Helidon
+
+Oracle framework.
+
+Supports:
+
+MicroProfile
+Reactive Programming
+
+11. Spring Cloud Components
+
+Eureka Server
+
+Service Registry.
+
+@EnableEurekaServer
+@SpringBootApplication
+public class EurekaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaApplication.class,args);
+    }
+}
+
+API Gateway
+
+Single entry point.
+
+Client
+   |
+Gateway
+   |
+Microservices
+
+Benefits:
+
+Authentication
+Routing
+Logging
+Config Server
+
+Centralized configuration management.
+
+OpenFeign :
+
+Service-to-service communication.
+
+@FeignClient(name="product-service")
+public interface ProductClient {
+
+    @GetMapping("/products")
+    List<Product> getProducts();
+}
+
+12. Best Practices in Java Microservices
+
+1. Single Responsibility Service
+
+Bad:
+
+User + Product + Payment
+
+Good:
+
+User Service
+Product Service
+Payment Service
+
+2. Database Per Service
+
+Bad:
+
+Shared Database
+
+Good:
+
+User DB
+
+Product DB
+
+Order DB
+
+3. Use API Gateway
+
+Benefits:
+
+Security
+Routing
+Monitoring
+
+4. Implement Service Discovery Spring Cloud
+
+Use:
+
+Eureka
+Consul
+
+5. Use Circuit Breaker
+
+Prevents cascading failures. If one service get fail then 
+
+Example using Resilience4j:
+
+@CircuitBreaker(name="paymentService")
+public String processPayment() {
+    return paymentClient.pay();
+}
+
+6. Centralized Logging
+
+Use:
+
+ELK Stack
+Elasticsearch
+Logstash
+Kibana
+
+or
+
+Grafana
+Loki
+
+7. Distributed Tracing
+
+Use:
+
+Zipkin
+Jaeger
+
+Track request flow:
+
+User Service
+   ↓
+Order Service
+   ↓
+Payment Service
+
+8. Secure APIs
+
+Use:
+
+JWT
+OAuth2
+Spring Security
+
+Example:
+
+http
+   .authorizeHttpRequests(auth ->
+      auth.anyRequest().authenticated())
+   .oauth2ResourceServer(oauth2 ->
+      oauth2.jwt());
+
+9. Containerize Services
+
+Use Docker.
+
+FROM eclipse-temurin:21
+COPY target/app.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+
+10. Orchestrate Using Kubernetes
+
+Benefits:
+
+Auto Scaling
+Self Healing
+Rolling Updates
+
+11. Use Event-Driven Architecture
+
+Use:
+
+Apache Kafka Messaging Producer and Consumer
+RabbitMQ AWS
+
+Example:
+
+Order Created Event
+
+↓
+
+Payment Service
+
+↓
+
+Inventory Service
+
+12. Implement Health Checks
+
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+Endpoint:
+
+/actuator/health
+
+13. Version APIs
+
+Example:
+
+/api/v1/products
+
+/api/v2/products
+
+14. Externalize Configuration
+
+Use:
+
+spring.datasource.url=
+spring.datasource.username=
+
+Never hardcode configurations.
+
+13. Typical Enterprise Microservices Architecture
+
+                    Client
+                       |
+                API Gateway
+                       |
+-----------------------------------------------------
+| User | Product | Order | Payment | Inventory |
+-----------------------------------------------------
+      |      |       |        |
+     DB     DB      DB       DB
+
+             Eureka Server
+
+             Config Server
+
+ Kafka / RabbitMQ
+
+ ELK Stack
+
+ Zipkin
+
+ Docker
+
+ Kubernetes
+
+
+
+
+
+Design Patterns, Architecture, 12 Factor methodology and its implications on Microservices architecture :
+
+
+
+1. What is a Design Pattern?
+
+A Design Pattern is a proven reusable solution to a commonly occurring software design problem.
+
+It is not code but a template or blueprint for solving problems.
+
+Why Design Patterns?
+
+Improve code reusability
+Improve maintainability
+Reduce coupling
+Increase flexibility
+Follow industry standards
+
+Types of Design Patterns
+
+Design Patterns are divided into:
+
+1. Creational Patterns
+
+Used for object creation.
+
+Examples:
+
+Singleton
+Factory
+Abstract Factory
+Builder
+Prototype
+
+2. Structural Patterns
+
+Used for class and object composition.
+
+Examples:
+
+Adapter
+Decorator
+Proxy
+Facade
+Composite
+
+3. Behavioral Patterns
+
+Used for communication between objects.
+
+Examples:
+
+Observer
+Strategy
+Command
+State
+Template Method
+
+Singleton Pattern :
+
+Ensures only one object exists.
+
+Example :
+
+public class DatabaseConnection {
+
+    private static DatabaseConnection instance;
+
+    private DatabaseConnection() {
+    }
+
+    public static synchronized DatabaseConnection getInstance() {
+
+        if(instance == null) {
+            instance = new DatabaseConnection();
+        }
+
+        return instance;
+    }
+}
+
+Usage:
+
+DatabaseConnection obj1 = DatabaseConnection.getInstance();
+DatabaseConnection obj2 = DatabaseConnection.getInstance();
+
+System.out.println(obj1 == obj2);
+
+Output:
+
+true
+
+Factory Pattern :
+
+Creates objects without exposing creation logic.
+
+Example
+Interface
+
+public interface Notification {
+    void send();
+}
+
+Email
+
+public class EmailNotification implements Notification {
+
+    @Override
+    public void send() {
+        System.out.println("Email Sent");
+    }
+}
+
+SMS
+
+public class SMSNotification implements Notification {
+
+    @Override
+    public void send() {
+        System.out.println("SMS Sent");
+    }
+}
+
+Factory
+
+public class NotificationFactory {
+
+    public static Notification createNotification(String type) {
+
+        if(type.equalsIgnoreCase("EMAIL"))
+            return new EmailNotification();
+
+        if(type.equalsIgnoreCase("SMS"))
+            return new SMSNotification();
+
+        return null;
+    }
+}
+
+Usage:
+
+Notification notification =
+        NotificationFactory.createNotification("EMAIL");
+
+notification.send();
+
+Builder Pattern :
+
+Useful for creating complex objects.
+
+Example :
+
+public class Employee {
+
+    private String name;
+    private int age;
+    private String city;
+
+    private Employee(EmployeeBuilder builder){
+        this.name = builder.name;
+        this.age = builder.age;
+        this.city = builder.city;
+    }
+
+    public static class EmployeeBuilder {
+
+        private String name;
+        private int age;
+        private String city;
+
+        public EmployeeBuilder setName(String name){
+            this.name = name;
+            return this;
+        }
+
+        public EmployeeBuilder setAge(int age){
+            this.age = age;
+            return this;
+        }
+
+        public EmployeeBuilder setCity(String city){
+            this.city = city;
+            return this;
+        }
+
+        public Employee build(){
+            return new Employee(this);
+        }
+    }
+}
+
+Usage:
+
+Employee emp = new Employee.EmployeeBuilder()
+        .setName("John")
+        .setAge(30)
+        .setCity("Pune")
+        .build();
+
+Strategy Pattern :
+
+Encapsulates algorithms.
+
+Example :
+
+public interface PaymentStrategy {
+    void pay(double amount);
+}
+public class CreditCardPayment
+        implements PaymentStrategy {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid using Card");
+    }
+}
+public class UpiPayment
+        implements PaymentStrategy {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid using UPI");
+    }
+}
+
+Context:
+
+public class PaymentContext {
+
+    private PaymentStrategy strategy;
+
+    public PaymentContext(PaymentStrategy strategy){
+        this.strategy = strategy;
+    }
+
+    public void process(double amount){
+        strategy.pay(amount);
+    }
+}
+
+Usage:
+
+PaymentContext context =
+        new PaymentContext(new UpiPayment());
+
+context.process(5000);
+
+Observer Pattern :
+
+Used in Event Driven Architecture.
+
+Example
+
+Publisher:
+
+interface Observer {
+    void update(String message);
+}
+
+Subscriber:
+
+class Customer implements Observer {
+
+    @Override
+    public void update(String message) {
+        System.out.println(message);
+    }
+}
+
+2. Software Architecture
+
+Software Architecture defines:
+
+Structure of system
+Components
+Communication
+Deployment
+Scalability
+
+Types of Architectures :
+
+Monolithic Architecture
+
+All modules deployed together.
+
++--------------------+
+| Employee Module    |
+| Product Module     |
+| Order Module       |
+| Payment Module     |
++--------------------+
+Advantages
+Easy development
+Easy deployment
+
+Disadvantages
+
+Difficult scaling
+Technology lock
+Large codebase
+Layered Architecture
+
+Most common Java architecture.
+
+Presentation Layer UI
+
+Business Layer Model Controller
+
+Persistence Layer  ORM
+
+Database Layer     Database
+
+Example:
+
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
+
+MVC Architecture :
+
+Model
+View
+Controller
+
+Spring MVC uses MVC architecture.
+
+Event Driven Architecture :
+
+Components communicate using events.
+
+Order Service
+      |
+      V
+ Kafka Topic
+      |
+      V
+ Email Service
+
+Technologies:
+
+Apache Kafka
+RabbitMQ
+ActiveMQ
+Hexagonal Architecture
+
+Also called:
+
+Ports and Adapters Architecture
+
+Structure:
+
+External Systems
+       |
+Adapters
+       |
+Ports
+       |
+Business Logic
+
+Benefits:
+
+Testability
+Loose coupling
+Domain Driven Design
+Clean Architecture
+
+Created by Robert C. Martin
+
+Entities
+
+Use Cases
+
+Interface Adapters
+
+Frameworks
+
+Dependency Rule:
+
+Outer -> Inner
+
+Business logic independent of frameworks.
+
+Microservices Architecture :
+
+Application divided into small services.
+
+User Service
+
+Product Service
+
+Order Service
+
+Payment Service
+
+Each service:
+
+Independent
+Deployable
+Own database
+
+Microservices Example
+
+Client
+   |
+API Gateway
+   |
+--------------------------
+|      |       |         |
+User Product Order Payment
+
+Communication:
+
+Synchronous
+REST API
+gRPC
+Asynchronous
+Kafka
+RabbitMQ
+
+Important Microservice Design Patterns :
+
+API Gateway Pattern
+
+Single entry point.
+
+Examples:
+
+Spring Cloud Gateway
+Kong
+NGINX
+
+Service Discovery Pattern :
+
+Services register themselves.
+
+Examples:
+
+Netflix Eureka
+Consul
+Circuit Breaker Pattern
+
+Prevents cascading failures.
+
+Example:
+
+@CircuitBreaker(name="payment")
+public String processPayment() {
+    return paymentClient.pay();
+}
+
+Tools:
+
+Resilience4j
+Hystrix (deprecated)
+
+Saga Pattern :
+
+Distributed transaction management.
+
+Order Service
+    |
+Payment Service
+    |
+Inventory Service
+
+Rollback occurs if any step fails.
+
+CQRS Pattern :
+
+Command Query Responsibility Segregation
+
+Write DB
+
+Read DB
+
+Benefits:
+
+High scalability
+Better performance
+
+3. 12-Factor Methodology
+
+Developed by engineers at Heroku.
+
+Provides best practices for cloud-native applications.
+
+Why 12-Factor?
+
+Helps build:
+
+Scalable apps
+Cloud-native apps
+Microservices
+Containerized applications
+
+Factor 1: Codebase
+
+One codebase tracked in Git.
+
+One Application
+One Repository
+
+Example:
+
+git clone employee-service
+
+Factor 2: Dependencies
+
+Explicitly declare dependencies.
+
+Maven:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+</dependency>
+
+Never rely on system-installed libraries.
+
+Factor 3: Config
+
+Store configuration outside code.
+
+Bad:
+
+String dbPassword = "root123";
+
+Good:
+
+spring.datasource.password=${DB_PASSWORD}
+
+Environment Variable:
+
+DB_PASSWORD=root123
+
+Factor 4: Backing Services
+
+Treat services as attached resources.
+
+Examples:
+
+MySQL
+PostgreSQL
+Redis
+Kafka
+
+Configuration change only.
+
+spring.datasource.url=...
+
+Factor 5: Build, Release, Run
+
+Separate stages.
+
+Build
+  |
+Release
+  |
+Run
+
+Example:
+
+mvn clean package
+
+Factor 6: Processes
+
+Run application as stateless processes.
+
+Bad:
+
+static Map<String,Object> cache
+
+Good:
+
+Redis
+Database
+
+Factor 7: Port Binding
+
+Export services via ports.
+
+server.port=8080
+
+Application self-contained.
+
+Factor 8: Concurrency
+
+Scale using processes.
+
+Instance1
+Instance2
+Instance3
+
+Docker/Kubernetes scale horizontally.
+
+Factor 9: Disposability
+
+Fast startup and graceful shutdown.
+
+@PreDestroy
+public void shutdown() {
+}
+
+Useful in Kubernetes.
+
+Factor 10: Dev/Prod Parity
+
+Keep environments similar.
+
+Developer
+QA
+Production
+
+Use Docker to maintain consistency.
+
+Factor 11: Logs
+
+Treat logs as event streams.
+
+log.info("Order Created");
+
+Logs sent to:
+
+ELK Stack
+Splunk
+Grafana Loki
+
+Factor 12: Admin Processes
+
+Run one-off admin tasks separately.
+
+Example:
+
+java -jar app.jar migration
+
+Database migration:
+
+Flyway
+Liquibase
+
+Implications of 12-Factor on Microservices
+
+1. Stateless Services
+
+Microservices should never store session state locally.
+
+Bad:
+
+HashMap sessionCache
+
+Good:
+
+Redis
+Database
+
+2. Environment-Based Configuration
+
+Use:
+
+application.yml
+
+and
+
+ENV VARIABLES
+
+instead of hardcoding.
+
+3. Independent Deployment
+
+Each microservice:
+
+Build
+Release
+Deploy
+
+independently.
+
+4. Horizontal Scaling
+
+Order Service
+     |
+Replica 1
+Replica 2
+Replica 3
+
+Kubernetes handles scaling.
+
+5. Container Friendly
+
+Microservices align perfectly with:
+
+Docker
+Kubernetes
+OpenShift
+
+6. Cloud Native Development
+
+Supports:
+
+AWS
+Azure
+GCP
+
+and Java frameworks like:
+
+Spring Boot
+Spring Cloud
+Quarkus
+Micronaut
+
+Real-Time Enterprise Java Microservices Architecture
+
+                Client
+                   |
+                   V
+            API Gateway
+                   |
+      -------------------------
+      |      |       |        |
+      V      V       V        V
+
+   User  Product  Order   Payment
+ Service Service Service Service
+
+      |      |       |        |
+      -------------------------
+                   |
+                Kafka
+                   |
+         -----------------
+         |               |
+      Email         Notification
+      Service        Service
+
+                   |
+                Redis Concurrency
+
+                   |
+             MySQL/Postgres
+
+                   |
+      ELK / Grafana / Prometheus
+
+
+
+
