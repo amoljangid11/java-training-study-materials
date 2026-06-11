@@ -1,0 +1,4648 @@
+What is Netflix OSS?, What is Spring Cloud?, Service Discovery with Spring Cloud Netflix Eureka :
+
+
+1. What is Netflix OSS?
+
+Definition
+
+Netflix OSS (Open Source Software) is a collection of tools developed by Netflix to build highly scalable, distributed, cloud-native microservices applications.
+
+When Netflix moved from a monolithic architecture to microservices, they created several frameworks to solve common distributed system challenges.
+
+These frameworks were later open-sourced and became known as Netflix OSS.
+
+Problems Solved by Netflix OSS :
+
+In a Microservices Architecture:
+
+Services run on multiple servers
+Services can start/stop dynamically
+Service locations change frequently
+Load balancing is required
+Fault tolerance is needed
+API routing is necessary
+
+Netflix OSS provides solutions for all these problems.
+
+Major Netflix OSS Components
+
+Component	Purpose
+
+Eureka		Service Discovery
+Ribbon		Client Side Load Balancing
+Hystrix		Circuit Breaker
+Zuul		API Gateway
+Archaius		Configuration Management
+Turbine		Aggregating Metrics
+
+Traditional Architecture :
+
+Client
+  |
+  |
+Service A ----> Service B
+                (Hardcoded URL)
+
+Problems:
+
+Tight Coupling
+
+Difficult Scaling
+Difficult Maintenance
+
+Netflix OSS Architecture :
+
+                Eureka Server
+                      |
+        ------------------------------
+        |             |              |
+     Service A     Service B      Service C
+        |
+        |
+      Client
+
+Services register themselves with Eureka.
+
+Other services discover them dynamically.
+
+2. What is Spring Cloud?
+
+Definition
+
+Spring Cloud is a framework built on top of Spring Boot that provides tools and patterns for developing distributed systems and microservices.
+
+It integrates:
+
+Netflix OSS
+Kubernetes
+Cloud Config
+Gateway
+Distributed Tracing
+Load Balancing
+
+Why Spring Cloud?
+
+Building Microservices requires:
+
+Service Discovery
+
+Finding service locations dynamically.
+
+Configuration Management
+
+Centralized configuration.
+
+API Gateway
+
+Single entry point.
+
+Fault Tolerance
+
+Prevent cascading failures.
+
+Load Balancing
+
+Distribute requests.
+
+Distributed Tracing
+
+Track requests across services.
+
+Spring Cloud provides all these features.
+
+Spring Cloud Ecosystem :
+
+Spring Cloud
+
+├── Eureka
+├── Config Server
+├── Gateway
+├── OpenFeign
+├── LoadBalancer
+├── Sleuth
+├── Circuit Breaker
+└── Kubernetes Support
+
+Spring Boot vs Spring Cloud
+
+Spring Boot			Spring Cloud
+
+Creates standalone applications		Creates distributed applications
+Single application focus		Microservices focus
+Embedded server			Cloud capabilities
+Auto Configuration			Service Discovery
+REST APIs			Distributed Systems
+
+3. What is Service Discovery? Service A   255.255.255.0 Subnet Address MAC
+
+Definition
+
+Service Discovery is the process of automatically finding the network locations of services.
+
+Without Service Discovery
+
+Order Service
+    |
+    |
+http://192.168.1.10:8081
+
+If IP changes:
+
+Order Service
+    |
+    X
+
+Application breaks.
+
+With Service Discovery
+
+Order Service
+     |
+     |
+ Customer Service
+     |
+     |
+ Eureka Server
+
+Order Service asks Eureka:
+
+Where is Customer Service?
+
+Eureka replies:
+
+Customer Service:
+
+10.0.0.11:8081
+10.0.0.12:8081
+10.0.0.13:8081
+
+4. What is Eureka?
+
+Definition
+
+Eureka is a Service Registry developed by Netflix.
+
+It stores information about all running services.
+
+Responsibilities :
+
+Service Registration
+
+Services register themselves.
+
+Service Discovery
+
+Services discover each other.
+
+Health Monitoring
+
+Tracks service availability.
+
+Eureka Architecture :
+
+                Eureka Server
+
+                       |
+          --------------------------
+          |            |           |
+
+      User Service  Order Service  Product Service
+
+All services register with Eureka.
+
+5. Spring Cloud Netflix Eureka Components
+
+Eureka Server
+
+Registry Server
+
+Stores all service information
+
+Example:
+
+USER-SERVICE
+ORDER-SERVICE
+PRODUCT-SERVICE
+
+Eureka Client :
+
+Any microservice registering with Eureka.
+
+Example:
+
+User Service
+Order Service
+Product Service
+
+6. Creating Eureka Server from Scratch
+
+Step 1: Create Spring Boot Project
+
+Dependencies:
+
+Spring Web
+Eureka Server
+
+pom.xml
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+
+</dependencies>
+
+Main Class
+
+package com.example.eurekaserver;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(
+            EurekaServerApplication.class,
+            args
+        );
+    }
+}
+
+application.properties
+
+spring.application.name=eureka-server
+
+server.port=8761
+
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+Run Application
+
+http://localhost:8761
+
+Eureka Dashboard appears.
+
+7. Creating User Service (Eureka Client)
+
+Dependencies
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>
+            spring-cloud-starter-netflix-eureka-client
+        </artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+</dependencies>
+
+Main Class
+
+package com.example.userservice;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class UserServiceApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(
+            UserServiceApplication.class,
+            args
+        );
+    }
+}
+
+application.properties
+
+spring.application.name=user-service
+
+server.port=8081
+
+eureka.client.service-url.defaultZone=
+
+http://localhost:8761/eureka
+
+Controller
+
+package com.example.userservice.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping
+    public String getUsers() {
+
+        return "User Service Running";
+    }
+}
+
+Run Service
+
+Service automatically registers with Eureka.
+
+Dashboard:
+
+Instances currently registered with Eureka
+
+USER-SERVICE
+
+8. Creating Order Service
+
+application.properties
+
+spring.application.name=order-service
+
+server.port=8082
+
+eureka.client.service-url.defaultZone=
+
+http://localhost:8761/eureka
+
+Controller
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @GetMapping
+    public String getOrders() {
+
+        return "Order Service Running";
+    }
+}
+
+Dashboard:
+
+USER-SERVICE
+ORDER-SERVICE
+
+9. Service-to-Service Communication
+
+Suppose Order Service calls User Service.
+
+Without Eureka
+
+RestTemplate restTemplate = new RestTemplate();
+
+String result =
+restTemplate.getForObject(
+"http://localhost:8081/users",
+String.class
+);
+
+Hardcoded URL.
+
+Bad practice.
+
+With Eureka
+
+String result =
+restTemplate.getForObject(
+"http://USER-SERVICE/users",
+String.class
+);
+
+Service name used instead of IP.
+
+10. Using Spring Cloud LoadBalancer
+
+Configuration
+
+@Configuration
+public class Config {
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+
+        return new RestTemplate();
+    }
+}
+
+Service Class
+
+@Service
+
+public class OrderService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String getUsers() {
+
+        return restTemplate.getForObject(
+                "http://USER-SERVICE/users",
+                String.class
+        );
+    }
+}
+
+11. Load Balancing Example
+
+Suppose:
+
+USER-SERVICE
+
+runs on:
+
+8081
+8083
+8084
+
+Registered in Eureka.
+
+USER-SERVICE
+ ├── 8081
+ ├── 8083
+ └── 8084
+
+When requests arrive:
+
+Request 1 → 8081
+Request 2 → 8083
+Request 3 → 8084
+
+Automatic load balancing happens.
+
+12. Service Registration Lifecycle
+
+Step 1
+
+Service Starts
+
+User Service Started
+
+Step 2
+
+Registers with Eureka
+
+POST /eureka/apps
+
+Step 3
+
+Heartbeat Sent
+
+Every 30 seconds:
+
+I am alive
+
+Step 4
+
+Eureka Updates Registry
+
+USER-SERVICE
+
+Step 5
+
+Other Services Discover It
+
+GET /eureka/apps
+
+Real-Time Enterprise Architecture
+
+                    Eureka Server
+                         |
+       -----------------------------------------
+       |            |            |             |
+ User Service  Order Service Product Service Payment Service
+       |            |            |             |
+       -----------------------------------------
+                     |
+                 API Gateway
+                     |
+                  Client
+
+Flow:
+
+All services register with Eureka.
+API Gateway discovers services via Eureka.
+Services communicate using service names.
+Load balancing occurs automatically.
+Failed instances are removed from the registry.
+
+
+
+Client-Side Load Balancing with Spring Cloud Load Balancer, Implementing Microservices along with Eureka and Load Balancer, OpenFeign declarative RestClient :
+
+
+
+1. What is Client-Side Load Balancing?
+
+In a Microservices architecture, multiple instances of the same service may be running.
+
+Example:
+
+Employee Service
+
+Instance 1 -> http://localhost:8081
+Instance 2 -> http://localhost:8082
+Instance 3 -> http://localhost:8083
+
+Suppose another service (Department Service) wants to call Employee Service.
+
+Without Load Balancer:
+
+http://localhost:8081/employees
+
+Problem:
+
+Hardcoded URL
+Single point of failure
+No scalability
+
+Solution:
+
+Spring Cloud Load Balancer
+
+http://EMPLOYEE-SERVICE/employees
+
+The Load Balancer automatically chooses one instance.
+
+2. Types of Load Balancing
+
+Server-Side Load Balancing
+
+Examples:
+
+Nginx
+HAProxy
+AWS ELB
+
+Architecture:
+
+Client
+   |
+   v
+Load Balancer
+   |
+   +------> Service Instance 1
+   |
+   +------> Service Instance 2
+   |
+   +------> Service Instance 3
+
+Client-Side Load Balancing :
+
+Client itself decides which instance to call.
+
+Architecture:
+
+Client Service
+      |
+      | Eureka Lookup
+      v
+Eureka Server
+      |
+      +------ Service-1
+      +------ Service-2
+      +------ Service-3
+
+Client chooses instance
+
+3. What is Eureka?
+
+Eureka is a Service Registry.
+
+It keeps track of:
+
+Service Names
+Host Names
+Port Numbers
+Health Status
+
+Example Registry:
+
+EMPLOYEE-SERVICE
+
+localhost:8081
+localhost:8082
+localhost:8083
+
+4. Microservices Architecture
+
+                     Eureka Server
+
+                     Port 8761
+                          |
+ --------------------------------------------------
+ |                                                |
+ |                                                |
+Employee Service                          Department Service
+Port 8081                                 Port 8082
+Port 8083
+Port 8084
+
+Department Service calls Employee Service using:
+
+http://EMPLOYEE-SERVICE/employees
+
+Load Balancer chooses instance.
+
+Step 1: Create Eureka Server
+
+Maven Dependencies
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+</dependency>
+
+Main Class
+
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class, args);
+    }
+}
+
+application.properties
+server.port=8761
+
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+Run:
+
+http://localhost:8761
+
+Step 2: Create Employee Service
+
+Dependency
+
+<dependency>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+Main Class
+@SpringBootApplication
+@EnableDiscoveryClient
+public class EmployeeServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EmployeeServiceApplication.class,args);
+    }
+}
+
+application.properties
+spring.application.name=EMPLOYEE-SERVICE
+
+server.port=8081
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+Controller
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping
+    public String getEmployees() {
+
+        return "Response From Instance 8081";
+    }
+}
+
+Create Multiple Instances
+
+Run same application on:
+
+8081
+8082
+8083
+
+Eureka Dashboard:
+
+EMPLOYEE-SERVICE
+  Instance-1
+  Instance-2
+  Instance-3
+
+Step 3: Create Department Service
+
+Dependencies:
+
+<dependency>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+
+<dependency>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+</dependency>
+
+application.properties
+
+spring.application.name=DEPARTMENT-SERVICE
+
+server.port=8085
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+Step 4: Configure RestTemplate Load Balancer
+
+Configuration Class
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+
+        return new RestTemplate();
+    }
+}
+
+How @LoadBalanced Works
+
+Without:
+
+http://localhost:8081/employees
+
+With:
+
+http://EMPLOYEE-SERVICE/employees
+
+Spring Cloud:
+
+Queries Eureka
+Fetches all instances
+Selects one instance
+Makes request
+
+Service Layer
+
+@Service
+public class EmployeeConsumerService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String getEmployeeData() {
+
+        return restTemplate.getForObject(
+                "http://EMPLOYEE-SERVICE/employees",
+                String.class);
+    }
+}
+
+Controller
+@RestController
+public class DepartmentController {
+
+    @Autowired
+    private EmployeeConsumerService service;
+
+    @GetMapping("/department")
+    public String getData() {
+
+        return service.getEmployeeData();
+    }
+}
+
+Load Balancing Result
+
+Call:
+
+http://localhost:8085/department
+
+Responses:
+
+Response From Instance 8081
+
+Next request:
+
+Response From Instance 8082
+
+Next request:
+
+Response From Instance 8083
+
+Round Robin algorithm.
+
+5. Spring Cloud OpenFeign
+
+What is Feign?
+
+Feign is a Declarative REST Client.
+
+Without Feign:
+
+RestTemplate
+WebClient
+HttpURLConnection
+
+Need lots of code.
+
+With Feign:
+
+@FeignClient
+
+Just create interface.
+
+OpenFeign Architecture
+
+Department Service
+       |
+       v
+Feign Client
+       |
+       v
+Load Balancer
+       |
+       v
+Employee Service
+
+Dependency
+
+<dependency>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+
+Enable Feign
+
+@SpringBootApplication
+@EnableFeignClients
+public class DepartmentServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            DepartmentServiceApplication.class,
+            args);
+    }
+}
+
+Employee DTO
+
+public class Employee {
+
+    private Long id;
+    private String name;
+
+    // getters setters
+}
+
+Employee Service Endpoint
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping("/{id}")
+    public Employee getEmployee(
+            @PathVariable Long id) {
+
+        Employee emp = new Employee();
+        emp.setId(id);
+        emp.setName("John");
+
+        return emp;
+    }
+}
+
+Create Feign Client
+
+@FeignClient(name = "EMPLOYEE-SERVICE")
+public interface EmployeeFeignClient {
+
+    @GetMapping("/employees/{id}")
+    Employee getEmployee(
+            @PathVariable Long id);
+}
+
+Service Layer
+
+@Service
+public class DepartmentService {
+
+    @Autowired
+    private EmployeeFeignClient feignClient;
+
+    public Employee getEmployee(Long id) {
+
+        return feignClient.getEmployee(id);
+    }
+}
+
+Controller
+@RestController
+public class DepartmentController {
+
+    @Autowired
+    private DepartmentService service;
+
+    @GetMapping("/department/{id}")
+    public Employee getEmployee(
+            @PathVariable Long id) {
+
+        return service.getEmployee(id);
+    }
+}
+
+Flow :
+
+Client Request
+      |
+      v
+Department Controller
+      |
+      v
+Feign Client
+      |
+      v
+Spring Cloud Load Balancer
+      |
+      v
+Eureka Server
+      |
+      v
+Employee Service Instance
+
+Feign Advantages
+
+Less Boilerplate
+
+Without Feign
+
+RestTemplate
+HttpHeaders
+HttpEntity
+ResponseEntity
+
+With Feign
+
+@FeignClient
+Service Discovery Support
+@FeignClient(name="EMPLOYEE-SERVICE")
+
+No hardcoded URLs.
+
+Load Balancing Support
+
+Integrated with:
+
+Spring Cloud LoadBalancer
+
+DTO Mapping
+
+Automatic JSON conversion.
+
+Employee employee =
+       feignClient.getEmployee(1L);
+
+Feign with Fallback :
+
+Dependency
+
+<dependency>
+    <groupId>io.github.openfeign</groupId>
+    <artifactId>feign-hystrix</artifactId>
+</dependency>
+
+Fallback Class :
+
+@Component
+public class EmployeeFallback
+        implements EmployeeFeignClient {
+
+    @Override
+    public Employee getEmployee(Long id) {
+
+        Employee emp = new Employee();
+
+        emp.setId(0L);
+        emp.setName("Default Employee");
+
+        return emp;
+    }
+}
+
+Feign Client
+
+@FeignClient(
+    name="EMPLOYEE-SERVICE",
+    fallback=EmployeeFallback.class
+)
+public interface EmployeeFeignClient {
+
+    @GetMapping("/employees/{id}")
+    Employee getEmployee(
+            @PathVariable Long id);
+}
+
+
+
+
+Complete Example :
+
+
+
+1. What is Netflix OSS?
+
+Netflix OSS (Open Source Software) is a collection of tools developed by Netflix for building highly scalable distributed systems and microservices.
+
+Popular Netflix OSS Components:
+
+Component	Purpose
+Eureka	Service Discovery
+Ribbon	Client Side Load Balancer (Deprecated)
+Hystrix	Circuit Breaker (Deprecated)
+Zuul	API Gateway
+Archaius	Configuration Management
+
+Today Spring Cloud supports:
+
+Eureka
+OpenFeign
+Spring Cloud Gateway
+Spring Cloud LoadBalancer
+
+2. What is Spring Cloud?
+
+Spring Cloud provides tools for building distributed systems and microservices.
+
+Features:
+
+Service Discovery
+Load Balancing
+API Gateway
+Distributed Configuration
+Circuit Breakers
+Monitoring
+
+Architecture:
+
+               Eureka Server
+                    |
+       -----------------------------
+       |                           |
+ Product-Service         Employee-Service
+       |                           |
+       ----------Feign-------------
+                    |
+               LoadBalancer
+
+Project Structure
+
+Create 3 projects:
+
+1. eureka-server
+2. employee-service
+3. product-service
+
+Step 1: Create Eureka Server
+
+pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.6</version>
+    </parent>
+
+    <groupId>com.demo</groupId>
+    <artifactId>eureka-server</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
+
+EurekaServerApplication.java
+
+package com.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class,args);
+    }
+}
+
+application.yml
+
+server:
+  port: 8761
+
+spring:
+  application:
+    name: EUREKA-SERVER
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+Run
+
+mvn spring-boot:run
+
+Open:
+
+http://localhost:8761
+
+Step 2: Create Product Service
+
+pom.xml
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+
+</dependencies>
+
+ProductServiceApplication.java
+
+package com.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ProductServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ProductServiceApplication.class,args);
+    }
+}
+
+Product.java
+
+package com.demo.model;
+
+public class Product {
+
+    private Integer id;
+    private String name;
+    private double price;
+
+    public Product() {
+    }
+
+    public Product(Integer id, String name, double price) {
+        this.id=id;
+        this.name=name;
+        this.price=price;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id=id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price=price;
+    }
+}
+
+ProductController.java
+
+package com.demo.controller;
+
+import com.demo.model.Product;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @GetMapping
+    public List<Product> getProducts() {
+
+        return List.of(
+                new Product(1,"Laptop",65000),
+                new Product(2,"Mobile",25000),
+                new Product(3,"TV",45000)
+        );
+    }
+}
+
+application.yml
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: PRODUCT-SERVICE
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+Step 3: Create Employee Service
+
+Employee service will call Product Service.
+
+pom.xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+    </dependency>
+
+</dependencies>
+
+Enable Feign
+
+package com.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableFeignClients
+public class EmployeeServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EmployeeServiceApplication.class,args);
+    }
+}
+
+Step 4: Create Feign Client
+
+ProductClient.java
+
+package com.demo.feign;
+
+import com.demo.model.Product;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
+
+@FeignClient(name = "PRODUCT-SERVICE")
+public interface ProductClient {
+
+    @GetMapping("/products")
+    List<Product> getProducts();
+}
+
+Product.java
+
+package com.demo.model;
+
+public class Product {
+
+    private Integer id;
+    private String name;
+    private double price;
+
+    public Product() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id=id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price=price;
+    }
+}
+
+Step 5: Service Layer
+
+package com.demo.service;
+
+import com.demo.feign.ProductClient;
+import com.demo.model.Product;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class EmployeeService {
+
+    private final ProductClient productClient;
+
+    public EmployeeService(ProductClient productClient) {
+        this.productClient = productClient;
+    }
+
+    public List<Product> fetchProducts() {
+        return productClient.getProducts();
+    }
+}
+Step 6: Controller
+
+package com.demo.controller;
+
+import com.demo.model.Product;
+import com.demo.service.EmployeeService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    private final EmployeeService service;
+
+    public EmployeeController(EmployeeService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/products")
+    public List<Product> products() {
+        return service.fetchProducts();
+    }
+}
+application.yml
+server:
+  port: 8082
+
+spring:
+  application:
+    name: EMPLOYEE-SERVICE
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+Step 7: Verify Eureka Registration
+
+Open:
+
+http://localhost:8761
+
+You should see:
+
+PRODUCT-SERVICE
+EMPLOYEE-SERVICE
+
+registered successfully.
+
+Step 8: Test API
+
+Product Service
+
+GET
+
+http://localhost:8081/products
+
+Response
+
+[
+  {
+    "id":1,
+    "name":"Laptop",
+    "price":65000
+  },
+  {
+    "id":2,
+    "name":"Mobile",
+    "price":25000
+  }
+]
+Employee Service
+GET
+http://localhost:8082/employees/products
+
+Feign internally performs:
+
+PRODUCT-SERVICE
+       ↓
+ Eureka Discovery
+       ↓
+ LoadBalancer
+       ↓
+ Product Instance
+
+Response
+
+[
+  {
+    "id":1,
+    "name":"Laptop",
+    "price":65000
+  },
+  {
+    "id":2,
+    "name":"Mobile",
+    "price":25000
+  }
+]
+
+Step 9: Demonstrate Client Side Load Balancing
+
+Run multiple Product Service instances.
+
+Instance 1
+server:
+  port: 8081
+Instance 2
+server:
+  port: 8083
+
+Modify controller:
+
+@GetMapping
+public List<Product> getProducts() {
+
+    System.out.println("Request Served By Port : 8083");
+
+    return List.of(
+            new Product(1,"Laptop",65000)
+    );
+}
+
+Eureka shows:
+
+PRODUCT-SERVICE (2)
+
+When Employee Service calls:
+
+productClient.getProducts();
+
+Spring Cloud LoadBalancer selects:
+
+8081
+8083
+8081
+8083
+
+using Round Robin strategy.
+
+Internal Flow
+Client
+  |
+Employee-Service
+  |
+Feign Client
+  |
+Eureka Discovery
+  |
+LoadBalancer
+  |
+Product-Service Instance
+  |
+Response
+Advantages
+Eureka
+Dynamic Discovery
+No Hardcoded URLs
+High Availability
+OpenFeign
+Declarative REST Client
+Less Boilerplate Code
+Integration with Eureka
+Spring Cloud LoadBalancer
+Round Robin
+Better Resource Utilization
+Fault Tolerance
+Microservices
+Independent Deployment
+Scalability
+Technology Flexibility
+Fault Isolation
+Final Architecture
+                    +------------------+
+                    |  Eureka Server   |
+                    |      8761        |
+                    +---------+--------+
+                              |
+             ---------------------------------
+             |                               |
+             |                               |
++------------v----------+      +------------v----------+
+|  Product Service      |      | Product Service       |
+|  Instance 1 (8081)    |      | Instance 2 (8083)     |
++------------+----------+      +------------+----------+
+             ^                               ^
+             |                               |
+             -----------LoadBalancer---------
+                             ^
+                             |
+                    +--------+--------+
+                    | Employee Service |
+                    |      8082        |
+                    +------------------+
+
+
+
+Spring Cloud Circuit Breaker with Resilience4J, Understand how software circuit breakers protect against cascade failure :
+
+
+1. What is a Circuit Breaker?
+
+A Circuit Breaker is a software design pattern that prevents an application from repeatedly calling a failing service.
+
+Just like an electrical circuit breaker stops electricity flow when there is a fault, a software circuit breaker stops requests to a failing service and returns a fallback response.
+
+Problem Without Circuit Breaker :
+
+Imagine a microservices architecture:
+
+Client
+   |
+Order Service
+   |
+Payment Service
+   |
+Bank Service
+
+Suppose the Bank Service becomes slow or unavailable.
+
+Without Circuit Breaker:
+
+Request 1 -> Timeout
+Request 2 -> Timeout
+Request 3 -> Timeout
+Request 4 -> Timeout
+...
+Thousands of requests -> Resource Exhaustion
+
+Consequences:
+
+Threads become blocked
+CPU usage increases
+Memory consumption increases
+Entire application becomes slow
+Other services also fail
+
+This is called:
+
+Cascade Failure
+
+A failure in one service spreads across multiple services causing the entire system to become unavailable.
+
+2. What is Cascade Failure?
+
+Consider:
+
+Customer Service
+      |
+Order Service
+      |
+Payment Service
+      |
+Bank Service (DOWN)
+
+When Bank Service is down:
+
+Payment Service waits
+Order Service waits
+Customer Service waits
+Users wait
+
+Eventually:
+
+Thread Pool Exhausted
+Database Connections Exhausted
+Memory Increased
+Application Crashes
+
+This chain reaction is called:
+
+Cascade Failure
+
+3. How Circuit Breaker Prevents Cascade Failure
+
+Circuit Breaker monitors failures.
+
+When failures exceed a threshold:
+
+Circuit Opens
+
+Requests stop reaching the failing service.
+
+Instead:
+
+Fallback Response Returned
+
+Example:
+
+"Payment service unavailable. Try again later."
+
+System remains healthy.
+
+4. Circuit Breaker States
+
+Resilience4J Circuit Breaker has 3 states.
+
+          Success
+     +---------------+
+     |               |
+     v               |
+ CLOSED --------> OPEN
+    ^               |
+    |               |
+    +---- HALF OPEN +
+
+State 1: CLOSED
+
+Normal operation.
+
+Request -> Service -> Response
+
+All requests pass through.
+
+Example:
+
+Payment Service -> Success
+
+Circuit remains closed.
+
+State 2: OPEN
+
+Too many failures detected.
+
+Request -> Circuit Breaker -> Fallback
+
+No calls are sent to service.
+
+Example:
+
+"Payment Service Unavailable"
+
+This protects resources.
+
+State 3: HALF-OPEN
+
+After waiting period:
+
+Allow Few Requests
+
+If successful:
+
+OPEN -> HALF OPEN -> CLOSED
+
+If failure continues:
+
+OPEN -> HALF OPEN -> OPEN
+
+5. What is Resilience4J?
+
+Resilience4J is a lightweight fault tolerance library.
+
+Features:
+
+Circuit Breaker
+Retry
+Rate Limiter
+Bulkhead
+Time Limiter
+Cache
+
+Benefits:
+
+Lightweight
+Functional Programming Support
+Spring Boot Integration
+Better than Hystrix (deprecated)
+
+6. Spring Cloud Circuit Breaker
+
+Spring Cloud provides an abstraction layer.
+
+Spring Cloud Circuit Breaker
+                |
+      -----------------
+      |               |
+  Resilience4J      Sentinel
+
+Most applications use:
+
+Spring Cloud Circuit Breaker + Resilience4J
+
+7. Project Architecture
+
+Client
+   |
+Order Service
+   |
+Circuit Breaker
+   |
+Payment Service
+
+8. Maven Dependencies
+
+Spring Boot 3.x
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+    </dependency>
+
+</dependencies>
+
+9. application.yml Configuration
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentService:
+
+        slidingWindowSize: 10
+
+        failureRateThreshold: 50
+
+        waitDurationInOpenState: 10s
+
+        permittedNumberOfCallsInHalfOpenState: 3
+
+        minimumNumberOfCalls: 5
+
+Configuration Meaning
+
+slidingWindowSize
+
+Monitor last N requests.
+
+slidingWindowSize: 10
+
+Last 10 requests evaluated.
+
+failureRateThreshold
+
+failureRateThreshold: 50
+
+If more than 50% requests fail:
+
+Circuit -> OPEN
+
+waitDurationInOpenState
+
+waitDurationInOpenState: 10s
+
+Stay OPEN for 10 seconds.
+
+minimumNumberOfCalls
+
+minimumNumberOfCalls: 5
+
+Need at least 5 calls before evaluation.
+
+10. Simulating a Payment Service
+
+@Service
+public class PaymentService {
+
+    public String processPayment() {
+
+        if(new Random().nextBoolean()) {
+            throw new RuntimeException("Payment Failed");
+        }
+
+        return "Payment Successful";
+    }
+}
+
+11. Using Circuit Breaker Annotation
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @CircuitBreaker(
+        name = "paymentService",
+        fallbackMethod = "paymentFallback"
+    )
+    public String placeOrder() {
+
+        return paymentService.processPayment();
+    }
+
+    public String paymentFallback(Exception ex) {
+
+        return "Payment Service Temporarily Unavailable";
+    }
+}
+
+12. REST Controller
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping
+    public String createOrder() {
+
+        return orderService.placeOrder();
+    }
+}
+
+13. Execution Flow
+
+Normal Scenario
+
+Client
+   |
+Order Service
+   |
+Payment Service
+   |
+Success
+
+Response:
+
+Payment Successful
+
+Failure Scenario
+
+Client
+   |
+Order Service
+   |
+Payment Service
+   |
+Exception
+
+Circuit Breaker counts failures.
+
+Threshold Reached
+
+Failures > 50%
+
+Circuit opens.
+
+Client
+   |
+Circuit Breaker
+   |
+Fallback
+
+Response:
+
+Payment Service Temporarily Unavailable
+
+14. Real-Time Example
+
+Amazon Checkout
+
+Services:
+
+Product Service
+Inventory Service
+Payment Service
+Shipping Service
+
+Suppose Payment Service fails.
+
+Without Circuit Breaker:
+
+Checkout requests pile up
+Thread pools exhausted
+Entire site slows down
+
+With Circuit Breaker:
+
+Payment requests blocked
+Fallback shown
+Other services continue working
+
+User sees:
+
+Unable to process payment currently.
+Please try again later.
+
+15. Programmatic Circuit Breaker Example
+
+Instead of annotation:
+
+@Service
+public class OrderService {
+
+    private final CircuitBreakerFactory factory;
+
+    public OrderService(CircuitBreakerFactory factory) {
+        this.factory = factory;
+    }
+
+    public String placeOrder() {
+
+        CircuitBreaker cb =
+                factory.create("paymentService");
+
+        return cb.run(
+            () -> callPaymentService(),
+            throwable -> "Fallback Response"
+        );
+    }
+
+    private String callPaymentService() {
+
+        return "Payment Success";
+    }
+}
+
+16. Combining Retry and Circuit Breaker
+
+Retry First
+
+@Retry(name = "paymentService")
+@CircuitBreaker(
+      name = "paymentService",
+      fallbackMethod = "fallback"
+)
+public String processPayment() {
+    return paymentClient.call();
+}
+
+Behavior:
+
+Try 1 -> Fail
+Try 2 -> Fail
+Try 3 -> Fail
+Circuit Breaker counts failure
+
+Useful for temporary network issues.
+
+17. Combining TimeLimiter
+
+Problem:
+
+Service not failing
+But very slow
+
+Solution:
+
+@TimeLimiter(name = "paymentService")
+
+Example:
+
+Response takes 30 seconds
+Timeout after 3 seconds
+Fallback returned
+
+18. Monitoring Circuit Breaker
+
+Enable actuator.
+
+Dependency:
+
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+application.yml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+Check:
+
+/actuator/health
+/actuator/circuitbreakers
+/actuator/metrics
+
+19. Best Practices
+
+Use Fallback Responses
+
+Good:
+
+"Payment service unavailable"
+
+Bad:
+
+NullPointerException
+
+Configure Proper Thresholds :
+
+failureRateThreshold: 50
+
+Avoid:
+
+failureRateThreshold: 5
+
+Too sensitive.
+
+Combine with Retry :
+
+Retry + Circuit Breaker :
+
+Most common production setup.
+
+Use Timeouts :
+
+Never wait forever.
+
+@TimeLimiter
+
+Monitor Actuator Metrics :
+
+Track:
+
+Success Rate
+Failure Rate
+Open Circuits
+Slow Calls
+
+
+
+Use Spring Cloud Circuit breaker with Resilience4J to implement circuit breakers :
+
+
+1. What is a Circuit Breaker?
+
+A Circuit Breaker is a design pattern used in Microservices to prevent cascading failures when one service becomes slow or unavailable.
+
+Real-Time Example
+
+Consider:
+
+Employee Service → Calls Department Service
+
+Department Service is down
+
+Without Circuit Breaker:
+
+Employee Service
+       |
+       V
+Department Service (DOWN)
+       |
+   Timeout
+       |
+Thread Blocked
+       |
+Application Slow
+
+With Circuit Breaker:
+
+Employee Service
+       |
+       V
+Circuit Breaker
+       |
+  Service Down?
+       |
+      YES
+       |
+Return Fallback Response
+
+Benefits:
+
+Prevents system failure
+Improves fault tolerance
+Reduces response time
+Prevents resource exhaustion
+
+2. What is Resilience4J?
+
+Resilience4J is a lightweight fault-tolerance library designed for Java 8+ and Spring Boot.
+
+Features:
+
+Circuit Breaker
+Retry
+Rate Limiter
+Bulkhead
+Time Limiter
+Cache
+
+It is the recommended replacement for Netflix Hystrix.
+
+Architecture
+
+Client
+   |
+   V
+Spring Boot Service
+   |
+Circuit Breaker
+   |
+   +---- CLOSED ----> Service Call
+   |
+   +---- OPEN ------> Fallback Method
+   |
+   +---- HALF-OPEN -> Test Request
+
+3. Circuit Breaker States
+
+CLOSED State
+
+Normal operation.
+
+Requests ---> Service
+
+All requests pass through.
+
+OPEN State
+
+Failure threshold exceeded.
+
+Requests
+    |
+    V
+Circuit Breaker
+    |
+Fallback Response
+
+No request reaches service.
+
+HALF-OPEN State
+
+After waiting period.
+
+Few Requests
+      |
+      V
+Service Test
+
+If successful:
+
+HALF OPEN --> CLOSED
+
+If failed:
+
+HALF OPEN --> OPEN
+
+4. Create Spring Boot Project
+
+Dependencies:
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+    </dependency>
+
+</dependencies>
+
+Spring Cloud Version
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>2025.0.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+5. Create External Service
+
+Suppose we call:
+
+http://localhost:9090/api/departments/1
+
+Sometimes it fails.
+
+6. Create Service Layer
+
+DepartmentService.java
+
+package com.example.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class DepartmentService {
+
+    private final RestTemplate restTemplate;
+
+    public DepartmentService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public String getDepartment() {
+
+        return restTemplate.getForObject(
+                "http://localhost:9090/api/departments/1",
+                String.class);
+    }
+}
+
+7. Configure RestTemplate
+
+package com.example.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+
+8. Apply Circuit Breaker
+
+DepartmentController.java
+
+package com.example.controller;
+
+import com.example.service.DepartmentService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class DepartmentController {
+
+    private final DepartmentService service;
+
+    public DepartmentController(DepartmentService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/department")
+    @CircuitBreaker(
+            name = "departmentService",
+            fallbackMethod = "fallbackDepartment")
+    public String getDepartment() {
+
+        return service.getDepartment();
+    }
+
+    public String fallbackDepartment(Exception ex) {
+
+        return "Department Service is currently unavailable.";
+    }
+}
+
+9. Configure application.yml
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      departmentService:
+
+        failureRateThreshold: 50
+
+        minimumNumberOfCalls: 5
+
+        slidingWindowSize: 10
+
+        waitDurationInOpenState: 10s
+
+        permittedNumberOfCallsInHalfOpenState: 3
+
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+10. Understanding Configuration
+
+failureRateThreshold
+
+failureRateThreshold: 50
+
+If failures exceed 50%, circuit opens.
+
+Example:
+
+10 Requests
+
+6 Failed
+4 Success
+
+Failure Rate = 60%
+
+Circuit Opens
+
+minimumNumberOfCalls
+
+minimumNumberOfCalls: 5
+
+Circuit breaker starts evaluating after 5 requests.
+
+slidingWindowSize
+
+slidingWindowSize: 10
+
+Consider last 10 requests.
+
+Example:
+
+Request History
+
+S S S F F S F F F F
+
+Calculate failure percentage.
+
+waitDurationInOpenState
+
+waitDurationInOpenState: 10s
+
+Stay OPEN for 10 seconds.
+
+After 10 seconds:
+
+OPEN --> HALF OPEN
+
+permittedNumberOfCallsInHalfOpenState
+
+permittedNumberOfCallsInHalfOpenState: 3
+
+Allow only 3 test requests.
+
+11. Complete Flow Example
+
+Scenario 1
+
+Department Service Working
+
+Request 1 -> Success
+Request 2 -> Success
+Request 3 -> Success
+
+State:
+
+CLOSED
+
+Scenario 2
+
+Department Service Down
+
+Request 1 -> Fail
+Request 2 -> Fail
+Request 3 -> Fail
+Request 4 -> Fail
+Request 5 -> Fail
+
+Failure threshold exceeded.
+
+CLOSED --> OPEN
+
+Scenario 3
+
+Circuit Open
+
+Client Request
+      |
+      V
+Fallback Method
+
+Response:
+
+Department Service is currently unavailable.
+
+Scenario 4
+
+After 10 Seconds
+
+OPEN --> HALF OPEN
+
+Three requests allowed.
+
+Request 1 -> Success
+Request 2 -> Success
+Request 3 -> Success
+
+State:
+
+HALF OPEN --> CLOSED
+
+12. Using Circuit Breaker with Feign Client
+
+Feign Client
+
+@FeignClient(
+        name = "department-service",
+        fallback = DepartmentFallback.class)
+public interface DepartmentClient {
+
+    @GetMapping("/api/departments/1")
+    String getDepartment();
+}
+
+Fallback Class
+
+package com.example.client;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class DepartmentFallback
+        implements DepartmentClient {
+
+    @Override
+    public String getDepartment() {
+
+        return "Department Service Down";
+    }
+}
+
+13. Monitoring Circuit Breaker
+
+Add dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+Expose endpoints:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+Check Circuit Breaker Status
+
+GET
+
+/actuator/circuitbreakers
+
+Response:
+
+{
+  "circuitBreakers": [
+    "departmentService"
+  ]
+}
+
+Health Endpoint
+
+/actuator/health
+
+Output:
+
+{
+  "status":"UP"
+}
+
+14. Circuit Breaker + Retry
+
+@Retry(name="departmentService")
+@CircuitBreaker(
+        name="departmentService",
+        fallbackMethod="fallbackDepartment")
+public String getDepartment() {
+
+    return service.getDepartment();
+}
+
+Flow:
+
+Request
+   |
+Retry 3 Times
+   |
+Still Fails?
+   |
+Circuit Breaker
+   |
+Fallback
+
+
+
+
+Establish simple monitoring of circuit breakers using Prometheus dashboard, Spring Cloud Configuration Server and Client :
+
+
+
+1. Architecture Overview
+                    +------------------+
+                    | Git Repository   |
+                    | application.yml  |
+                    +--------+---------+
+                             |
+                             v
++----------------+   +---------------+
+| Config Client  |<->| Config Server |
+| Employee App   |   +---------------+
++-------+--------+
+        |
+        |
+        v
++--------------------+
+| External Service   |
+| Department Service |
++--------------------+
+        |
+   Failure Occurs
+        |
+        v
++--------------------+
+| Circuit Breaker    |
+| Resilience4j       |
++--------------------+
+        |
+        v
++--------------------+
+| Spring Actuator    |
+| Metrics Endpoint   |
++--------------------+
+        |
+        v
++--------------------+
+| Prometheus         |
++--------------------+
+        |
+        v
++--------------------+
+| Grafana Dashboard  |
++--------------------+
+
+2. What is Circuit Breaker?
+
+Circuit Breaker prevents continuous calls to a failing service.
+
+States
+
+Closed
+
+Request --> Service --> Success
+
+Normal operation.
+
+Open
+
+Request --> Circuit Breaker --> Fallback
+
+Service is failing repeatedly.
+
+Half Open
+
+Request --> Test Call
+
+Checks whether service is recovered.
+
+3. Create Config Server
+
+Dependency
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-config-server</artifactId>
+</dependency>
+
+Main Class
+
+@SpringBootApplication
+@EnableConfigServer
+public class ConfigServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigServerApplication.class,args);
+    }
+}
+
+application.yml
+
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/company/config-repo
+
+4. Create Configuration Repository
+
+Repository:
+
+config-repo
+   |
+   |-- employee-service.yml
+employee-service.yml
+server:
+  port: 8081
+
+message:
+  text: Welcome from Config Server
+
+5. Create Config Client
+
+Dependencies
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+bootstrap.yml
+
+spring:
+  application:
+    name: employee-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+Controller
+
+@RestController
+public class EmployeeController {
+
+    @Value("${message.text}")
+    private String message;
+
+    @GetMapping("/message")
+    public String getMessage() {
+        return message;
+    }
+}
+
+6. Create Department Service
+
+This service may fail.
+
+@RestController
+@RequestMapping("/department")
+public class DepartmentController {
+
+    @GetMapping("/{id}")
+    public String getDepartment(
+            @PathVariable Integer id) {
+
+        return "IT Department";
+    }
+}
+
+Run on:
+
+localhost:9090
+
+7. Add Resilience4j Circuit Breaker
+
+Dependency
+
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot3</artifactId>
+</dependency>
+
+8. Configure Circuit Breaker
+
+application.yml
+resilience4j:
+  circuitbreaker:
+    instances:
+      departmentService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+
+9. Service Layer
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @CircuitBreaker(
+            name = "departmentService",
+            fallbackMethod = "fallbackMethod")
+    public String getDepartment() {
+
+        return restTemplate.getForObject(
+                "http://localhost:9090/department/1",
+                String.class);
+    }
+
+    public String fallbackMethod(Exception ex) {
+
+        return "Department Service Down";
+    }
+}
+
+10. Controller
+
+@RestController
+@RequestMapping("/employee")
+public class EmployeeController {
+
+    @Autowired
+    EmployeeService service;
+
+    @GetMapping("/department")
+    public String getDepartment() {
+        return service.getDepartment();
+    }
+}
+
+11. Enable Actuator
+
+Dependency
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+application.yml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+
+12. Add Micrometer Prometheus
+
+Dependency
+
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+
+13. Verify Metrics Endpoint
+
+Start application.
+
+Open:
+
+http://localhost:8081/actuator/prometheus
+
+Output:
+
+jvm_memory_used_bytes
+http_server_requests_seconds
+resilience4j_circuitbreaker_state
+resilience4j_circuitbreaker_calls
+
+14. Install Prometheus
+
+Download:
+
+https://prometheus.io/download/
+
+prometheus.yml
+
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: employee-service
+
+    metrics_path: /actuator/prometheus
+
+    static_configs:
+      - targets:
+        - localhost:8081
+
+Start Prometheus
+
+prometheus.exe \
+--config.file=prometheus.yml
+
+Open:
+
+http://localhost:9090
+
+15. Check Circuit Breaker Metrics
+
+Prometheus Queries :
+
+Current State
+
+resilience4j_circuitbreaker_state
+
+Successful Calls
+
+resilience4j_circuitbreaker_calls_total{
+    kind="successful"
+}
+
+Failed Calls
+
+resilience4j_circuitbreaker_calls_total{
+    kind="failed"
+}
+
+Slow Calls
+
+resilience4j_circuitbreaker_calls_total{
+    kind="slow"
+}
+
+16. Install Grafana
+
+Download:
+
+https://grafana.com/grafana/download
+
+17. Connect Prometheus to Grafana
+
+Login:
+
+http://localhost:3000
+
+Default:
+
+admin/admin
+
+Add Data Source
+
+Connections
+   |
+   +-- Data Sources
+          |
+          +-- Prometheus
+
+URL
+
+http://localhost:9090
+
+Save & Test.
+
+18. Create Dashboard
+
+Panel 1
+
+Circuit Breaker State
+
+Query:
+
+resilience4j_circuitbreaker_state
+
+Visualization:
+
+Gauge
+
+Panel 2
+
+Failed Calls
+
+sum(
+resilience4j_circuitbreaker_calls_total{
+kind="failed"
+})
+
+Visualization:
+
+Stat
+
+Panel 3
+
+Success Calls
+
+sum(
+resilience4j_circuitbreaker_calls_total{
+kind="successful"
+})
+
+Panel 4
+
+Failure Rate
+
+rate(
+resilience4j_circuitbreaker_calls_total{
+kind="failed"
+}[1m])
+
+19. Sample Monitoring Dashboard
+--------------------------------------------------
+| Circuit Breaker State       | CLOSED           |
+--------------------------------------------------
+| Successful Calls            | 1250             |
+--------------------------------------------------
+| Failed Calls                | 34               |
+--------------------------------------------------
+| Failure Rate                | 2.7%             |
+--------------------------------------------------
+| Request Trend Graph                          |
+--------------------------------------------------
+
+20. Real-Time Failure Simulation
+
+Stop Department Service.
+
+Call:
+
+GET
+http://localhost:8081/employee/department
+
+Response:
+
+Department Service Down 50
+
+Circuit Breaker opens after threshold.
+
+Prometheus metric:
+
+resilience4j_circuitbreaker_state
+
+Result:
+
+OPEN
+
+Grafana dashboard immediately shows:
+
+State = OPEN
+
+Failed Calls ↑
+
+Success Calls ↓
+
+
+Complete Example :
+
+
+
+Spring Cloud Circuit Breaker with Resilience4J + Spring Cloud Config Server + Prometheus Monitoring (Complete End-to-End Example)
+
+This tutorial demonstrates:
+
+Spring Cloud Config Server
+Spring Cloud Config Client
+Spring Cloud Circuit Breaker using Resilience4J
+Fallback Mechanism
+Circuit Breaker States
+Actuator Monitoring
+Prometheus Integration
+Testing Circuit Breaker
+Production Best Practices
+
+1. What is a Circuit Breaker?
+
+A Circuit Breaker prevents cascading failures in distributed systems.
+
+Problem Without Circuit Breaker
+Order Service
+      |
+      V
+Payment Service
+      |
+      V
+Database Down
+
+When Payment Service becomes slow:
+
+Order Service waits...
+Order Service waits...
+Order Service waits...
+
+Threads become blocked.
+
+Eventually:
+
+Payment Service DOWN
+Order Service DOWN
+Customer Impact
+
+This is called:
+
+Cascade Failure
+How Circuit Breaker Works
+             CLOSED
+                |
+      Failures exceed threshold
+                |
+                V
+              OPEN
+                |
+      Wait duration elapsed
+                |
+                V
+           HALF OPEN
+           /       \
+      Success    Failure
+        |            |
+        V            V
+     CLOSED        OPEN
+Circuit Breaker States
+CLOSED
+
+Normal operation.
+
+All requests allowed.
+OPEN
+
+Too many failures detected.
+
+No request reaches service.
+Fallback executes immediately.
+HALF OPEN
+
+Testing phase.
+
+Few requests allowed.
+
+Success → CLOSED
+Failure → OPEN
+Project Architecture
+                Config Server
+                     |
+                     |
+            ------------------
+            |                |
+            V                V
+
+      Product Service    External API
+
+            |
+            |
+     Circuit Breaker
+      (Resilience4J)
+
+            |
+            V
+
+         Fallback
+Technologies
+Java 21
+Spring Boot 3.3.x
+Spring Cloud 2023.x
+Resilience4J
+Spring Cloud Circuit Breaker
+Spring Cloud Config
+Actuator
+Micrometer
+Prometheus
+
+Project Structure
+
+spring-cloud-demo
+
+|
+|-- config-server
+|
+|-- product-service
+|
+|-- config-repository
+
+2. Create Config Repository
+
+Create local Git repository:
+
+config-repository
+
+Inside:
+
+product-service.yml
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: product-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productService:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 20s
+        permittedNumberOfCallsInHalfOpenState: 3
+
+Commit:
+
+git init
+git add .
+git commit -m "initial config"
+
+3. Create Spring Cloud Config Server
+
+pom.xml
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-config-server</artifactId>
+    </dependency>
+
+</dependencies>
+
+application.yml
+
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///D:/config-repository
+
+Change path according to your machine.
+
+Main Class
+
+package com.example.configserver;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.config.server.EnableConfigServer;
+
+@EnableConfigServer
+@SpringBootApplication
+public class ConfigServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+                ConfigServerApplication.class,
+                args);
+    }
+}
+Run
+mvn spring-boot:run
+
+Verify:
+
+http://localhost:8888/product-service/default
+
+Expected:
+
+{
+ "name":"product-service",
+ "profiles":["default"]
+}
+
+4. Create Product Service
+
+Dependencies
+
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-config</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>
+            spring-cloud-starter-circuitbreaker-resilience4j
+        </artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>
+            spring-boot-starter-actuator
+        </artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>
+            micrometer-registry-prometheus
+        </artifactId>
+    </dependency>
+
+</dependencies>
+
+bootstrap.yml
+
+spring:
+  application:
+    name: product-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+For Spring Boot 3.x use:
+
+spring.config.import=configserver:http://localhost:8888
+
+Main Class
+
+@SpringBootApplication
+public class ProductApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+                ProductApplication.class,
+                args);
+    }
+}
+
+5. Simulate External API
+
+ExternalApiService
+
+package com.example.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ExternalApiService {
+
+    public String getProduct() {
+
+        if(Math.random() > 0.5) {
+            throw new RuntimeException(
+                    "External API Down");
+        }
+
+        return "Laptop Product";
+    }
+}
+
+6. Implement Circuit Breaker
+
+ProductService
+
+package com.example.service;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductService {
+
+    private final ExternalApiService apiService;
+
+    public ProductService(
+            ExternalApiService apiService) {
+
+        this.apiService = apiService;
+    }
+
+    @CircuitBreaker(
+            name = "productService",
+            fallbackMethod = "fallbackProduct")
+    public String getProduct() {
+
+        return apiService.getProduct();
+    }
+
+    public String fallbackProduct(
+            Exception ex) {
+
+        return "Default Product From Cache";
+    }
+}
+
+7. REST Controller
+
+package com.example.controller;
+
+import com.example.service.ProductService;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    private final ProductService service;
+
+    public ProductController(
+            ProductService service) {
+
+        this.service = service;
+    }
+
+    @GetMapping
+    public String getProduct() {
+
+        return service.getProduct();
+    }
+}
+
+Testing
+
+Call:
+
+GET
+
+http://localhost:8081/products
+
+Responses:
+
+Laptop Product
+
+or
+
+Default Product From Cache
+
+Trigger Circuit Breaker
+
+Keep calling:
+
+http://localhost:8081/products
+
+Failures exceed:
+
+failureRateThreshold: 50
+
+Circuit opens.
+
+Now:
+
+External API not called.
+Fallback executes directly.
+
+8. Actuator Endpoints
+
+Add:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+Health
+
+http://localhost:8081/actuator/health
+
+Circuit Breaker
+
+http://localhost:8081/actuator/circuitbreakers
+
+Example:
+
+{
+ "circuitBreakers":[
+   "productService"
+ ]
+}
+
+Specific breaker:
+
+http://localhost:8081/actuator/circuitbreakerevents
+
+9. Prometheus Integration
+
+Expose metrics:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+  endpoint:
+    prometheus:
+      enabled: true
+
+Verify Metrics
+
+http://localhost:8081/actuator/prometheus
+
+Output:
+
+resilience4j_circuitbreaker_state
+resilience4j_circuitbreaker_calls
+jvm_memory_used_bytes
+http_server_requests_seconds
+
+10. Install Prometheus
+
+Download Prometheus from:
+
+Prometheus Official Website
+
+prometheus.yml
+
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: product-service
+
+    metrics_path: /actuator/prometheus
+
+    static_configs:
+      - targets:
+          - localhost:8081
+
+Start:
+
+prometheus.exe
+
+Open:
+
+http://localhost:9090
+
+Prometheus Queries
+
+Total Calls
+resilience4j_circuitbreaker_calls_total
+Failed Calls
+resilience4j_circuitbreaker_calls_total{
+outcome="error"
+}
+Circuit Breaker State
+resilience4j_circuitbreaker_state
+
+Values:
+
+0 CLOSED
+1 OPEN
+2 HALF_OPEN
+
+
+
+
+API Gateway - Spring Cloud Gateway, Distributed Log tracing  with Spring Cloud Sleuth and Zipkin :
+
+
+
+1. What is an API Gateway?
+
+In a Microservices Architecture, clients should not directly communicate with all microservices.
+
+Instead, requests go through an API Gateway.
+
+Traditional Architecture
+Client
+   |
+   |
+-------------------
+| User Service    |
+| Product Service |
+| Order Service   |
+-------------------
+
+Problems:
+
+Multiple endpoints exposed
+Security management becomes difficult
+Load balancing complexity
+Cross-cutting concerns duplicated
+API Gateway Architecture
+                Client
+                   |
+                   |
+          -----------------
+          | API Gateway   |
+          -----------------
+          /      |       \
+         /       |        \
+ User Service Product Service Order Service
+
+Benefits:
+
+Single Entry Point
+Routing
+Load Balancing
+Authentication
+Authorization
+Rate Limiting
+Logging
+Monitoring
+Circuit Breaker
+2. What is Spring Cloud Gateway?
+
+Spring Cloud Gateway is the modern API Gateway provided by Spring Cloud.
+
+Built on:
+
+Spring Boot
+Spring WebFlux
+Project Reactor
+
+Features:
+
+Dynamic Routing
+Path Rewriting
+Filters
+Authentication
+Rate Limiting
+Load Balancing
+Circuit Breakers
+Project Architecture
+                 API Gateway
+                     8080
+                       |
+      --------------------------------
+      |                              |
+ User Service                 Product Service
+    8081                           8082
+Step 1: Create User Service
+pom.xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+</dependencies>
+UserController.java
+package com.example.userservice.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping
+    public String getUsers() {
+        return "User Service Response";
+    }
+}
+application.properties
+server.port=8081
+Step 2: Create Product Service
+ProductController.java
+package com.example.productservice.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @GetMapping
+    public String getProducts() {
+        return "Product Service Response";
+    }
+}
+application.properties
+server.port=8082
+Step 3: Create API Gateway
+pom.xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-gateway</artifactId>
+    </dependency>
+
+</dependencies>
+application.yml
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/users/**
+
+        - id: product-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/products/**
+Main Class
+@SpringBootApplication
+public class GatewayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+             GatewayApplication.class,
+             args);
+    }
+}
+Testing
+Direct Access
+http://localhost:8081/users
+
+Output
+
+User Service Response
+Through Gateway
+http://localhost:8080/users
+
+Output
+
+User Service Response
+3. Path Rewrite Example
+
+Client Request
+
+http://localhost:8080/api/users
+
+Forward To
+
+http://localhost:8081/users
+application.yml
+spring:
+  cloud:
+    gateway:
+      routes:
+
+      - id: user-service
+
+        uri: http://localhost:8081
+
+        predicates:
+          - Path=/api/users/**
+
+        filters:
+          - RewritePath=/api/(?<segment>.*), /$\{segment}
+4. Global Filter Example
+
+Used for:
+
+Logging
+Authentication
+Security
+LoggingFilter.java
+package com.example.gateway.filter;
+
+import org.springframework.cloud.gateway.filter.*;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+@Component
+public class LoggingFilter
+implements GlobalFilter {
+
+    @Override
+    public Mono<Void> filter(
+            ServerWebExchange exchange,
+            GatewayFilterChain chain) {
+
+        System.out.println(
+                "Incoming Request : "
+                + exchange.getRequest().getURI());
+
+        return chain.filter(exchange);
+    }
+}
+Output
+Incoming Request :
+http://localhost:8080/users
+5. What is Distributed Tracing?
+
+In microservices:
+
+Client
+ |
+ Gateway
+ |
+ Order Service
+ |
+ Payment Service
+ |
+ Inventory Service
+
+One request travels across multiple services.
+
+Tracking request manually is difficult.
+
+Distributed Tracing solves this.
+
+Without Tracing
+Order Service:
+Order Created
+
+Payment Service:
+Payment Success
+
+Inventory Service:
+Stock Updated
+
+Cannot identify same request.
+
+With Tracing
+[TraceId=123]
+
+Order Created
+
+[TraceId=123]
+
+Payment Success
+
+[TraceId=123]
+
+Stock Updated
+
+Now all logs are linked.
+
+6. Spring Cloud Sleuth
+
+Spring Cloud Sleuth automatically generates:
+
+Trace ID
+
+Represents whole request.
+
+TraceId
+Span ID
+
+Represents one operation.
+
+SpanId
+
+Example:
+
+TraceId:
+ab12cd34ef
+
+SpanId:
+xy98pq
+7. Zipkin
+
+Zipkin is a distributed tracing server.
+
+Collects traces from all services.
+
+Provides visualization.
+
+Service A
+      \
+       \
+        Zipkin
+       /
+      /
+Service B
+Architecture
+Client
+   |
+Gateway
+   |
+Order Service
+   |
+Payment Service
+   |
+Inventory Service
+
+      |
+      V
+
+    Zipkin
+8. Setup Zipkin
+
+Using Docker
+
+docker run -d -p 9411:9411 openzipkin/zipkin
+
+Open:
+
+http://localhost:9411
+9. Create Order Service
+pom.xml
+Spring Boot 2.x
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-sleuth</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+    </dependency>
+
+</dependencies>
+application.properties
+spring.application.name=order-service
+
+server.port=8081
+
+spring.zipkin.base-url=http://localhost:9411
+
+spring.sleuth.sampler.probability=1.0
+OrderController.java
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @GetMapping
+    public String createOrder() {
+
+        String response =
+                restTemplate.getForObject(
+                  "http://localhost:8082/payments",
+                  String.class);
+
+        return "Order Created -> " + response;
+    }
+}
+RestTemplate Bean
+@Bean
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+Payment Service
+Controller
+@RestController
+@RequestMapping("/payments")
+public class PaymentController {
+
+    @GetMapping
+    public String makePayment() {
+
+        return "Payment Successful";
+    }
+}
+application.properties
+spring.application.name=payment-service
+
+server.port=8082
+
+spring.zipkin.base-url=http://localhost:9411
+
+spring.sleuth.sampler.probability=1.0
+Logs Generated
+
+Order Service
+
+[order-service,
+e4bc123456,
+98aa11bb22]
+
+Order Created
+
+Payment Service
+
+[payment-service,
+e4bc123456,
+11ff22dd33]
+
+Payment Successful
+
+Notice:
+
+Trace ID SAME
+Zipkin Dashboard
+
+Open
+
+http://localhost:9411
+
+Search:
+
+order-service
+
+Visualization:
+
+Trace
+
+Gateway
+  |
+Order Service
+  |
+Payment Service
+
+Shows:
+
+Duration
+Latency
+Request Flow
+Dependency Graph
+Spring Boot 3.x (Micrometer Tracing)
+
+Spring Cloud Sleuth is deprecated for Spring Boot 3.
+
+Use:
+
+<dependency>
+   <groupId>io.micrometer</groupId>
+   <artifactId>micrometer-tracing-bridge-brave</artifactId>
+</dependency>
+
+<dependency>
+   <groupId>io.zipkin.reporter2</groupId>
+   <artifactId>zipkin-reporter-brave</artifactId>
+</dependency>
+application.properties
+management.tracing.sampling.probability=1.0
+
+management.zipkin.tracing.endpoint=http://localhost:9411/api/v2/spans
+Complete Real-Time Flow
+1 Client Request
+        |
+        V
+2 API Gateway
+        |
+        V
+3 Order Service
+        |
+        V
+4 Payment Service
+        |
+        V
+5 Inventory Service
+
+Every service generates:
+
+TraceId
+SpanId
+
+        |
+        V
+
+6 Zipkin Collects Traces
+
+        |
+        V
+
+7 Dashboard Shows
+
+Request Flow
+Latency
+Dependencies
+Failures
+
+
+
+Introduction to Spring Security, Basic Auth, CORS :
+
+
+
+Introduction to Spring Security, Basic Authentication, and CORS in Java (Spring Boot)
+
+Spring Security is a powerful framework used to secure Java applications by providing:
+
+Authentication (Who are you?)
+Authorization (What are you allowed to do?)
+Protection against common attacks
+Session Management
+Password Encryption
+JWT Authentication
+OAuth2 Integration
+CORS Support
+1. What is Spring Security?
+
+Spring Security is a security framework that sits between the client and application.
+
+Without Security:
+
+Client
+   |
+   v
+Spring Boot Application
+
+With Security:
+
+Client
+   |
+   v
+Spring Security Filter Chain
+   |
+   v
+Spring Boot Application
+
+Every request passes through the Security Filter Chain before reaching controllers.
+
+Real-Time Example
+
+Consider a Banking Application.
+
+Public APIs
+GET /home
+GET /about
+
+Anyone can access.
+
+Protected APIs
+GET /accounts
+POST /transfer
+GET /transactions
+
+Only authenticated users can access.
+
+Spring Security handles this automatically.
+
+Project Structure
+spring-security-demo
+│
+├── controller
+│     └── EmployeeController.java
+│
+├── config
+│     └── SecurityConfig.java
+│
+├── SpringSecurityDemoApplication.java
+│
+└── pom.xml
+Step 1: Create Spring Boot Project
+
+Dependencies:
+
+<dependencies>
+
+    <!-- Spring Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+</dependencies>
+Step 2: Create REST Controller
+package com.example.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class EmployeeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "Welcome to Home Page";
+    }
+
+    @GetMapping("/employee")
+    public String employee() {
+        return "Employee Details";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "Admin Details";
+    }
+}
+Run Application
+
+When application starts:
+
+Using generated security password:
+1234-abcd-5678
+
+Spring Security automatically secures all endpoints.
+
+Access API
+http://localhost:8080/employee
+
+Browser displays login page.
+
+Spring Security Authentication Flow
+User
+  |
+  v
+Username + Password
+  |
+  v
+Authentication Manager
+  |
+  v
+UserDetailsService
+  |
+  v
+Database / Memory
+  |
+  v
+Authenticated User
+2. Basic Authentication
+
+Basic Authentication is the simplest authentication mechanism.
+
+Client sends:
+
+username:password
+
+Encoded using Base64.
+
+Example:
+
+admin:admin123
+
+Base64:
+
+YWRtaW46YWRtaW4xMjM=
+
+HTTP Header:
+
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Configure In-Memory User
+SecurityConfig.java
+package com.example.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.provisioning.*;
+
+@Configuration
+public class UserConfig {
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+
+        UserDetails user =
+                User.builder()
+                        .username("user")
+                        .password(passwordEncoder().encode("user123"))
+                        .roles("USER")
+                        .build();
+
+        UserDetails admin =
+                User.builder()
+                        .username("admin")
+                        .password(passwordEncoder().encode("admin123"))
+                        .roles("ADMIN")
+                        .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+Configure Security
+package com.example.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/").permitAll()
+                    .requestMatchers("/admin").hasRole("ADMIN")
+                    .requestMatchers("/employee")
+                    .hasAnyRole("USER","ADMIN")
+                    .anyRequest()
+                    .authenticated()
+            )
+            .httpBasic();
+
+        return http.build();
+    }
+}
+Testing with Postman
+Request
+GET http://localhost:8080/admin
+
+Authorization Tab:
+
+Type = Basic Auth
+
+Username = admin
+Password = admin123
+
+Response:
+
+Admin Details
+User Accessing Admin
+Username = user
+Password = user123
+
+Response:
+
+403 Forbidden
+
+Because USER role cannot access ADMIN endpoint.
+
+Role Based Authorization
+.requestMatchers("/admin")
+.hasRole("ADMIN")
+
+Means:
+
+Only ADMIN can access.
+Multiple Roles
+.requestMatchers("/employee")
+.hasAnyRole("USER","ADMIN")
+
+Means:
+
+USER and ADMIN both can access.
+Password Encoding
+
+Never store plain passwords.
+
+Wrong:
+
+.password("admin123")
+
+Correct:
+
+.password(passwordEncoder()
+.encode("admin123"))
+BCrypt Encryption Example
+BCryptPasswordEncoder encoder =
+        new BCryptPasswordEncoder();
+
+String encrypted =
+        encoder.encode("admin123");
+
+System.out.println(encrypted);
+
+Output:
+
+$2a$10$T5f.....
+3. What is CORS?
+
+CORS stands for:
+
+Cross Origin Resource Sharing
+What is an Origin?
+
+An Origin consists of:
+
+Protocol + Domain + Port
+
+Example:
+
+http://localhost:4200
+
+and
+
+http://localhost:8080
+
+are different origins because ports are different.
+
+Angular + Spring Boot Example
+
+Frontend:
+
+http://localhost:4200
+
+Backend:
+
+http://localhost:8080
+
+Browser blocks request.
+
+Error:
+
+Access to fetch has been blocked by CORS policy
+Why Browser Blocks?
+
+Security reasons.
+
+Without CORS:
+
+Malicious Website
+      |
+      v
+Bank API
+
+Could steal user data.
+
+CORS Flow
+Angular App
+     |
+     | Request
+     v
+Browser
+     |
+     | Preflight OPTIONS
+     v
+Spring Boot Server
+     |
+     | Access-Control-Allow-Origin
+     v
+Browser
+     |
+     v
+Actual Request
+Enable CORS Globally
+package com.example.config;
+
+import org.springframework.context.annotation.*;
+import org.springframework.web.cors.*;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
+@Configuration
+public class CorsConfig {
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+                List.of("http://localhost:4200"));
+
+        configuration.setAllowedMethods(
+                List.of("GET","POST","PUT","DELETE"));
+
+        configuration.setAllowedHeaders(
+                List.of("*"));
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                configuration);
+
+        return source;
+    }
+}
+Enable CORS in Security
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http)
+        throws Exception {
+
+    http
+        .cors(cors -> {})
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+                .anyRequest()
+                .authenticated())
+        .httpBasic();
+
+    return http.build();
+}
+Controller-Level CORS
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
+public class EmployeeController {
+
+    @GetMapping("/employee")
+    public String employee() {
+        return "Employee Data";
+    }
+}
+Angular Call Example
+this.http.get(
+  'http://localhost:8080/employee'
+)
+.subscribe(response=>{
+   console.log(response);
+});
+
+Response:
+
+Employee Data
+Complete Spring Security + Basic Auth + CORS Example
+SecurityConfig.java
+package com.example.config;
+
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+import org.springframework.web.cors.*;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public UserDetailsService users() {
+
+        UserDetails user =
+                User.builder()
+                        .username("user")
+                        .password(passwordEncoder()
+                        .encode("user123"))
+                        .roles("USER")
+                        .build();
+
+        UserDetails admin =
+                User.builder()
+                        .username("admin")
+                        .password(passwordEncoder()
+                        .encode("admin123"))
+                        .roles("ADMIN")
+                        .build();
+
+        return new InMemoryUserDetailsManager(
+                user,
+                admin);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity http)
+            throws Exception {
+
+        http
+            .cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/")
+                    .permitAll()
+
+                    .requestMatchers("/admin")
+                    .hasRole("ADMIN")
+
+                    .requestMatchers("/employee")
+                    .hasAnyRole("USER","ADMIN")
+
+                    .anyRequest()
+                    .authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config =
+                new CorsConfiguration();
+
+        config.setAllowedOrigins(
+                List.of("http://localhost:4200"));
+
+        config.setAllowedMethods(
+                List.of("GET","POST","PUT","DELETE"));
+
+        config.setAllowedHeaders(
+                List.of("*"));
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                config);
+
+        return source;
+    }
+}
